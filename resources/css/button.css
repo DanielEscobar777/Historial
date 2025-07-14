@@ -1,0 +1,12 @@
+.menu-item {
+    transition: background-color 0.5s linear;
+}
+
+.menu-item:hover {
+    background-color: #3F51B5 !important;
+}
+
+.menu-item:hover .menu-text,
+.menu-item:hover .menu-icon i {
+    color: #fff !important;
+}
