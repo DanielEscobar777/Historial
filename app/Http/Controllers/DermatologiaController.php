@@ -18,7 +18,7 @@ class DermatologiaController extends Controller
             [
                 'piel',
                 'pelo',
-                'uñas',
+                'unias',
                 'mucosas',
                 'topografia',
                 'iconografia',

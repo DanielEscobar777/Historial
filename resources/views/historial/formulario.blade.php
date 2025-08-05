@@ -19,7 +19,7 @@
         <div class="panel-body">
             <!-- <pre>{{ print_r(old(), true) }}</pre> -->
 
-            <form action="{{ route('historial.store') }}" method="POST" autocomplete="off" novalidate>
+            <form action="{{ route('historial.store') }}" method="POST" autocomplete="off" novalidate data-servicio="{{ $n_ser->nombre_servicio }}">
                 @csrf
                 <div class="row">
                     @if ($n_ser->nombre_servicio!='NEONATOLOGIA')
@@ -49,10 +49,15 @@
                         <input type="text" class="form-control" name="nombre_recien_necido" value="{{ old('nombre_recien_necido') }}">
                     </div>
                     
-                    <div class="col-md-6">
+                    <div class="col-md-6"> 
                         <label><b>Sexo</b></label>
-                        <input type="text" class="form-control" name="sexo" value="{{ old('sexo') }}" required>
+                        <select class="form-control" name="sexo" required>
+                            <option value="">Seleccione una opción</option>
+                            <option value="M" {{ old('sexo') == 'M' ? 'selected' : '' }}>Masculino</option>
+                            <option value="F" {{ old('sexo') == 'F' ? 'selected' : '' }}>Femenino</option>
+                        </select>
                     </div>
+
 
                     <div class="col-md-6">
                         <label><b>Cama</b></label>
@@ -163,7 +168,8 @@
     </div>
 </div>
 @vite(['resources/js/formulario.js'])
-@vite(['resources/js/buscarPaciente.js'])
+<!--@vite(['resources/js/buscarPaciente.js'])-->
+@vite(['resources/js/boton.js'])
 <script>
     document.addEventListener("DOMContentLoaded", function () {
     const form = document.querySelector("form");

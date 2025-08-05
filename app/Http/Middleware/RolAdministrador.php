@@ -17,7 +17,7 @@ class RolAdministrador
     {
         $user = auth()->user()->load('roles');
 
-        if (!$user->hasRole('administrador')) {
+        if (!$user->hasRole('Jefe de Enseñanza')) {
             abort(403, 'Acceso no autorizado');
         }
 

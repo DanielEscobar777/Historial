@@ -23,7 +23,8 @@ class Antecedentes_gineco_obstetricos extends Model
         'fecha_ultima_menstruacion',
         'fecha_ultima_mamografia',
         'fecha_ultima_densitometria',
-        'id_usuario'
+        'id_usuario',
+        'fecha_ultimo_aborto'
     ];
    protected $primaryKey = 'id_antecedentes_gineco';
 }

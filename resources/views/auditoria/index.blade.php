@@ -24,9 +24,9 @@
                                 </h4>
                                 <img src="{{ asset('images/auditoria.jfif') }}" alt="" style="width:150px; height:150px; border-radius:75px;">
                             </div>
-                            <div class="card-footer">
-                                <a href="{{ route('auditoria.show', $servicio->id_servicio) }}" class="btn-outline-primary">
-                                    ACTIVAR 
+                            <div class="card-footer bg-transparent border-top-0 text-center pb-3">
+                                  <a href="{{ route('auditoria.show', $servicio->id_servicio) }}" class="btn btn-primary w-75">
+                                    <i class="fas fa-eye me-1"></i> Activar
                                 </a>
                             </div>
                         </div>

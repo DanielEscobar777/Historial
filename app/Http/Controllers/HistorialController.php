@@ -25,6 +25,7 @@ use App\Models\Ganglios_linfaticos;
 use App\Models\Examen_extremidades_inferiores;
 use App\Models\Examen_extremidades_superiores;
 use App\Models\Dermatologia;
+use App\Models\Paciente;
 use App\Models\Sistema_sensitivo;
 use App\Models\Sistema_motor;
 use App\Models\Sistema_nervioso;
@@ -45,6 +46,8 @@ use Doctrine\DBAL\Schema\Column;
 use Illuminate\Support\Facades\Log;
 use ReflectionClass;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Http;
+
 
 class HistorialController extends Controller
 {
@@ -147,10 +150,10 @@ class HistorialController extends Controller
             if ($permiso->nivel == 1) {
                 $clave = strtolower($permiso->nombre_permiso);
 
-                /* logger()->info('Modulo recibido:', [
+                 logger()->info('Modulo recibido:', [
                     'original' => $permiso->nombre_permiso,
                     'clave' => $clave
-                ]);*/
+                ]);
 
                 $campos_temporales[$clave] = [
                     'slug' => $clave,
@@ -167,29 +170,29 @@ class HistorialController extends Controller
                 } else {
                     $grupo_clave = $grupo_clave_corto; // por si acaso no está en el mapa
                 }
-                /*logger()->info('Procesando subcampo', [
+                logger()->info('Procesando subcampo', [
                     'nombre_permiso' => $permiso->nombre_permiso,
                     'modulo' => $permiso->modulo,
                     'grupo_clave' => $grupo_clave,
                     'existe_grupo' => isset($campos_temporales[$grupo_clave])
-                ]);*/
+                ]);
                 if (isset($campos_temporales[$grupo_clave])) {
                     $subcampo_nombre = strtolower(str_replace(' ', '_', $permiso->nombre_permiso));
 
-                    /*logger()->info('Agregando subcampo', [
+                    logger()->info('Agregando subcampo', [
                         'a_grupo' => $grupo_clave,
                         'etiqueta' => $permiso->nombre_permiso,
                         'nombre' => $subcampo_nombre
-                    ]);*/
+                    ]);
                     $campos_temporales[$grupo_clave]['subcampos'][] = [
                         'etiqueta' => $permiso->nombre_permiso,
                         'nombre' => $subcampo_nombre
                     ];
                 } else {
-                    /*logger()->warning('No se encontró grupo para subcampo', [
+                    logger()->warning('No se encontró grupo para subcampo', [
                         'grupo_clave' => $grupo_clave,
                         'nombre_permiso' => $permiso->nombre_permiso
-                    ]);*/
+                    ]);
                 }
             }
         }
@@ -611,6 +614,35 @@ class HistorialController extends Controller
 
         $permisos = Permisos_historia::traer_permisos_2($id_servicio);
 
+        $usuarios_encontrados = [];
+
+        if ($n_ser->nombre_servicio === 'NEONATOLOGIA' && preg_match('/^RN_(\d{4})(\d{2})(\d{2})_\d{4}_\d+$/', $historial->nombre_recien_necido, $matches)) {
+            $fecha_nacimiento = "{$matches[1]}-{$matches[2]}-{$matches[3]}";
+
+            try {
+                $response = Http::get("http://localhost/tokkens/lista_afiliados.php");
+
+                if ($response->ok()) {
+                    $data = $response->json()['data'] ?? [];
+
+                    
+                   $usuarios_encontrados = array_filter($data, function ($usuario) use ($fecha_nacimiento) {
+                        
+                        return isset($usuario['fecha_nacimiento']) && $usuario['fecha_nacimiento'] === $fecha_nacimiento;
+                    });
+
+
+                    $usuarios_encontrados = array_values($usuarios_encontrados); // Reindexar
+                }
+            } catch (\Exception $e) {
+                \Log::error('Error consultando lista_afiliados.php: ' . $e->getMessage());
+                $usuarios_encontrados = [];
+            }
+        }
+
+      
+
+
         return view('historial.formulario_editar', [
             'historial' => $historial,
             'permisos' => $permisos,
@@ -646,81 +678,148 @@ class HistorialController extends Controller
             'sistema_nervioso' => $Sistema_nervioso,
             'examen_fisico_segmentado' => $Examen_fisico_segmentado,
             'interpretacion_laboratorios' => $interpretacion_laboratorios,
-            'paciente' => $paciente
+            'paciente' => $paciente,
+            'usuarios_encontrados' => $usuarios_encontrados
         ]);
     }
 
-    public function update(Request $request, $id_historial)
-    {
-        $esObstetrico = $request->nombre_servicio;
-        // Validación básica de los campos fijos (historial)
-        if ($esObstetrico == 'NEONATOLOGIA') {
-            $validated = $request->validate([
-                'cama' => 'nullable|string|max:50',
-                'nombrenum_referencia' => 'nullable|string|max:255',
-                'nombre_recien_necido' => 'required|string|max:255',
-                'fecha_recien_necido' => 'required|date',
-                'hora_recien_necido' => 'required',
-                'sexo' => 'required',
-            ], [
-                'cama.required' => 'El campo cama es obligatorio.',
-                'nombrenum_referencia.required' => 'El campo nombre y numero de referencia es obligatorio.',
-                'nombre_recien_necido.required' => 'El campo nombre de recien nacido es obligatorio.',
-                'fecha_recien_necido.required' => 'El campo fecha de nacimiento es obligatorio.',
-                'hora_recien_necido.required' => 'El campo hora de nacimiento es obligatorio.',
-                'sexo.requied' => 'El campo sexo es obligatorio',
-            ]);
-            $historial = Historial::findOrFail($id_historial);
-            $historial->update($request->only([
-                'cama',
-                'nombrenum_referencia',
-                'nombre_recien_necido',
-                'fecha_recien_necido',
-                'hora_recien_necido',
-                'nombrenum_referencia',
-                'sexo'
-            ]));
-        } else {
-            $validated = $request->validate([
-                //'id_paciente' => 'required|integer',
-                'grado_instruccion' => 'required|string|max:255',
-                'religion' => 'required|string|max:255',
-                'cama' => 'required|string|max:50',
-                'ocupacion' => 'required|string|max:50',
-                'estado_civil' => 'required|string|max:50',
-                'fuente_informacion' => 'required|string|max:255',
-                'nombrenum_referencia' => 'required|string|max:255',
-                'grado_confiabilidad' => 'required|string|max:255',
-                'grupo_sanguineo_facto' => 'required|string|max:100',
-            ], [
-                //'id_paciente.required' => 'El campo paciente es obligatorio.',
-                'grado_instruccion.max' => 'El grado de instrucción no puede superar los 255 caracteres.',
-                'religion.required' => 'El campo religion es obligatorio.',
-                'cama.required' => 'El campo cama es obligatorio.',
-                'ocupacion.required' => 'El campo ocupacion es obligatorio.',
-                'estado_civil.required' => 'El campo estado_civil es obligatorio.',
-                'fuente_informacion.required' => 'El campo fuente_informacion es obligatorio.',
-                'nombrenum_referencia.required' => 'El campo nombre y numero de referencia es obligatorio.',
-                'grado_confiabilidad.required' => 'El campo grado_confiabilidad es obligatorio.',
-                'grupo_sanguineo_facto.required' => 'El campo grupo_sanguineo_facto es obligatorio.',
+public function update(Request $request, $id_historial)
+{
+    $nombreServicio = $request->nombre_servicio;
 
-            ]);
-            $historial = Historial::findOrFail($id_historial);
-            $historial->update($request->only([
-               // 'id_paciente',
-                'grado_instruccion',
-                'religion',
-                'cama',
-                'ocupacion',
-                'estado_civil',
-                'fuente_informacion',
-                'nombrenum_referencia',
-                'grado_confiabilidad',
-                'grupo_sanguineo_facto',
+    if ($nombreServicio === 'NEONATOLOGIA') {
+        // Validación para recién nacidos
+        $validated = $request->validate([
+            'cama' => 'nullable|string|max:50',
+            'nombrenum_referencia' => 'nullable|string|max:255',
+            'nombre_recien_necido' => 'required|string|max:255',
+            'fecha_recien_necido' => 'required|date',
+            'hora_recien_necido' => 'required',
+            'sexo' => 'required',
+        ], [
+            'nombre_recien_necido.required' => 'El campo nombre de recien nacido es obligatorio.',
+            'fecha_recien_necido.required' => 'El campo fecha de nacimiento es obligatorio.',
+            'hora_recien_necido.required' => 'El campo hora de nacimiento es obligatorio.',
+            'sexo.required' => 'El campo sexo es obligatorio',
+        ]);
 
-            ]));
+        $historial = Historial::findOrFail($id_historial);
+
+        // Actualización básica
+        $historial->update($request->only([
+            'cama',
+            'nombrenum_referencia',
+            'nombre_recien_necido',
+            'fecha_recien_necido',
+            'hora_recien_necido',
+            'sexo',
+        ]));
+
+        \Log::info('🧪 Datos recibidos desde formulario para NEONATOLOGIA:', $request->all());
+
+        // Si se seleccionó un paciente desde el select (caso manual con datos de API precargados)
+        if ($request->filled('id_usuario_seleccionado')) {
+            \Log::info('✅ id_usuario_seleccionado presente, actualizando historial y paciente por id_paciente.');
+
+            // Obtener el historial
+            $historial = Historial::findOrFail($id_historial);
+
+            // Obtener el paciente por id_paciente
+            $paciente = Paciente::find($historial->id_paciente);
+
+            if ($paciente) {
+                \Log::info('🔍 Paciente encontrado por ID', ['id' => $paciente->id]);
+
+                // Datos a actualizar en paciente
+                $datosPaciente = [];
+
+                if ($request->filled('nombres')) $datosPaciente['nombres'] = $request->input('nombres');
+                if ($request->filled('p_apellido')) $datosPaciente['p_apellido'] = $request->input('p_apellido');
+                if ($request->filled('s_apellido')) $datosPaciente['s_apellido'] = $request->input('s_apellido');
+                if ($request->filled('sexo_api')) $datosPaciente['sexo'] = $request->input('sexo_api');
+                if ($request->filled('fecha_nacimiento')) $datosPaciente['fecha_nacimiento'] = $request->input('fecha_nacimiento');
+                if ($request->filled('matricula_seguro')) $datosPaciente['matricula_seguro'] = $request->input('matricula_seguro');
+                if ($request->filled('complemento')) $datosPaciente['complemento'] = $request->input('complemento');
+                if ($request->filled('nacionalidad')) $datosPaciente['nacionalidad'] = $request->input('nacionalidad');
+                if ($request->filled('telefono') && $request->input('telefono') != '0') $datosPaciente['telefono'] = $request->input('telefono');
+                if ($request->filled('residencia')) $datosPaciente['residencia'] = $request->input('residencia');
+
+                $datosPaciente['updated_at'] = now();
+
+                $paciente->update($datosPaciente);
+                \Log::info('✅ Paciente actualizado', $datosPaciente);
+            } else {
+                \Log::warning('⚠️ No se encontró paciente con id: ' . $historial->id_paciente);
+            }
+
+            // Datos a actualizar en historial
+            $datosHistorial = [];
+
+            if ($request->filled('nombres') || $request->filled('p_apellido') || $request->filled('s_apellido')) {
+                $nombre_completo = trim(
+                    $request->input('nombres') . ' ' .
+                    $request->input('p_apellido') . ' ' .
+                    $request->input('s_apellido')
+                );
+                $datosHistorial['nombre_recien_necido'] = $nombre_completo;
+            }
+
+            if ($request->filled('sexo_api')) $datosHistorial['sexo'] = $request->input('sexo_api');
+            if ($request->filled('fecha_nacimiento')) $datosHistorial['fecha_recien_necido'] = $request->input('fecha_nacimiento');
+            if ($request->filled('hora_recien_necido')) $datosHistorial['hora_recien_necido'] = $request->input('hora_recien_necido');
+            if ($request->filled('cama')) $datosHistorial['cama'] = $request->input('cama');
+
+            // Guardar solo el teléfono como referencia si no es 0
+            if ($request->filled('telefono') && $request->input('telefono') != '0') {
+                $datosHistorial['nombrenum_referencia'] = $request->input('telefono');
+            }
+
+            $historial->update($datosHistorial);
+            \Log::info('📝 Historial actualizado', $datosHistorial);
         }
 
-        return redirect()->back()->with('success', 'Historia actualizado correctamente.');
+
+    } else {
+        // Validación para otros servicios
+        $validated = $request->validate([
+            'grado_instruccion' => 'required|string|max:255',
+            'religion' => 'required|string|max:255',
+            'cama' => 'required|string|max:50',
+            'ocupacion' => 'required|string|max:50',
+            'estado_civil' => 'required|string|max:50',
+            'fuente_informacion' => 'required|string|max:255',
+            'nombrenum_referencia' => 'required|string|max:255',
+            'grado_confiabilidad' => 'required|string|max:255',
+            'grupo_sanguineo_facto' => 'required|string|max:100',
+        ], [
+            'grado_instruccion.max' => 'El grado de instrucción no puede superar los 255 caracteres.',
+            'religion.required' => 'El campo religión es obligatorio.',
+            'cama.required' => 'El campo cama es obligatorio.',
+            'ocupacion.required' => 'El campo ocupación es obligatorio.',
+            'estado_civil.required' => 'El campo estado civil es obligatorio.',
+            'fuente_informacion.required' => 'El campo fuente de información es obligatorio.',
+            'nombrenum_referencia.required' => 'El campo nombre y número de referencia es obligatorio.',
+            'grado_confiabilidad.required' => 'El campo grado de confiabilidad es obligatorio.',
+            'grupo_sanguineo_facto.required' => 'El campo grupo sanguíneo y factor es obligatorio.',
+        ]);
+
+        $historial = Historial::findOrFail($id_historial);
+
+        // Actualización para pacientes adultos
+        $historial->update($request->only([
+            'grado_instruccion',
+            'religion',
+            'cama',
+            'ocupacion',
+            'estado_civil',
+            'fuente_informacion',
+            'nombrenum_referencia',
+            'grado_confiabilidad',
+            'grupo_sanguineo_facto',
+        ]));
     }
+
+    return redirect()->back()->with('success', 'Historia actualizada correctamente.');
+}
+
 }

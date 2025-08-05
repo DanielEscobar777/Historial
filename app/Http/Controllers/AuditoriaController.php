@@ -33,10 +33,11 @@ class AuditoriaController extends Controller
         $permisos = Permisos_historia::traer_permisos_2($id_servicio);
         $permisos_1 = Permisos_historia::traerPermisos1($id_servicio);
 
-        $filiacion = DB::table('au_historial as h')
-            ->join('users as u', 'h.id_usuario', '=', 'u.id')
-            ->where('h.id_historia', $id_historia)
-            ->get();
+         $filiacion = DB::table('au_historial as h')
+        ->join('users as u', 'h.id_usuario', '=', 'u.id')
+        ->join('pacientes as p', DB::raw('h.id_paciente::integer'), '=', 'p.id')
+        ->where('h.id_historia', $id_historia)
+        ->get();
 
         $antecedentes_perinatologicos = DB::table('au_antecedentes_perinatologicos as h')
             ->join('users as u', 'h.id_usuario', '=', 'u.id')

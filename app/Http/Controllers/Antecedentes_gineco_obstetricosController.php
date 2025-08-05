@@ -17,7 +17,7 @@ class Antecedentes_gineco_obstetricosController extends Controller
         // Solo validar los campos que vienen en el request
         foreach (['fecha_ultima_menstruacion', 'menarca', 'ritmo_menstrual', 'menopausia', 'gestaciones', 'partos','cesareas',
         'abortos','hijos_macrosomicos', 'preeclampsia_eclampsia', 'anticonceptivos','fecha_ultima_papanicolau','fecha_ultima_mamografia',
-        'fecha_ultima_densitometria'] as $field) {
+        'fecha_ultima_densitometria', 'fecha_ultimo_aborto'] as $field) {
             if ($request->has($field)) {
                 $rules[$field] = 'required|string|max:255';
                 $messages["$field.required"] = "El campo $field es obligatorio.";

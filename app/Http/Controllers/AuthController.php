@@ -9,22 +9,22 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
-    // Muestra la vista de inicio de sesión
+ 
     public function index()
     {
         return view('modules/auth/login');
     }
 
-    // Muestra la vista de registro
     public function registro()
     {
         return view('modules/auth/registro');
     }
 
-    // Registra un nuevo usuario en la base de datos
+    
     public function registrar(Request $request)
     {
         $item = new User();
@@ -36,58 +36,35 @@ class AuthController extends Controller
         return to_route('login');
     }
 
-    // Inicia sesión autenticando contra un endpoint PHP externo
+
 public function loguear(Request $request)
 {
-    // Validar datos
     $request->validate([
         'email' => 'required',
         'password' => 'required'
     ]);
- // Llamar al servicio externo   
-    /*$response = Http::post('http://192.168.4.55:8000/api/auth/login_service', [
-        'email' => $request->email,
-        'password' => $request->password,
-    ]);*/
-    // Enviar POST al PHP (ya adaptado)
+
     $response = Http::post('http://localhost/tokkens/login.php', [
         'email' => $request->email,
-        'password' => $request->password, // ✅ se envía como "password"
+        'password' => $request->password,
     ]);
 
     $data = $response->json();
 
-    // Validación de respuesta
     if (!$response->ok() || !isset($data['success']) || $data['success'] !== true || !isset($data['access_token'])) {
-        Log::error('Error en login_service API', [
-            'email' => $request->email,
-            'response_status' => $response->status(),
-            'response_body' => $response->body(),
-            'parsed_json' => $data,
-        ]);
         return back()->with('error', 'Credenciales inválidas o usuario no autorizado.');
     }
 
     $accessToken = $data['access_token'];
     $userData = $data['user'];
 
-    // Buscar usuario en base de datos local
-    $user = User::where('email', $userData['email'])->first();
+   
+    $user = User::firstOrNew(['email' => $userData['email']]);
+    $user->name = $userData['name'] ?? $request->email;
+    $user->password = bcrypt($request->password);
+    $user->save();
 
-    if (!$user) {
-        // Crear usuario si no existe
-        $user = new User();
-        $user->name = $userData['name'] ?? $request->email;
-        $user->email = $userData['email'];
-        $user->password = bcrypt($request->password);
-        $user->save();
-    } else {
-        // ✅ Si ya existe, actualizar contraseña (por si cambió en el PHP)
-        $user->password = bcrypt($request->password);
-        $user->save();
-    }
-
-    // Guardar token en storage
+   
     $tokenPath = storage_path('app/token_sesion_' . $user->id . '.json');
     file_put_contents($tokenPath, json_encode([
         'access_token' => $accessToken,
@@ -96,8 +73,52 @@ public function loguear(Request $request)
         'issued_at' => now()
     ]));
 
+    
     Auth::login($user);
     Session::put('login_time', now());
+
+    
+    $usuariosResponse = Http::get('http://localhost/tokkens/usuarios_residentes.php');
+
+    if ($usuariosResponse->ok()) {
+        $usuariosData = $usuariosResponse->json();
+        $usuariosLista = $usuariosData['data'] ?? [];
+
+       
+        foreach ($usuariosLista as $externo) {
+            if ($externo['email'] === $user->email) {
+                $rolTexto = strtolower(trim($externo['rol']));
+
+               
+                $rolesMap = [
+                    'jefe de enseñanza' => 1,
+                    'residente' => 2,
+                    'interno' => 3
+                ];
+
+                if (isset($rolesMap[$rolTexto])) {
+                    $roleId = $rolesMap[$rolTexto];
+
+                   
+                    $yaAsignado = DB::table('role_user')
+                        ->where('user_id', $user->id)
+                        ->where('role_id', $roleId)
+                        ->exists();
+
+                    if (!$yaAsignado) {
+                  
+                        DB::table('role_user')->insert([
+                            'user_id' => $user->id,
+                            'role_id' => $roleId,
+                            'assigned_at' => now()
+                        ]);
+                    }
+                }
+
+                break;
+            }
+        }
+    }
 
     return to_route('welcome');
 }

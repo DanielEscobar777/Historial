@@ -14,31 +14,42 @@
 
         <div class="panel-body">
             <div class="col-12 text-center">
-               
-            <div id="actualizar-rn-vue"></div>
+
+                <div id="actualizar-rn-vue"></div>
 
                 <div class="row g-3">
-                    @foreach( $servicios as $servicio)
+                    @foreach($servicios as $servicio)
                     <div class="col-12 col-md-3">
                         <div class="card">
                             <div class="card-body text-center">
                                 <h4 class="mt-3">
-                                    {{ $servicio->nombre_servicio}}
+                                    {{ $servicio->nombre_servicio }}
                                 </h4>
-                                <img src="{{ asset('images/HC.jfif') }}" alt="" style="width:150px; height:150px; border-radius:75px;">
+                                <img src="{{ asset('images/historia.png') }}" alt="" style="width:150px; height:150px; border-radius:75px;">
                             </div>
-                            <div class="card-footer">
-                                <a href="{{ route('historial.show', $servicio->id_servicio) }}" class="btn-outline-primary">
-                                    ACTIVAR 
+                            <div class="card-footer bg-transparent border-top-0 text-center pb-3">
+                                <a href="{{ route('historial.show', $servicio->id_servicio) }}" class="btn btn-primary w-75">
+                                    <i class="fas fa-eye me-1"></i>ACTIVAR 
                                 </a>
                             </div>
                         </div>
                     </div>
                     @endforeach
                 </div>
+
             </div>
         </div>
     </div>
 </div>
-@vite(['resources/js/buscarPaciente.js'])
+
+@php
+    $tieneOtroServicio = $servicios->contains(function ($servicio) {
+        return $servicio->nombre_servicio == 'NEONATOLOGIA';
+    });
+@endphp
+
+@if ($tieneOtroServicio)
+    @vite(['resources/js/buscarPaciente.js'])
+@endif
+
 @endsection

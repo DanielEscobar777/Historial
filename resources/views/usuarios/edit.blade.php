@@ -5,21 +5,18 @@
 <form action="{{ route('usuarios.update', $usuario->id) }}" method="POST">
     @csrf @method('PUT')
     <div class="form-group">
-        <label>Nombre</label>
-        <input type="text" name="name" class="form-control" value="{{ $usuario->name }}" required>
+        
+        <input type="hidden" name="name" class="form-control" value="{{ $usuario->name }}" required>
     </div>
     <div class="form-group">
-        <label>Email</label>
-        <input type="text" name="email" class="form-control" value="{{ $usuario->email }}" required>
+      
+        <input type="hidden" name="email" class="form-control" value="{{ $usuario->email }}" required>
     </div>
     <div class="form-group">
-        <label>Roles</label>
-        <select name="roles[]" class="form-control select2" multiple>
-            @foreach($roles as $role)
-                <option value="{{ $role->id }}" {{ $usuario->roles->contains($role->id) ? 'selected' : '' }}>{{ $role->name }}</option>
-            @endforeach
-        </select>
-    </div>
+    @foreach($usuario->roles as $role)
+    <input type="hidden" name="roles[]" value="{{ $role->id }}">
+@endforeach
+</div>
     <div class="form-group">
         <label>Servicios</label>
         <select name="servicios[]" class="form-control select2" multiple>

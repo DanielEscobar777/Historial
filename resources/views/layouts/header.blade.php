@@ -38,7 +38,7 @@
                     <p class="navbar-logo text-white text-center" style="font-size: 21px; margin: 0; line-height: 1.2;">
                         BIENVENIDO
                         @auth
-                        <span style="display: block; font-size: 15px; margin-top: 5px;">
+                        <span style="display: block; font-size: 11px; margin-top: 5px; white-space: normal; word-wrap: break-word; max-width: 100%;">
                             {{ auth()->user()->name }}
                         </span>
                         @endauth
@@ -76,11 +76,11 @@
                         </a>
                     </div> -->
                     @auth
-                    @if (auth()->user()->hasRole('medico'))
+                    @if (auth()->user()->hasRole('interno'))
                     <div class="menu-item  active">
                         <a href="{{route('historial.index')}}" class="menu-link">
                             <div class="menu-icon">
-                                <i class="fa fa-file  text-info"></i>
+                                <i class="fa fa-notes-medical  text-info"></i>
                             </div>
                             <div class="menu-text text-white">HISTORIA CLINICA </div>
                         </a>
@@ -92,7 +92,7 @@
                     <div class="menu-item  active">
                         <a href="{{route('evolucion.index')}}" class="menu-link">
                             <div class="menu-icon">
-                                <i class="fa fa-file text-info"></i>
+                                <i class="fa fa-sticky-note text-info"></i>
                             </div>
                             <div class="menu-text text-white">SOAP </div>
                         </a>
@@ -101,11 +101,11 @@
                     @endauth
 
                     @auth
-                    @if (auth()->user()->hasRole('medico'))
+                    @if (auth()->user()->hasRole('interno'))
                     <div class="menu-item  active">
                         <a href="{{route('kardex.index')}}" class="menu-link">
                             <div class="menu-icon">
-                                <i class="fa fa-file text-info"></i>
+                                <i class="fa fa-clipboard-list text-info"></i>
                             </div>
                             <div class="menu-text text-white">KARDEX</div>
                         </a>
@@ -114,11 +114,11 @@
                     @endauth
 
                     @auth
-                    @if (auth()->user()->hasRole('administrador'))
+                    @if (auth()->user()->hasRole('Jefe de enseñanza'))
                     <div class="menu-item  active">
                         <a href="{{ route('servicios.index')}}" class="menu-link">
                             <div class="menu-icon">
-                                <i class="fas fa-tachometer-alt"></i>
+                                <i class="fas fa-cogs text-info"></i>
                             </div>
                             <div class="menu-text text-white">ADMINISTRACION </div>
                         </a>
@@ -126,11 +126,11 @@
                     @endif
                     @endauth
                     @auth
-                    @if (auth()->user()->hasRole('administrador'))
+                    @if (auth()->user()->hasRole('Jefe de enseñanza'))
                     <div class="menu-item  active">
                         <a href="{{ route('auditoria.index')}}" class="menu-link">
                             <div class="menu-icon">
-                                <i class="fas fa-tachometer-alt"></i>
+                                <i class="fas fa-search text-info"></i>
                             </div>
                             <div class="menu-text text-white">AUDITORIA </div>
                         </a>
@@ -138,11 +138,11 @@
                     @endif
                     @endauth
                     @auth
-                    @if (auth()->user()->hasRole('administrador'))
+                    @if (auth()->user()->hasRole('Jefe de enseñanza'))
                     <div class="menu-item  active">
                         <a href="{{ route('usuarios.index') }}" class="menu-link">
                             <div class="menu-icon">
-                                <i class="fas fa-user"></i>
+                                <i class="fas fa-users-cog text-info"></i>
                             </div>
                             <div class="menu-text text-white">USUARIOS</div>
                         </a>

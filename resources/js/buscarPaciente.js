@@ -1,7 +1,7 @@
 async function actualizarRecienNacidos() {
     try {
         const res = await fetch('/pacientes/actualizar-recien-nacidos');
-        const text = await res.text(); // leer como texto primero
+        const text = await res.text(); 
 
         console.log("Respuesta cruda:", text);
         let data;

@@ -17,7 +17,7 @@ class Antecedentes_no_patologicosController extends Controller
         // Solo validar los campos que vienen en el request
         foreach (['vacunas', 'vacunas_hpv', 'habitos_toxicos', 'alimentacion', 'habito_miccional', 'habito_intestinal','vivienda_servicio_basico',
         'habito_alcoholico','habito_tabaquico', 'exposicion_biomasa', 'contacto_con_tuberculosis','contacto_triatoma_infestans','toxicomanias_drogas',
-        'nmunizaciones','antecedentes_sexuales'] as $field) {
+        'nmunizaciones','antecedentes_sexuales','inmunizaciones'] as $field) {
             if ($request->has($field)) {
                 $rules[$field] = 'required|string|max:255';
                 $messages["$field.required"] = "El campo $field es obligatorio.";

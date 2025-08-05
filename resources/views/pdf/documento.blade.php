@@ -89,10 +89,10 @@
             <td style="text-align: left; width: 80%; "><b>Sexo: </b> {{$h_antecedentes->sexo}}</td>
         </tr>
         <tr>
-            <td style="text-align: left; width: 80%; "><b>Fecha de nacimiento: </b> {{$h_antecedentes->fecha_recien_nacido}}</td>
+            <td style="text-align: left; width: 80%; "><b>Fecha de nacimiento: </b> {{$h_antecedentes->fecha_recien_necido}}</td>
         </tr>
         <tr>
-            <td style="text-align: left; width: 80%; "><b>Hora de nacimiento: </b> {{$h_antecedentes->hora_recien_nacido}}</td>
+            <td style="text-align: left; width: 80%; "><b>Hora de nacimiento: </b> {{$h_antecedentes->hora_recien_necido}}</td>
         </tr>
         <tr>
             <td style="text-align: left; width: 80%; "><b>Servicio: </b> {{$h_antecedentes->nombre_servicio}}</td>
@@ -243,7 +243,7 @@
                                                     <td style="text-align: left"><b>Internaciones</b> : {{$h_antecedentes->internaciones}} </td>
                                                 </tr>
                                                 @endif
-                                                @if($h_antecedentes->cirujias <> 'N/A')
+                                                @if($h_antecedentes->cirugias <> 'N/A')
                                                     <tr>
                                                         <td style="text-align: left"><b>Cirugias</b> : {{$h_antecedentes->cirugias}} </td>
                                                     </tr>
@@ -323,7 +323,7 @@
                                                                         <td style="text-align: left"><b>Exposicion a biomasa</b> : {{$h_antecedentes->exposicion_biomasa}} </td>
                                                                     </tr>
                                                                     @endif
-                                                                    @if($h_antecedentes->contacto_con_tuberculosis <> 'N/A')
+                                                                    @if($h_antecedentes->contacto_tuberculosis <> 'N/A')
                                                                         <tr>
                                                                             <td style="text-align: left"><b>Contacto con tuberculosis</b> : {{$h_antecedentes->contacto_con_tuberculosis}} </td>
                                                                         </tr>
@@ -351,6 +351,91 @@
                         </table>
                         @endif
                         @endforeach
+                        @foreach ($permisos as $permiso)
+                        @if($permiso->nombre_permiso=='Antecedentes_gineco_obstetricos')<?php $n++ ?>
+                        <h5 style="border-collapse: collapse;font-size: 13px;text-align:left;font-family: Arial, sans-serif ">{{$n}}.- ANTECEDENTES GINECO OBSTETRICOS</h5>
+
+                        <table style="border-collapse: collapse;font-size: 13px;text-align:center;width: 100%;font-family: Arial, sans-serif;">
+
+                            @if($h_antecedentes->fecha_ultima_menstruacion <> 'N/A')
+                                <tr>
+                                    <td style="text-align: left"><b>Ultima fecha menstruacion</b> : {{$h_antecedentes->fecha_ultima_menstruacion}} </td>
+                                </tr>
+                                @endif
+                                @if($h_antecedentes->menarca <> 'N/A')
+                                    <tr>
+                                        <td style="text-align: left"><b>Menarca</b> : {{$h_antecedentes->menarca }} </td>
+                                    </tr>
+                                    @endif
+                                    @if($h_antecedentes->ritmo_menstrual <> 'N/A')
+                                        <tr>
+                                            <td style="text-align: left "><b>Ritmo menstrual</b> : {{$h_antecedentes->ritmo_menstrual}}</td>
+                                        </tr>
+                                        @endif
+                                        @if($h_antecedentes->menopausia <> 'N/A')
+                                            <tr>
+                                                <td style="text-align: left "><b>Menopausia</b> : {{$h_antecedentes->menopausia}} </td>
+                                            </tr>
+                                            @endif
+                                            @if($h_antecedentes->gestaciones <> 'N/A')
+                                                <tr>
+                                                    <td style="text-align: left"><b>Gestaciones</b> : {{$h_antecedentes->gestaciones}}</td>
+                                                </tr>
+                                                @endif
+                                                @if($h_antecedentes->partos <> 'N/A')
+                                                    <tr>
+                                                        <td style="text-align: left"><b>Partos</b> : {{$h_antecedentes->partos}} </td>
+                                                    </tr>
+                                                    @endif
+                                                    @if($h_antecedentes->cesareas <> 'N/A')
+                                                        <tr>
+                                                            <td style="text-align: left"><b>Cesareas</b> :{{$h_antecedentes->cesareas}} </td>
+                                                        </tr>
+                                                        @endif
+                                                        @if($h_antecedentes->abortos <> 'N/A')
+                                                            <tr>
+                                                                <td style="text-align: left"><b>Abortos</b> : {{$h_antecedentes->abortos}}</td>
+                                                            </tr>
+                                                            @endif
+                                                            @if($h_antecedentes->hijos_macrosomicos <> 'N/A')
+                                                                <tr>
+                                                                    <td style="text-align: left"><b>Hijos macrosomicos</b> : {{$h_antecedentes->hijos_macrosomicos}} </td>
+                                                                </tr>
+                                                                @endif
+                                                                @if($h_antecedentes->preeclampsia_eclampsia <> 'N/A')
+                                                                    <tr>
+                                                                        <td style="text-align: left"><b>Preeclampsia eclampsia</b> : {{$h_antecedentes->preeclampsia_eclampsia}} </td>
+                                                                    </tr>
+                                                                    @endif
+                                                                    @if($h_antecedentes->anticonceptivos <> 'N/A')
+                                                                        <tr>
+                                                                            <td style="text-align: left"><b>Anticonceptivos</b> : {{$h_antecedentes->anticonceptivos}} </td>
+                                                                        </tr>
+                                                                        @endif
+                                                                        @if($h_antecedentes->fecha_ultima_papanicolau <> 'N/A')
+                                                                            <tr>
+                                                                                <td style="text-align: left"><b>Fecha ultimo papanicolau</b> : {{$h_antecedentes->fecha_ultima_papanicolau}}</td>
+                                                                            </tr>
+                                                                            @endif
+                                                                            @if($h_antecedentes->fecha_ultima_mamografia <> 'N/A')
+                                                                                <tr>
+                                                                                    <td style="text-align: left"><b>Fecha ultima mamografia</b> : {{$h_antecedentes->fecha_ultima_mamografia}}</td>
+                                                                                </tr>
+                                                                                @endif
+                                                                                @if($h_antecedentes->fecha_ultima_densitometria <> 'N/A')
+                                                                                    <tr>
+                                                                                        <td style="text-align: left"><b>Fecha ultima densitometria</b> : {{$h_antecedentes->fecha_ultima_densitometria}} </td>
+                                                                                    </tr>
+                                                                                    @endif
+                                                                                    @if($h_antecedentes->fecha_ultimo_aborto <> 'N/A')
+                                                                                        <tr>
+                                                                                            <td style="text-align: left"><b>Fecha ultimo aborto</b> : {{$h_antecedentes->fecha_ultimo_aborto }} </td>
+                                                                                        </tr>
+                                                                                        @endif
+                        </table>
+                        @endif
+                        @endforeach
+
                         @foreach ($permisos as $permiso)
                         @if($permiso->nombre_permiso=='Anamnesis_sistemas')<?php $n++ ?>
                         <h5 style="border-collapse: collapse;font-size: 13px;text-align:left;font-family: Arial, sans-serif ">{{$n}}.- ANAMNESIS POR SISTEMA</h5>
@@ -755,10 +840,11 @@
                                                                                                                                                                                     <tr>
                                                                                                                                                                                         <td style="text-align: left"><b>Torax</b> : {{$h_examen_segmentado->torax}} </td>
                                                                                                                                                                                     </tr>
-                                                                                                                                                                                    @else
+                                                                                                                                                                                     @endif
+                                                                                                                                                                                    @if($h_examen_segmentado->torax_inspeccion_estatico <> 'N/A' || $h_examen_segmentado->torax_inspeccion_dinamico <> 'N/A' || $h_examen_segmentado->torax_palpacion <> 'N/A' || $h_examen_segmentado->torax_percusion <> 'N/A' || $h_examen_segmentado->torax_auscultacion <> 'N/A')
                                                                                                                                                                                     <tr>
                                                                                                                                                                                         <td style="text-align: left"> <b>Torax:</b></td>
-                                                                                                                                                                                    </tr>
+                                                                                                                                                                                    </tr> 
                                                                                                                                                                                     @endif
                                                                                                                                                                                     @if($h_examen_segmentado->torax_inspeccion_estatico <> 'N/A')
                                                                                                                                                                                         <tr>
@@ -899,7 +985,8 @@
                                                                                                                                                                                                                                                                                                             <tr>
                                                                                                                                                                                                                                                                                                                 <td style="text-align: left"><b>Abdomen</b> : {{$h_examen_segmentado->abdomen}} </td>
                                                                                                                                                                                                                                                                                                             </tr>
-                                                                                                                                                                                                                                                                                                            @else
+                                                                                                                                                                                                                                                                                                            @endif
+                                                                                                                                                                                                                                                                                                            @if($h_examen_segmentado->abdomen_inspeccion <> 'N/A' || $h_examen_segmentado->abdomen_palpacion <> 'N/A' || $h_examen_segmentado->abdomen_percusion <> 'N/A' || $h_examen_segmentado->abdomen_auscultacion <> 'N/A' )
                                                                                                                                                                                                                                                                                                             <tr>
                                                                                                                                                                                                                                                                                                                 <td style="text-align: left"> <b>Abdomen:</b></td>
                                                                                                                                                                                                                                                                                                             </tr>
@@ -1217,9 +1304,9 @@
                                                             <td style="text-align: left"><b>Uretra</b> : {{$h_examen_segmentado_mi->uretra }} </td>
                                                         </tr>
                                                         @endif
-                                                        @if($h_examen_segmentado_mi->glandulas_ByS <> 'N/A')
+                                                        @if($h_examen_segmentado_mi->glandulas_bys <> 'N/A')
                                                             <tr>
-                                                                <td style="text-align: left"><b>Glandula ByS</b> : {{$h_examen_segmentado_mi->glandulas_ByS }} </td>
+                                                                <td style="text-align: left"><b>Glandula ByS</b> : {{$h_examen_segmentado_mi->glandulas_bys }} </td>
                                                             </tr>
                                                             @endif
                                                             @if($h_examen_segmentado_mi->clitoris <> 'N/A')

@@ -18,12 +18,56 @@
         <?php $n = 2 ?>
         <div class="panel-body">
             <!-- <pre>{{ print_r(old(), true) }}</pre> -->
-
             <form action="{{route('historial.update',$historial->id_historia)}}" method="POST" autocomplete="off" novalidate>
                 @csrf @method('PUT')
                 <div class="row">
                     <h5 style="color:rgba(23, 93, 126, 0.87);">1.- Filiación</h5>
                     @if ($n_ser->nombre_servicio=='NEONATOLOGIA')
+
+                    
+                            @if(isset($usuarios_encontrados) && count($usuarios_encontrados) > 1)
+                                <div class="col-md-12">
+                                    <label><b>Seleccionar paciente correspondiente:</b></label>
+                                    <select name="id_usuario_seleccionado" class="form-control" id="seleccion_usuario" required>
+                                        <option value="">Seleccione una opción</option>
+                                        @foreach($usuarios_encontrados as $index => $usuario)
+                                            <option value="{{ $usuario['ci'] }}" 
+                                                data-index="{{ $index }}"
+                                                data-nombres="{{ $usuario['nombres'] }}"
+                                                data-p_apellido="{{ $usuario['p_apellido'] }}"
+                                                data-s_apellido="{{ $usuario['s_apellido'] }}"
+                                                data-sexo="{{ $usuario['sexo'] }}"
+                                                data-fecha_nacimiento="{{ $usuario['fecha_nacimiento'] }}"
+                                                data-matricula_seguro="{{ $usuario['matricula_seguro'] }}"
+                                                data-nacionalidad="{{ $usuario['nacionalidad'] }}"
+                                                data-telefono="{{ $usuario['telefono'] }}"
+                                                data-residencia="{{ $usuario['residencia'] }}"
+                                            >
+                                                {{ $usuario['nombres'] }} {{ $usuario['p_apellido'] }} {{ $usuario['s_apellido'] }} - {{ $usuario['ci'] }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                {{-- Campos ocultos para enviar los datos --}}
+                                <input type="hidden" name="id_paciente" value="{{ $historial->id_paciente }}">
+                                <input type="hidden" name="ci" id="ci_oculto">
+                                <input type="hidden" name="nombres" id="nombres_oculto">
+                                <input type="hidden" name="p_apellido" id="p_apellido_oculto">
+                                <input type="hidden" name="s_apellido" id="s_apellido_oculto">
+                                <input type="hidden" name="sexo_api" id="sexo_oculto">
+                                <input type="hidden" name="fecha_nacimiento" id="fecha_nacimiento_oculto">
+                                <input type="hidden" name="matricula_seguro" id="matricula_oculto">
+                                <input type="hidden" name="nacionalidad" id="nacionalidad_oculto">
+                                <input type="hidden" name="complemento" id="complemento_oculto">
+                                <input type="hidden" name="telefono" id="telefono_oculto">
+                                <input type="hidden" name="residencia" id="residencia_oculto">
+
+                            @endif
+
+                        </div>    
+
+
                     <div class="col-md-6">
                         <label><b>Nombre del Recién Nacido</b></label>
                         <input type="text" class="form-control" name="nombre_recien_necido" value="{{$historial->nombre_recien_necido}}">
@@ -60,6 +104,11 @@
                     <div class="col-md-6">
                         <label><b>Paciente</b></label>
                         <input type="text" class="form-control" name="id_paciente" value="{{$paciente->nombres}} {{$paciente->p_apellido}} {{$paciente->s_apellido}}" disabled>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" value="{{ $n_ser->nombre_servicio }}" disabled>
+                        <input type="hidden" class="form-control" name="id_servicio" value="{{ $n_ser->id_servicio }}">
+                        <input type="hidden" class="form-control" name="nombre_servicio" value="{{ $n_ser->nombre_servicio }}">
                     </div>
 
                     <div class="col-md-6">
@@ -354,10 +403,10 @@
                                                                 <input type="text" class="form-control" name="internaciones" value="{{$antecedentes_patologicos->internaciones}}" required>
                                                             </div>
                                                             @endif
-                                                            @if($antecedentes_patologicos->cirujias <> 'N/A')
+                                                            @if($antecedentes_patologicos->cirugias <> 'N/A')
                                                                 <div class="col-md-12">
-                                                                    <label><b>Cirujias</b></label>
-                                                                    <input type="text" class="form-control" name="cirujias" value="{{$antecedentes_patologicos->cirujias}}" required>
+                                                                    <label><b>Cirugias</b></label>
+                                                                    <input type="text" class="form-control" name="cirugias" value="{{$antecedentes_patologicos->cirugias}}" required>
                                                                 </div>
                                                                 @endif
                                                                 @if($antecedentes_patologicos->transfusion_de_sangre <> 'N/A')
@@ -609,6 +658,12 @@
                                                                                                 <input type="text" class="form-control" name="fecha_ultima_densitometria" value="{{$Antecedentes_gineco_obsteticos->fecha_ultima_densitometria}}" required>
                                                                                             </div>
                                                                                             @endif
+                                                                                        @if($Antecedentes_gineco_obsteticos->fecha_ultimo_aborto <> 'N/A')
+                                                                                                <div class="col-md-12">
+                                                                                                    <label><b>Fecha ultimo aborto</b></label>
+                                                                                                    <input type="text" class="form-control" name="fecha_ultimo_aborto" value="{{$Antecedentes_gineco_obsteticos->fecha_ultimo_aborto}}" required>
+                                                                                                </div>
+                                                                                                @endif
 
                                     </div><br>
                                     <a href="{{ route('historial.show', $n_ser->id_servicio)}}" class="btn btn-danger btn-sm"><i class="fa fa-reply"></i> Cancelar</a>
@@ -1723,7 +1778,7 @@
                                                     @endif
                                                     @if($dermatologia->mucosas <> 'N/A')
                                                         <div class="col-md-12">
-                                                            <label><b>Piel</b></label>
+                                                            <label><b>Mucosas</b></label>
                                                             <input type="text" class="form-control" name="mucosas" value="{{$dermatologia->mucosas}}" required>
                                                         </div>
                                                         @endif
@@ -2267,5 +2322,23 @@
         </div>
     </div>
 </div>
+<script>
+    document.getElementById('seleccion_usuario').addEventListener('change', function () {
+        const selected = this.options[this.selectedIndex];
+
+        document.getElementById('ci_oculto').value = selected.value;
+        document.getElementById('nombres_oculto').value = selected.getAttribute('data-nombres') || '';
+        document.getElementById('p_apellido_oculto').value = selected.getAttribute('data-p_apellido') || '';
+        document.getElementById('s_apellido_oculto').value = selected.getAttribute('data-s_apellido') || '';
+        document.getElementById('sexo_oculto').value = selected.getAttribute('data-sexo') || '';
+        document.getElementById('fecha_nacimiento_oculto').value = selected.getAttribute('data-fecha_nacimiento') || '';
+        document.getElementById('matricula_oculto').value = selected.getAttribute('data-matricula_seguro') || '';
+        document.getElementById('nacionalidad_oculto').value = selected.getAttribute('data-nacionalidad') || '';
+        document.getElementById('telefono_oculto').value = selected.getAttribute('data-telefono') || '';
+        document.getElementById('residencia_oculto').value = selected.getAttribute('data-residencia') || '';
+        document.getElementById('complemento_oculto').value = ''; // Si no tienes el dato
+    });
+</script>
+
 
 @endsection

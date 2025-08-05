@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Cache;
 class PacienteController extends Controller
 {
     protected $cacheKeyPrefix = 'afiliados_cache_';
-    protected $cacheTTL = 3600; // 1 hora en segundos
+    protected $cacheTTL = 3600;
 public function actualizarRecienNacidosDesdeApi()
 {
     try {
@@ -21,6 +21,30 @@ public function actualizarRecienNacidosDesdeApi()
         if ($recienNacidos->isEmpty()) {
             return response()->json(['mensaje' => 'No se encontraron recién nacidos en la base de datos.']);
         }
+
+        // Verificar si hay más de un RN con la misma fecha de nacimiento
+        $agrupadosPorFecha = $recienNacidos->groupBy(function ($item) {
+            return \Carbon\Carbon::parse($item->fecha_nacimiento)->toDateString();
+        });
+
+        $resultados = [];
+
+        foreach ($agrupadosPorFecha as $fecha => $grupo) {
+            if ($grupo->count() > 1) {
+                $nombres = $grupo->pluck('nombres')->implode(', ');
+                $resultados[] = [
+                    'tipo' => 'conflicto_bd',
+                    'fecha_nacimiento' => $fecha,
+                    'pacientes' => $nombres,
+                    'mensaje' => "Existen múltiples recién nacidos con la fecha de nacimiento {$fecha}: {$nombres}. Requiere revisión y actualización manual."
+                ];
+            }
+        }
+
+        // Continuar solo con pacientes sin conflicto local
+        $pacientesSinConflicto = $recienNacidos->filter(function ($paciente) use ($agrupadosPorFecha) {
+            return $agrupadosPorFecha[\Carbon\Carbon::parse($paciente->fecha_nacimiento)->toDateString()]->count() === 1;
+        });
 
         // 2. Obtener token
         $user = Auth::user();
@@ -39,6 +63,7 @@ public function actualizarRecienNacidosDesdeApi()
 
         // 3. Llamar a la API externa
         $response = Http::withToken($token)
+            //->get("http://192.168.4.55:8001/api/s1/administracion/pacientes");
             ->get("http://localhost/tokkens/lista_afiliados.php");
 
         if (!$response->ok()) {
@@ -48,64 +73,58 @@ public function actualizarRecienNacidosDesdeApi()
         $apiData = $response->json();
         $afiliados = $apiData['data'] ?? [];
 
-        $resultados = [];
-
-        // 4. Recorrer pacientes RN
-        foreach ($recienNacidos as $paciente) {
+        // 4. Procesar pacientes sin conflicto local
+        foreach ($pacientesSinConflicto as $paciente) {
             $fechaNac = \Carbon\Carbon::parse($paciente->fecha_nacimiento)->toDateString();
 
-            // Buscar en API por fecha de nacimiento
-           // Buscar coincidencias por fecha
-        $matches = collect($afiliados)->where('fecha_nacimiento', $fechaNac);
+            // Buscar coincidencias por fecha
+            $matches = collect($afiliados)->where('fecha_nacimiento', $fechaNac);
 
-        if ($matches->count() === 1) {
-            $match = $matches->first();
-            
-            // Actualizar paciente
-            \DB::table('pacientes')->where('id', $paciente->id)->update([
-                'nombres' => $match['nombres'],
-                'p_apellido' => $match['p_apellido'],
-                's_apellido' => $match['s_apellido'],
-                'sexo' => $match['sexo'],
-                'fecha_nacimiento' => $match['fecha_nacimiento'],
-                'ci' => $match['ci'],
-                'complemento' => $match['complemento'],
-                'matricula_seguro' => $match['matricula_seguro'],
-                'nacionalidad' => $match['nacionalidad'],
-                'telefono' => $match['telefono'],
-                'residencia' => $match['residencia'],
-                'updated_at' => now()
-            ]);
+            if ($matches->count() === 1) {
+                $match = $matches->first();
 
-            // ACTUALIZAR tabla historials
-            \DB::table('historials')
-                ->where('id_paciente', $paciente->id)
-                ->update([
-                    'nombre_recien_necido' => $match['nombres']
+                // Actualizar paciente
+                \DB::table('pacientes')->where('id', $paciente->id)->update([
+                    'nombres' => $match['nombres'],
+                    'p_apellido' => $match['p_apellido'],
+                    's_apellido' => $match['s_apellido'],
+                    'sexo' => $match['sexo'],
+                    'fecha_nacimiento' => $match['fecha_nacimiento'],
+                    'ci' => $match['ci'],
+                    'complemento' => $match['complemento'],
+                    'matricula_seguro' => $match['matricula_seguro'],
+                    'nacionalidad' => $match['nacionalidad'],
+                    'telefono' => $match['telefono'],
+                    'residencia' => $match['residencia'],
+                    'updated_at' => now()
                 ]);
 
+                // Actualizar tabla historials
+                \DB::table('historials')
+                    ->where('id_paciente', $paciente->id)
+                    ->update([
+                        'nombre_recien_necido' => $match['nombres']
+                    ]);
 
-            $resultados[] = [
-                'tipo' => 'exito',
-                'paciente' => $paciente->nombres,
-                'mensaje' => "Recién nacido '{$paciente->nombres}' fue actualizado correctamente con datos del afiliado '{$match['nombres']}'"
-            ];
-        } elseif ($matches->count() > 1) {
-            $nombresCoincidentes = $matches->pluck('nombres')->implode(', ');
-
-            $resultados[] = [
-                'tipo' => 'conflicto',
-                'paciente' => $paciente->nombres,
-                'mensaje' => "Se encontraron múltiples coincidencias por la fecha de nacimiento de '{$paciente->nombres}': {$nombresCoincidentes}. Requiere revisión manual."
-            ];
-        } else {
-            $resultados[] = [
-                'tipo' => 'no_encontrado',
-                'paciente' => $paciente->nombres,
-                'mensaje' => "No se encontraron actualizaciones en el recien nacido '{$paciente->nombres}' con la fecha de nacimiento de {$fechaNac}."
-            ];
-        }
-
+                $resultados[] = [
+                    'tipo' => 'exito',
+                    'paciente' => $paciente->nombres,
+                    'mensaje' => "Recién nacido '{$paciente->nombres}' fue actualizado correctamente con datos del afiliado '{$match['nombres']}'"
+                ];
+            } elseif ($matches->count() > 1) {
+                $nombresCoincidentes = $matches->pluck('nombres')->implode(', ');
+                $resultados[] = [
+                    'tipo' => 'conflicto_api',
+                    'paciente' => $paciente->nombres,
+                    'mensaje' => "Se encontraron múltiples coincidencias en la API por la fecha de nacimiento de '{$paciente->nombres}': {$nombresCoincidentes}. Requiere revisión manual."
+                ];
+            } else {
+                $resultados[] = [
+                    'tipo' => 'no_encontrado',
+                    'paciente' => $paciente->nombres,
+                    'mensaje' => "No se encontraron actualizaciones en el recien nacido '{$paciente->nombres}' con la fecha de nacimiento de {$fechaNac}."
+                ];
+            }
         }
 
         return response()->json($resultados);
@@ -114,6 +133,7 @@ public function actualizarRecienNacidosDesdeApi()
         return response()->json(['error' => 'Ocurrió un error. Revisa el log.']);
     }
 }
+
 
     public function buscarRecienNacidos()
 {
@@ -140,7 +160,7 @@ public function actualizarRecienNacidosDesdeApi()
     }
 
     $response = Http::withToken($token)
-        ->get("http://localhost/tokkens/lista_afiliados.php");
+        ->get("http://192.168.4.55:8001/api/s1/administracion/pacientes");
 
     if (!$response->ok()) {
         return response()->json(['error' => 'Error al acceder a la API externa'], 500);
@@ -203,7 +223,7 @@ public function actualizarRecienNacidosDesdeApi()
           
             $response = Http::withToken($token)
             
-            //  ->get("http://192.168.4.55:8001/api/s1/administracion/pacientes");
+              //->get("http://192.168.4.55:8001/api/s1/administracion/pacientes");
                 ->get("http://localhost/tokkens/lista_afiliados.php");
 
             if (!$response->ok()) {

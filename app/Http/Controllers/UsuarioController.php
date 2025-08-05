@@ -12,7 +12,7 @@ class UsuarioController extends Controller
     public function index() {
         
         $usuarios = User::with('roles')->get();
-         if (!auth()->user()->hasRole('administrador')) {
+         if (!auth()->user()->hasRole('Jefe de enseñanza')) {
         abort(403, 'Acceso no autorizado');
     }
         return view('usuarios.index', compact('usuarios'));

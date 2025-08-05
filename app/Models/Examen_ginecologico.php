@@ -12,7 +12,7 @@ class Examen_ginecologico extends Model
         'vello_pubiano',
         'vulva',
         'uretra',
-        'glandulas_ByS',
+        'glandulas_bys',
         'clitoris',
         'perineo',
         'vagina',

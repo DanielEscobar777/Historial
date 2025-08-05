@@ -19,7 +19,7 @@ class Examen_ginecologicoController extends Controller
                 'vello_pubiano',
                 'vulva',
                 'uretra',
-                'glandulas_ByS',
+                'glandulas_bys',
                 'clitoris',
                 'perineo',
                 'vagina',

@@ -43,7 +43,7 @@
                                                 <td>{{ $filiacion->operacion}}</td>
                                                 <td>{{ $filiacion->name}}</td>
                                                 <td>{{ $filiacion->fecha_modificacion}}</td>
-                                                <td>{{ $filiacion->id_paciente}}</td>
+                                                <td>{{ $filiacion->nombres}} {{$filiacion->p_apellido}}  {{$filiacion->s_apellido}}</td>
                                                 <td>{{ $filiacion->religion}}</td>
                                                 <td>{{ $filiacion->cama}}</td>
                                                 <td>{{ $filiacion->fuente_informacion}}</td>
@@ -88,7 +88,7 @@
                                                 <td>{{ $ante_perinatologicos->operacion}}</td>
                                                 <td>{{ $ante_perinatologicos->name}}</td>
                                                 <td>{{ $ante_perinatologicos->fecha_modificacion}}</td>
-                                                <td>{{ $ante_perinatologicos->antecedentes_perinatolo}}</td>
+                                                <td>{{ $ante_perinatologicos->antecedentes_perinatologicos}}</td>
                                             </tr>
                                             @endforeach
                                         </tbody>
@@ -271,7 +271,7 @@
                                                 <th>USUARIO</th>
                                                 <th>FECHA</th>
                                                 @foreach(['Padre' => 'PADRE', 'Madre' => 'MADRE', 'Hermanos' => 'HERMANOS',
-                                                'Hijos' => 'HIJOS', 'Esposo' => 'ESPOSO', 'abuelos' => 'ABUELOS'] as $permisoKey => $titulo)
+                                                'Hijos' => 'HIJOS', 'Esposo' => 'ESPOSO', 'Abuelos' => 'ABUELOS'] as $permisoKey => $titulo)
                                                 @if($permisos_1->contains('nombre_permiso', $permisoKey))
                                                 <th>{{ $titulo }}</th>
                                                 @endif
@@ -318,7 +318,7 @@
                                                 <th>USUARIO</th>
                                                 <th>FECHA</th>
                                                 @foreach(['Clinicos' => 'CLINICOS', 'Quirurjicos' => 'QUIRURJICOS', 'Alergicos' => 'ALERGIAS','Otros' => 'OTROS', 'Internaciones' => 'INTERNACIONES',
-                                                'Cirugias' => 'CIRUJIAS', 'Transfusion_de_sangre' => 'TRANSFUSIONES DE SANGRE','Iras' => 'IRAS','Gastroenteritis' => 'GASTROENTERITIS','Traumatismos' => 'TRAUMATISMO',
+                                                'Cirugias' => 'CIRUGIAS', 'Transfusion_de_sangre' => 'TRANSFUSIONES DE SANGRE','Iras' => 'IRAS','Gastroenteritis' => 'GASTROENTERITIS','Traumatismos' => 'TRAUMATISMO',
                                                 'Medicamentos'=>'MEDICAMENTOS', 'Enfermedades'=>'ENFERMEDADES'] as $permisoKey => $titulo)
                                                 @if($permisos_1->contains('nombre_permiso', $permisoKey))
                                                 <th>{{ $titulo }}</th>
@@ -332,7 +332,7 @@
                                                 <td>{{ $ant_patologicos->operacion}}</td>
                                                 <td>{{ $ant_patologicos->name}}</td>
                                                 <td>{{ $ant_patologicos->fecha_modificacion}}</td>
-                                                @foreach(['clinicos', 'quirurjicos', 'alergicos', 'otros', 'internaciones', 'cirujias','transfusion_de_sangre','iras','gastroenteritis',
+                                                @foreach(['clinicos', 'quirurjicos', 'alergicos', 'otros', 'internaciones', 'cirugias','transfusion_de_sangre','iras','gastroenteritis',
                                                 'traumatismos','medicamentos','enfermedades'] as $campo)
                                                 @if($ant_patologicos->$campo != 'N/A')
                                                 <td>{{ $ant_patologicos->$campo }}</td>
@@ -368,7 +368,7 @@
                                                 <th>FECHA</th>
                                                 @foreach(['Vacunas' => 'VACUNAS', 'Vacunas_HPV' => 'VACUNAS HPV', 'Habitos_toxicos' => 'HABITOS TOXICOS','Alimentacion' => 'ALIMENTACION', 'Habito_miccional' => 'HABITO MICCIONAL',
                                                 'Habito_intestinal' => 'HABITO INTESTINAL', 'Vivienda_servicio_basico' => 'VIVIENDA SERVICIO BASICO','Habito_alcoholico' => 'HABITO ALCOHOLICO','Habito_tabaquico' => 'HABITO TABAQUICO',
-                                                'Exposicion_biomasa' => 'EXPOSICION BIOMASA', 'Contacto_tuberculosis'=>'CONTACTO CON TUBERCULOSIS', 'Contacto_triatoma_infestans'=>'CONTACTO TRIATOMA INFESTANS',
+                                                'Exposicion_biomasa' => 'EXPOSICION BIOMASA', 'Contacto_con_tuberculosis'=>'CONTACTO CON TUBERCULOSIS', 'Contacto_triatoma_infestans'=>'CONTACTO TRIATOMA INFESTANS',
                                                 'Toxicomanias_drogas'=>'TOXICOMANIAS DROGAS', 'Inmunizaciones'=>'INMUNIZACIONES','Antecedentes_sexuales'=>'ANTECEDENTE SEXUALES'] as $permisoKey => $titulo)
                                                 @if($permisos_1->contains('nombre_permiso', $permisoKey))
                                                 <th>{{ $titulo }}</th>
@@ -416,10 +416,10 @@
                                                 <th>EVENTO</th>
                                                 <th>USUARIO</th>
                                                 <th>FECHA</th>
-                                                @foreach(['Ultima_fecha_menstruacion' => 'ULTIMA FECHA MENSTRUACION', 'Menarca' => 'MENARCA ', 'Ritmo_menstrual' => 'RITMO MENSTRUAL','Menopausia' => 'MENOPAUSIA', 'Gestaciones' => 'GESTACIONES',
+                                                @foreach(['fecha_ultima_menstruacion' => 'ULTIMA FECHA MENSTRUACION', 'Menarca' => 'MENARCA ', 'Ritmo_menstrual' => 'RITMO MENSTRUAL','Menopausia' => 'MENOPAUSIA', 'Gestaciones' => 'GESTACIONES',
                                                 'Partos' => 'PARTOS', 'Cesareas' => 'CESAREAS','Abortos' => 'ABORTOS','Hijos_macrosomicos' => 'HIJOS MACROSOMICOS ',
-                                                'Preeclampsia-eclampsia' => 'PREECLAMPSIA', 'Anticonceptivos'=>'ANTICONCEPTIVOS', 'Fecha_ultimo_papanicolau'=>'FECHA ULTIMO PAPANICOLAU',
-                                                'Fecha_ultima_mamografia'=>'FECHA ULTIMA MOMOGRAFIA', 'Fecha_ultimo_densitometria'=>'FECHA ULTIMA DENSITOMETRIA'] as $permisoKey => $titulo)
+                                                'preeclampsia_eclampsia' => 'PREECLAMPSIA', 'Anticonceptivos'=>'ANTICONCEPTIVOS', 'fecha_ultima_papanicolau'=>'FECHA ULTIMO PAPANICOLAU',
+                                                'Fecha_ultima_mamografia'=>'FECHA ULTIMA MOMOGRAFIA', 'Fecha_ultima_densitometria'=>'FECHA ULTIMA DENSITOMETRIA', 'fecha_ultimo_aborto'=>'FECHA ULTIMO ABORTO'] as $permisoKey => $titulo)
                                                 @if($permisos_1->contains('nombre_permiso', $permisoKey))
                                                 <th>{{ $titulo }}</th>
                                                 @endif
@@ -433,7 +433,7 @@
                                                 <td>{{ $ant_gineco_obstetricos->name}}</td>
                                                 <td>{{ $ant_gineco_obstetricos->fecha_modificacion}}</td>
                                                 @foreach(['fecha_ultima_menstruacion', 'menarca', 'ritmo_menstrual', 'menopausia', 'gestaciones', 'partos','cesareas','abortos','hijos_macrosomicos',
-                                                'preeclampsia_eclampsia','anticonceptivos','fecha_ultima_papanicolau','fecha_ultima_mamografia','fecha_ultima_densitometria'] as $campo)
+                                                'preeclampsia_eclampsia','anticonceptivos','fecha_ultima_papanicolau','fecha_ultima_mamografia','fecha_ultima_densitometria','fecha_ultimo_aborto'] as $campo)
                                                 @if($ant_gineco_obstetricos->$campo != 'N/A')
                                                 <td>{{ $ant_gineco_obstetricos->$campo }}</td>
                                                 @endif
@@ -594,11 +594,11 @@
                                                 <th>FECHA</th>
                                                 @foreach(['Examen_fisico_general' => 'EXAMEN FISICO GENERAL', 'Estado_de_conciencia' => 'ESTADO DE CONCIENCIA ', 'Posicion' => 'POSICION','Color_piel_mucosa' => 'COLOR DE PIEL MUCOSA',
                                                 'Estado_hidratacion' => 'ESTADO DE HIDRATACION','Constitucion' => 'CONSTITUCION', 'Biotipo' => 'BIOTIPO', 'Marcha'=>'MARCHA',
-                                                'Facies'=>'FACIES', 'Apgar'=>'APGAR','Silverman'=>'SILVERMAN','Edad_por_capurro','EDAD POR CAPURRO','Somatometria'=>'SOMATOMETRIA',
-                                                'PA'=>'PA','Tension_arterial'=>'TENSION ARTERIAL', 'Tension_arterial_media'=>'TENSION ARTERIAL MEDIA', 'Frecuencia_cardiaca'=>'FR',
-                                                'Frecuencia_respiratoria'=>'FR', 'Temperatura'=>'TEMPERATURA','Peso'=>'PESO', 'Talla'=>'TALLA','IMC'=>'IMC','Sato2'=>'SATO2','Saturacion'=>'SATURACION',
+                                                'Facies'=>'FACIES', 'Apgar'=>'APGAR','Silverman'=>'SILVERMAN', 'Edad_por_capurro' => 'EDAD POR CAPURRO','Somatometria'=>'SOMATOMETRIA',
+                                                'PA'=>'PA','Tension_arterial'=>'TENSION ARTERIAL', 'Tension_arterial_media'=>'TENSION ARTERIAL MEDIA', 'Frecuencia_cardiaca'=>'Frecuencia cardiaca',
+                                                'Frecuencia_respiratoria'=>'Frecuencia Respiratoria', 'Temperatura'=>'TEMPERATURA','Peso'=>'PESO', 'Talla'=>'TALLA','IMC'=>'IMC','Sato2'=>'SATO2','Saturacion'=>'SATURACION',
                                                 'SC'=>'SC','Perimetro_cefalico'=>'PERIMETRO CEFALICO','Perimetro_toracico'=>'PERIMETRO TORACICO','Perimetro_abdominal'=>'PERIMETRO ABDOMINAL',
-                                                'SpO2'=>'SpO2','FiO2'=>'FiO2'] as $permisoKey => $titulo)
+                                                'SpO2'=>'SpO2','FIO2'=>'FiO2'] as $permisoKey => $titulo)
                                                 @if($permisos_1->contains('nombre_permiso', $permisoKey))
                                                 <th>{{ $titulo }}</th>
                                                 @endif
@@ -648,7 +648,7 @@
                                                 <th>FECHA</th>
                                                 @foreach(['Cabeza' => 'CABEZA', 'Frontales' => 'FRONTALES', 'Cabellos' => 'CABELLOS','Cara' => 'CARA','Apertura_ocular'=>'APERTURA OCULAR',
                                                 'Ojos' => 'OJOS','Nariz' => 'NARIZ', 'Fosas_nasales' => 'FOSAS NASALES', 'Piramide_nasal'=>'PIRAMIDE NASAL','Coanas'=>'COANAS','Oidos'=>'OIDOS',
-                                                'Pabellon_auricular'=>'PABELLON AURICULAR', 'Curvatura'=>'CURVATURA','Boca'=>'BOCA','Apertura_bucal','APERTURA BOCAL','Paladar'=>'PALADAR',
+                                                'Pabellon_auricular'=>'PABELLON AURICULAR', 'Curvatura'=>'CURVATURA','Boca'=>'BOCA','Apertura_bucal'=>'APERTURA BOCAL','Paladar'=>'PALADAR',
                                                 'Mucosa_oral'=>'MUCOSA ORAL','Pulmones'=>'PULMONES', 'Pulmones_inspeccion'=>'PULMONES INSPECCION', 'Pulmones_palpacion'=>'PULMONES PALPACION',
                                                 'Pulmones_percusion'=>'PULMONES PERCUSION', 'Pulmones_auscultacion'=>'PULMONES AUSCULTACION','Corazon'=>'CORAZON', 'Corazon_inspeccion'=>'CORAZON INSPECCION',
                                                 'Corazon_palpacion'=>'CORAZON PALPACION','Corazon_percusion'=>'CORAZON PERCUSION','Corazon_auscultacion'=>'CORAZON AUSCULTACION','Precordio'=>'PRECORDIO',
@@ -757,7 +757,7 @@
                                                 <th>EVENTO</th>
                                                 <th>USUARIO</th>
                                                 <th>FECHA</th>
-                                                @foreach(['Vello_pubiano' => 'VELLO PUBIANO', 'Vulva' => 'VULVA', 'Uretra' => 'URETRA','Glandulas_ByS' => 'GLANDULAS ByS',
+                                                @foreach(['Vello_pubiano' => 'VELLO PUBIANO', 'Vulva' => 'VULVA', 'Uretra' => 'URETRA','glandulas_bys' => 'GLANDULAS ByS',
                                                 'Clitoris' => 'CLITORIS','Perineo' => 'PERINEO', 'Vagina' => 'VAGINA', 'Cuello_uterino'=>'CUELLO UTERINO',
                                                 'Cuerpo_uterino'=>'CUERPO UTERINO','Anexos'=>'ANEXOS','Especuloscopia'=>'ESPECULOSCOPIA','Tacto_rectal'=>'TACTO RECTAL'] as $permisoKey => $titulo)
                                                 @if($permisos_1->contains('nombre_permiso', $permisoKey))
@@ -772,7 +772,7 @@
                                                 <td>{{ $exm_ginecologico->operacion}}</td>
                                                 <td>{{ $exm_ginecologico->name}}</td>
                                                 <td>{{ $exm_ginecologico->fecha_modificacion}}</td>
-                                                @foreach(['vello_pubiano', 'vulva', 'uretra','glandula_bys','clitoris','perineo','vagina', 'cuello_uterino',
+                                                @foreach(['vello_pubiano', 'vulva', 'uretra','glandulas_bys','clitoris','perineo','vagina', 'cuello_uterino',
                                                 'cuerpo_uterino','anexos','especuloscopia','tacto_rectal'] as $campo)
                                                 @if($exm_ginecologico->$campo != 'N/A')
                                                 <td>{{ $exm_ginecologico->$campo }}</td>
@@ -855,7 +855,7 @@
                                                 <th>EVENTO</th>
                                                 <th>USUARIO</th>
                                                 <th>FECHA</th>
-                                                @foreach(['puño_percusion_renal' => 'PUÑO PERCUSION RENAL', 'Palpacion_renal' => 'PALPACION RENAL', 'Puntos_ureterales' => 'puntos ureterales',
+                                                @foreach(['Punio_percusion_renal' => 'PUÑO PERCUSION RENAL', 'Palpacion_renal' => 'PALPACION RENAL', 'Puntos_ureterales' => 'puntos ureterales',
                                                 'Genitales' => 'GENITALES'] as $permisoKey => $titulo)
                                                 @if($permisos_1->contains('nombre_permiso', $permisoKey))
                                                 <th>{{ $titulo }}</th>
@@ -996,7 +996,7 @@
                                                 <th>EVENTO</th>
                                                 <th>USUARIO</th>
                                                 <th>FECHA</th>
-                                                @foreach(['Piel' => 'PIEL', 'Pelo' => 'PELO', 'Uñas' => 'UÑAS ','Mucosas'=>'MUCOSAS','Topografia'=>'TOPOGRAFIA',
+                                                @foreach(['Piel' => 'PIEL', 'Pelo' => 'PELO', 'Unias' => 'UÑAS ','Mucosas'=>'MUCOSAS','Topografia'=>'TOPOGRAFIA',
                                                 'Morfologia' => 'MORFOLOGIA','Iconografia'=>'ICONOGRAFIA'] as $permisoKey => $titulo)
                                                 @if($permisos_1->contains('nombre_permiso', $permisoKey))
                                                 <th>{{ $titulo }}</th>
