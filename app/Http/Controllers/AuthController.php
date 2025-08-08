@@ -44,7 +44,7 @@ public function loguear(Request $request)
         'password' => 'required'
     ]);
 
-    $response = Http::post('http://localhost/tokkens/login.php', [
+    $response = Http::post('http://192.168.4.55:8000/api/auth/login_service', [
         'email' => $request->email,
         'password' => $request->password,
     ]);
@@ -78,7 +78,7 @@ public function loguear(Request $request)
     Session::put('login_time', now());
 
     
-    $usuariosResponse = Http::get('http://localhost/tokkens/usuarios_residentes.php');
+    $usuariosResponse = Http::get('http://192.168.4.55:8001/api/s1/administracion/user_residente');
 
     if ($usuariosResponse->ok()) {
         $usuariosData = $usuariosResponse->json();
