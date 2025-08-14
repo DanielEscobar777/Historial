@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 
 
-class kardexController extends Controller
+class KardexController extends Controller
 {
 
     public function index()
