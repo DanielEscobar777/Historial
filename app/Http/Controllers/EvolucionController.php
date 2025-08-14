@@ -318,7 +318,7 @@ class EvolucionController extends Controller
         $userId = Auth::id();
         $navegador = request()->header('User-Agent');
         $request->validate([
-            'diagnostico' => 'required|string|max:255',
+            'diagnostico' => 'required|string',
         ], [
             'diagnostico.required' => 'El campo diagnostico es obligatorio.',
         ]);

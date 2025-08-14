@@ -78,65 +78,50 @@ public function loguear(Request $request)
     Session::put('login_time', now());
 
 //  $usuariosResponse = Http::get('http://localhost/tokkens/usuarios_residentes.php');
-    $usuariosResponse = Http::get('http://192.168.4.55:8001/api/s1/administracion/user_residente');
+    $usuariosResponse = Http::withHeaders([
+    'Authorization' => 'Bearer ' . $accessToken
+])->get('http://192.168.4.55:8001/api/s1/administracion/user_residente');
+
 
     if ($usuariosResponse->ok()) {
-    $usuariosData = $usuariosResponse->json();
-    $usuariosLista = $usuariosData['data'] ?? [];
+        $usuariosData = $usuariosResponse->json();
+        $usuariosLista = $usuariosData['data'] ?? [];
 
-    $rolAsignado = false;
+       
+        foreach ($usuariosLista as $externo) {
+            if ($externo['email'] === $user->email) {
+                $rolTexto = strtolower(trim($externo['rol']));
 
-    foreach ($usuariosLista as $externo) {
-        Log::info('Verificando usuario externo:', $externo);
+               
+                $rolesMap = [
+                    'jefe de enseñanza' => 1,
+                    'residente' => 2,
+                    'interno' => 3
+                ];
 
-        if ($externo['email'] === $user->email) {
-            $rolTexto = strtolower(trim($externo['rol']));
-            Log::info("Rol recibido para {$user->email}: {$rolTexto}");
+                if (isset($rolesMap[$rolTexto])) {
+                    $roleId = $rolesMap[$rolTexto];
 
-            $rolesMap = [
-                'jefe de enseñanza' => 1,
-                'residente' => 2,
-                'interno' => 3
-            ];
+                   
+                    $yaAsignado = DB::table('role_user')
+                        ->where('user_id', $user->id)
+                        ->where('role_id', $roleId)
+                        ->exists();
 
-            if (isset($rolesMap[$rolTexto])) {
-                $roleId = $rolesMap[$rolTexto];
-
-                $yaAsignado = DB::table('role_user')
-                    ->where('user_id', $user->id)
-                    ->where('role_id', $roleId)
-                    ->exists();
-
-                if (!$yaAsignado) {
-                    try {
+                    if (!$yaAsignado) {
+                  
                         DB::table('role_user')->insert([
                             'user_id' => $user->id,
                             'role_id' => $roleId,
                             'assigned_at' => now()
                         ]);
-                        $rolAsignado = true;
-                    } catch (\Exception $e) {
-                        Log::error("Error al asignar rol al usuario {$user->email}: " . $e->getMessage());
-                        return back()->with('error', 'Error al guardar el rol. Intente nuevamente o contacte al administrador.');
                     }
-                } else {
-                    $rolAsignado = true;
                 }
-            } else {
-                Log::warning("Rol no reconocido para {$user->email}: {$rolTexto}");
-                return back()->with('error', 'El rol "' . $rolTexto . '" no está definido en el sistema.');
-            }
 
-            break;
+                break;
+            }
         }
     }
-
-    if (!$rolAsignado) {
-        Log::warning("No se encontró coincidencia de email en lista de usuarios externos para: {$user->email}");
-        return back()->with('error', 'No se pudo asignar rol: el usuario no figura en la lista externa.');
-    }
-}
-
 
     return to_route('welcome');
 }
