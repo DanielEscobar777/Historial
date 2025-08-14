@@ -9,6 +9,7 @@ use App\Http\Controllers\LoginExternoController;
 use App\Http\Controllers\PacienteController;
 use App\Http\Controllers\KardexController;
 
+
 Route::get('/kardex/index', [kardexController::class, 'index'])->name('kardex.index');
 
 
