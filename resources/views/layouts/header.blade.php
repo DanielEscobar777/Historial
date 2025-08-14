@@ -76,7 +76,7 @@
                         </a>
                     </div> -->
                     @auth
-                    @if (auth()->user()->hasRole('interno'))
+                    @if (auth()->user()->hasRole('residente'))
                     <div class="menu-item  active">
                         <a href="{{route('historial.index')}}" class="menu-link">
                             <div class="menu-icon">
@@ -88,7 +88,7 @@
                     @endif
                     @endauth
                     @auth
-                    @if (auth()->user()->hasRole('residente'))
+                    @if (auth()->user()->hasRole('interno'))
                     <div class="menu-item  active">
                         <a href="{{route('evolucion.index')}}" class="menu-link">
                             <div class="menu-icon">
@@ -101,7 +101,7 @@
                     @endauth
 
                     @auth
-                    @if (auth()->user()->hasRole('interno'))
+                    @if (auth()->user()->hasRole('residente'))
                     <div class="menu-item  active">
                         <a href="{{route('kardex.index')}}" class="menu-link">
                             <div class="menu-icon">
