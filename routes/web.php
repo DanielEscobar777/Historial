@@ -7,7 +7,7 @@ use App\Http\Controllers\HistorialController;
 use App\Http\Controllers\PdfController;
 use App\Http\Controllers\LoginExternoController;
 use App\Http\Controllers\PacienteController;
-use App\Http\Controllers\kardexController;
+use App\Http\Controllers\KardexController;
 
 Route::get('/kardex/index', [kardexController::class, 'index'])->name('kardex.index');
 
