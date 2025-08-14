@@ -12,7 +12,7 @@ class Antecedentes_inmunizacionsController extends Controller
 {
     $userId = Auth::id();
     $validated = $request->validate([
-        'antecedentes_inmunizacion' => 'required|string|max:255',
+        'antecedentes_inmunizacion' => 'required|string',
     ], [
         'antecedentes_inmunizacion.required' => 'El campo antecedentes inmunizacion es obligatorio.'
     ]);

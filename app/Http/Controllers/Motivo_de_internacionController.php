@@ -12,7 +12,7 @@ class Motivo_de_internacionController extends Controller
     {
         $userId = Auth::id();
         $validated = $request->validate([
-            'motivo_de_internacion' => 'required|string|max:255',
+            'motivo_de_internacion' => 'required|string',
         ], [
             'motivo_de_internacion.required' => 'El campo antecedentes familiares es obligatorio.'
 

@@ -12,7 +12,7 @@ class Desarrollo_psicomotorsController extends Controller
     {
         $userId = Auth::id();
         $validated = $request->validate([
-            'desarrollo_psicomotor' => 'required|string|max:255',
+            'desarrollo_psicomotor' => 'required|string',
         ], [
             'desarrollo_psicomotor.required' => 'El campo desarrollo psicomotor es obligatorio.'
 

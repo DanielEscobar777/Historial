@@ -20,7 +20,7 @@ class Examen_fisico_generalController extends Controller
         'peso','talla','imc','spo2','sato2','fio2','sc','apgar','silverman','edad_por_capurro','pa','somatometria','saturacion',
         'perimetro_cefalico','perimetro_toracico','perimetro_abdominal','examen_fisico_general'] as $field) {
             if ($request->has($field)) {
-                $rules[$field] = 'required|string|max:255';
+                $rules[$field] = 'required|string';
                 $messages["$field.required"] = "El campo $field es obligatorio.";
             }
         }

@@ -17,7 +17,7 @@ class Anamnesis_sistemasController extends Controller
         // Solo validar los campos que vienen en el request
         foreach (['cardiovascular_respiratorio', 'gastro_intestinal', 'genito_urinario', 'hematologico', 'dermatologico', 'neurologico','locomotor'] as $field) {
             if ($request->has($field)) {
-                $rules[$field] = 'required|string|max:255';
+                $rules[$field] = 'required|string';
                 $messages["$field.required"] = "El campo $field es obligatorio.";
             }
         }

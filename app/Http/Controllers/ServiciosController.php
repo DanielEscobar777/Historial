@@ -33,7 +33,7 @@ class ServiciosController extends Controller
     public function store(Request $request)
     {   $userId = Auth::id();
         $validated = $request->validate([
-            'nombre_servicio' => 'required|string|max:50',
+            'nombre_servicio' => 'required|string',
         ]);
           $registro = Servicios::create([
             'nombre_servicio' => $request->nombre_servicio,

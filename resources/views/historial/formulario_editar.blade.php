@@ -70,95 +70,100 @@
 
                     <div class="col-md-6">
                         <label><b>Nombre del Recién Nacido</b></label>
-                        <input type="text" class="form-control" name="nombre_recien_necido" value="{{$historial->nombre_recien_necido}}">
+                        <textarea type="text" class="form-control" name="nombre_recien_necido">{{$historial->nombre_recien_necido}}</textarea>
                     </div>
                     <div class="col-md-6">
                         <label><b>Sexo</b></label>
-                        <input type="text" class="form-control" name="sexo" value="{{$historial->sexo}}">
+                        <select class="form-control" name="sexo" required>
+                            <option value="">Seleccione una opción</option>
+                            <option value="M" {{ (old('sexo') ?? $historial->sexo) == 'M' ? 'selected' : '' }}>Masculino</option>
+                            <option value="F" {{ (old('sexo') ?? $historial->sexo) == 'F' ? 'selected' : '' }}>Femenino</option>
+                        </select>
+
                     </div>
                     <div class="col-md-6">
                         <label><b>Cama</b></label>
-                        <input type="text" class="form-control" name="cama" value="{{$historial->cama}}">
+                        <textarea type="text" class="form-control" name="cama">{{$historial->cama}}</textarea>
                     </div>
                     <div class="col-md-6">
                         <label><b>Fecha de Nacimiento del RN</b></label>
-                        <input type="date" class="form-control" name="fecha_recien_necido" value="{{$historial->fecha_recien_necido}}">
+                        <input type="date" class="form-control" name="fecha_recien_necido" value = "{{$historial->fecha_recien_necido}}">
                     </div>
 
                     <div class="col-md-6">
                         <label><b>Hora de Nacimiento del RN</b></label>
-                        <input type="time" class="form-control" name="hora_recien_necido" value="{{$historial->hora_recien_necido}}">
+                        <input type="time" class="form-control" name="hora_recien_necido" value = "{{$historial->hora_recien_necido}}">
                     </div>
                     <div class="col-md-6">
                         <label><b>Servicio</b></label>
-                        <input type="text" class="form-control" value="{{$n_ser->nombre_servicio}} " disabled>
+                        <textarea type="text" class="form-control" disabled>{{$n_ser->nombre_servicio}}</textarea>
                         <input type="hidden" class="form-control" name="id_servicio" value="{{$n_ser->id_servicio}}">
                         <input type="hidden" class="form-control" name="nombre_servicio" value="{{$n_ser->nombre_servicio}}">
                     </div>
                     <div class="col-md-6">
                         <label><b>Referencia (Nombre y Teléfono)</b></label>
-                        <input type="text" class="form-control" name="nombrenum_referencia" value="{{$historial->nombrenum_referencia}}">
+                        <textarea type="text" class="form-control" name="nombrenum_referencia">{{$historial->nombrenum_referencia}}</textarea>
                     </div>
                     @else
 
                     <div class="col-md-6">
                         <label><b>Paciente</b></label>
-                        <input type="text" class="form-control" name="id_paciente" value="{{$paciente->nombres}} {{$paciente->p_apellido}} {{$paciente->s_apellido}}" disabled>
+                        <textarea type="text" class="form-control" name="id_paciente" disabled>{{$paciente->nombres}} {{$paciente->p_apellido}} {{$paciente->s_apellido}}</textarea>
                     </div>
                     <div class="col-md-6">
-                        <input type="text" class="form-control" value="{{ $n_ser->nombre_servicio }}" disabled>
+                        <textarea type="text" class="form-control" disabled>{{ $n_ser->nombre_servicio }}</textarea>
                         <input type="hidden" class="form-control" name="id_servicio" value="{{ $n_ser->id_servicio }}">
                         <input type="hidden" class="form-control" name="nombre_servicio" value="{{ $n_ser->nombre_servicio }}">
                     </div>
 
                     <div class="col-md-6">
                         <label><b>Servicio</b></label>
-                        <input type="text" class="form-control" value="{{$n_ser->nombre_servicio}} " disabled>
+                        <textarea type="text" class="form-control" disabled>{{$n_ser->nombre_servicio}}</textarea>
                         <input type="hidden" class="form-control" name="id_servicio" value="{{$n_ser->id_servicio}}">
                         <input type="hidden" class="form-control" name="nombre_servicio" value="{{$n_ser->nombre_servicio}}">
                     </div>
 
                     <div class="col-md-6">
                         <label><b>Grado de Instrucción</b></label>
-                        <input type="text" class="form-control" name="grado_instruccion" value="{{$historial->grado_instruccion}}" required>
+                        <textarea type="text" class="form-control" name="grado_instruccion" required>{{$historial->grado_instruccion}}</textarea>
                     </div>
 
                     <div class="col-md-6">
                         <label><b>Religión</b></label>
-                        <input type="text" class="form-control" name="religion" value="{{$historial->religion}}" required>
+                        <textarea type="text" class="form-control" name="religion"required>{{$historial->religion}}</textarea>
                     </div>
 
                     <div class="col-md-6">
                         <label><b>Cama</b></label>
-                        <input type="text" class="form-control" name="cama" value="{{$historial->cama}}" required>
+                        <textarea type="text" class="form-control" name="cama" required>{{$historial->cama}}</textarea>
                     </div>
                     <div class="col-md-6">
                         <label><b>Ocupacion</b></label>
-                        <input type="text" class="form-control" name="ocupacion" value="{{$historial->ocupacion}}" required>
+                        <textarea type="text" class="form-control" name="ocupacion" required>{{$historial->ocupacion}}</textarea>
                     </div>
 
                     <div class="col-md-6">
                         <label><b>Estado civil</b></label>
-                        <input type="text" class="form-control" name="estado_civil" value="{{$historial->estado_civil}}" required>
+                        <textarea type="text" class="form-control" name="estado_civil" required>{{$historial->estado_civil}}</textarea>
                     </div>
                     <div class="col-md-6">
                         <label><b>Fuente de Información</b></label>
-                        <input type="text" class="form-control" name="fuente_informacion" value="{{$historial->fuente_informacion}}" required>
+                        <textarea type="text" class="form-control" name="fuente_informacion" required>{{$historial->fuente_informacion}}</textarea>
                     </div>
 
                     <div class="col-md-6">
                         <label><b>Referencia (Nombre y Teléfono)</b></label>
-                        <input type="text" class="form-control" name="nombrenum_referencia" value="{{$historial->nombrenum_referencia}}" required>
+                        <textarea type="text" class="form-control" name="nombrenum_referencia" required>{{$historial->nombrenum_referencia}}</textarea>
                     </div>
 
                     <div class="col-md-6">
                         <label><b>Grado de Confiabilidad</b></label>
-                        <input type="text" class="form-control" name="grado_confiabilidad" value="{{$historial->grado_confiabilidad}}" required>
+                        <textarea type="text" class="form-control" name="grado_confiabilidad" required>{{$historial->grado_confiabilidad}}</textarea>
                     </div>
 
                     <div class="col-md-6">
                         <label><b>Grupo Sanguíneo y Factor</b></label>
-                        <input type="text" class="form-control" name="grupo_sanguineo_facto" value="{{$historial->grupo_sanguineo_facto}}" required>
+                        <textarea type="text" class="form-control" name="grupo_sanguineo_facto" required>{{$historial->grupo_sanguineo_facto}}</textarea>
                     </div>
 
                     @endif
@@ -187,7 +192,7 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <label><b>Antecedentes perinatologicos</b></label>
-                                            <input type="text" class="form-control" name="antecedentes_perinatologicos" value="{{$antecedentes_perinatologicos->antecedentes_perinatologicos}}" required>
+                                            <textarea type="text" class="form-control" name="antecedentes_perinatologicos" required>{{$antecedentes_perinatologicos->antecedentes_perinatologicos}}</textarea>
                                         </div>
                                     </div><br>
                                     <a href="{{ route('historial.show', $n_ser->id_servicio)}}" class="btn btn-danger btn-sm"><i class="fa fa-reply"></i> Cancelar</a>
@@ -213,7 +218,7 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <label><b>Antecedentes Inmunizacion</b></label>
-                                            <input type="text" class="form-control" name="antecedentes_inmunizacion" value="{{$antecedentes_inmunizacion->antecedentes_inmunizacion}}" required>
+                                            <textarea type="text" class="form-control" name="antecedentes_inmunizacion" required>{{$antecedentes_inmunizacion->antecedentes_inmunizacion}}</textarea>
                                         </div>
                                     </div><br>
                                     <a href="{{ route('historial.show', $n_ser->id_servicio)}}" class="btn btn-danger btn-sm"><i class="fa fa-reply"></i> Cancelar</a>
@@ -239,7 +244,7 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <label><b>Antecedentes Alimentarios</b></label>
-                                            <input type="text" class="form-control" name="antecedentes_alimentarios" value="{{$antecedentes_alimentarios->antecedentes_alimentarios}}" required>
+                                            <textarea type="text" class="form-control" name="antecedentes_alimentarios" required>{{$antecedentes_alimentarios->antecedentes_alimentarios}}</textarea>
                                         </div>
                                     </div><br>
                                     <a href="{{ route('historial.show', $n_ser->id_servicio)}}" class="btn btn-danger btn-sm"><i class="fa fa-reply"></i> Cancelar</a>
@@ -265,7 +270,7 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <label><b>Antecedentes Familiares</b></label>
-                                            <input type="text" class="form-control" name="antecedentes_familiares" value="{{$antecedentes_familiares->antecedentes_familiares}}" required>
+                                            <textarea type="text" class="form-control" name="antecedentes_familiares" required>{{$antecedentes_familiares->antecedentes_familiares}}</textarea>
                                         </div>
                                     </div><br>
                                     <a href="{{ route('historial.show', $n_ser->id_servicio)}}" class="btn btn-danger btn-sm"><i class="fa fa-reply"></i> Cancelar</a>
@@ -291,7 +296,7 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <label><b>Desarrollo psicomotors</b></label>
-                                            <input type="text" class="form-control" name="desarrollo_psicomotor" value="{{$desarrollo_psicomotor->desarrollo_psicomotor}}" required>
+                                            <textarea type="text" class="form-control" name="desarrollo_psicomotor" required>{{$desarrollo_psicomotor->desarrollo_psicomotor}}</textarea>
                                         </div>
                                     </div><br>
                                     <a href="{{ route('historial.show', $n_ser->id_servicio)}}" class="btn btn-danger btn-sm"><i class="fa fa-reply"></i> Cancelar</a>
@@ -318,37 +323,37 @@
                                         @if($antecedentes_heredofamiliares->padre <> 'N/A')
                                             <div class="col-md-12">
                                                 <label><b>Padre</b></label>
-                                                <input type="text" class="form-control" name="padre" value="{{$antecedentes_heredofamiliares->padre}}" required>
+                                                <textarea type="text" class="form-control" name="padre" required>{{$antecedentes_heredofamiliares->padre}}</textarea>
                                             </div>
                                             @endif
                                             @if($antecedentes_heredofamiliares->madre <> 'N/A')
                                                 <div class="col-md-12">
                                                     <label><b>Madre</b></label>
-                                                    <input type="text" class="form-control" name="madre" value="{{$antecedentes_heredofamiliares->madre}}" required>
+                                                    <textarea type="text" class="form-control" name="madre" required>{{$antecedentes_heredofamiliares->madre}}</textarea>
                                                 </div>
                                                 @endif
                                                 @if($antecedentes_heredofamiliares->hermanos <> 'N/A')
                                                     <div class="col-md-12">
                                                         <label><b>Hermano(s)</b></label>
-                                                        <input type="text" class="form-control" name="hermanos" value="{{$antecedentes_heredofamiliares->hermanos}}" required>
+                                                        <textarea type="text" class="form-control" name="hermanos" required>{{$antecedentes_heredofamiliares->hermanos}}</textarea>
                                                     </div>
                                                     @endif
                                                     @if($antecedentes_heredofamiliares->esposo <> 'N/A')
                                                         <div class="col-md-12">
                                                             <label><b>Esposo</b></label>
-                                                            <input type="text" class="form-control" name="esposo" value="{{$antecedentes_heredofamiliares->esposo}}" required>
+                                                            <textarea type="text" class="form-control" name="esposo" required>{{$antecedentes_heredofamiliares->esposo}}</textarea>
                                                         </div>
                                                         @endif
                                                         @if($antecedentes_heredofamiliares->hijos <> 'N/A')
                                                             <div class="col-md-12">
                                                                 <label><b>Hijos</b></label>
-                                                                <input type="text" class="form-control" name="hijos" value="{{$antecedentes_heredofamiliares->hijos}}" required>
+                                                                <textarea type="text" class="form-control" name="hijos" required>{{$antecedentes_heredofamiliares->hijos}}</textarea>
                                                             </div>
                                                             @endif
                                                             @if($antecedentes_heredofamiliares->abuelos <> 'N/A')
                                                                 <div class="col-md-12">
                                                                     <label><b>Abuelos</b></label>
-                                                                    <input type="text" class="form-control" name="abuelos" value="{{$antecedentes_heredofamiliares->abuelos}}" required>
+                                                                    <textarea type="text" class="form-control" name="abuelos" required>{{$antecedentes_heredofamiliares->abuelos}}</textarea>
                                                                 </div>
                                                                 @endif
                                     </div><br>
@@ -376,73 +381,73 @@
                                         @if($antecedentes_patologicos->clinicos <> 'N/A')
                                             <div class="col-md-12">
                                                 <label><b>Clinicos</b></label>
-                                                <input type="text" class="form-control" name="clinicos" value="{{$antecedentes_patologicos->clinicos}}" required>
+                                                <textarea type="text" class="form-control" name="clinicos" required>{{$antecedentes_patologicos->clinicos}}</textarea>
                                             </div>
                                             @endif
                                             @if($antecedentes_patologicos->quirurjicos <> 'N/A')
                                                 <div class="col-md-12">
                                                     <label><b>Quirurjicos</b></label>
-                                                    <input type="text" class="form-control" name="quirurjicos" value="{{$antecedentes_patologicos->quirurjicos}}" required>
+                                                    <textarea type="text" class="form-control" name="quirurjicos" required>{{$antecedentes_patologicos->quirurjicos}}</textarea>
                                                 </div>
                                                 @endif
                                                 @if($antecedentes_patologicos->alergicos <> 'N/A')
                                                     <div class="col-md-12">
                                                         <label><b>Alergias</b></label>
-                                                        <input type="text" class="form-control" name="alergicos" value="{{$antecedentes_patologicos->alergicos}}" required>
+                                                        <textarea type="text" class="form-control" name="alergicos" required>{{$antecedentes_patologicos->alergicos}}</textarea>
                                                     </div>
                                                     @endif
                                                     @if($antecedentes_patologicos->otros <> 'N/A')
                                                         <div class="col-md-12">
                                                             <label><b>Otros</b></label>
-                                                            <input type="text" class="form-control" name="otros" value="{{$antecedentes_patologicos->otros}}" required>
+                                                            <textarea type="text" class="form-control" name="otros" required>{{$antecedentes_patologicos->otros}}</textarea>
                                                         </div>
                                                         @endif
                                                         @if($antecedentes_patologicos->internaciones <> 'N/A')
                                                             <div class="col-md-12">
                                                                 <label><b>Internaciones</b></label>
-                                                                <input type="text" class="form-control" name="internaciones" value="{{$antecedentes_patologicos->internaciones}}" required>
+                                                                <textarea type="text" class="form-control" name="internaciones" required>{{$antecedentes_patologicos->internaciones}}</textarea>
                                                             </div>
                                                             @endif
                                                             @if($antecedentes_patologicos->cirugias <> 'N/A')
                                                                 <div class="col-md-12">
                                                                     <label><b>Cirugias</b></label>
-                                                                    <input type="text" class="form-control" name="cirugias" value="{{$antecedentes_patologicos->cirugias}}" required>
+                                                                    <textarea type="text" class="form-control" name="cirugias" required>{{$antecedentes_patologicos->cirugias}}</textarea>
                                                                 </div>
                                                                 @endif
                                                                 @if($antecedentes_patologicos->transfusion_de_sangre <> 'N/A')
                                                                     <div class="col-md-12">
                                                                         <label><b>Transfusion de sangre</b></label>
-                                                                        <input type="text" class="form-control" name="transfusion_de_sangre" value="{{$antecedentes_patologicos->transfusion_de_sangre}}" required>
+                                                                        <textarea type="text" class="form-control" name="transfusion_de_sangre" required>{{$antecedentes_patologicos->transfusion_de_sangre}}</textarea>
                                                                     </div>
                                                                     @endif
                                                                     @if($antecedentes_patologicos->iras <> 'N/A')
                                                                         <div class="col-md-12">
                                                                             <label><b>Iras</b></label>
-                                                                            <input type="text" class="form-control" name="iras" value="{{$antecedentes_patologicos->iras}}" required>
+                                                                            <textarea type="text" class="form-control" name="iras" required>{{$antecedentes_patologicos->iras}}</textarea>
                                                                         </div>
                                                                         @endif
                                                                         @if($antecedentes_patologicos->gastroenteritis <> 'N/A')
                                                                             <div class="col-md-12">
                                                                                 <label><b>Gastroenteritis</b></label>
-                                                                                <input type="text" class="form-control" name="gastroenteritis" value="{{$antecedentes_patologicos->gastroenteritis}}" required>
+                                                                                <textarea type="text" class="form-control" name="gastroenteritis" required>{{$antecedentes_patologicos->gastroenteritis}}</textarea>
                                                                             </div>
                                                                             @endif
                                                                             @if($antecedentes_patologicos->traumatismos <> 'N/A')
                                                                                 <div class="col-md-12">
                                                                                     <label><b>Traumatismos</b></label>
-                                                                                    <input type="text" class="form-control" name="traumatismos" value="{{$antecedentes_patologicos->traumatismos}}" required>
+                                                                                    <textarea type="text" class="form-control" name="traumatismos" required>{{$antecedentes_patologicos->traumatismos}}</textarea>
                                                                                 </div>
                                                                                 @endif
                                                                                 @if($antecedentes_patologicos->medicamentos <> 'N/A')
                                                                                     <div class="col-md-12">
                                                                                         <label><b>Medicamentos</b></label>
-                                                                                        <input type="text" class="form-control" name="medicamentos" value="{{$antecedentes_patologicos->medicamentos}}" required>
+                                                                                        <textarea type="text" class="form-control" name="medicamentos" required>{{$antecedentes_patologicos->medicamentos}}</textarea>
                                                                                     </div>
                                                                                     @endif
                                                                                     @if($antecedentes_patologicos->enfermedades <> 'N/A')
                                                                                         <div class="col-md-12">
                                                                                             <label><b>Enfermedades</b></label>
-                                                                                            <input type="text" class="form-control" name="enfermedades" value="{{$antecedentes_patologicos->enfermedades}}" required>
+                                                                                            <textarea type="text" class="form-control" name="enfermedades" required>{{$antecedentes_patologicos->enfermedades}}</textarea>
                                                                                         </div>
                                                                                         @endif
                                     </div><br>
@@ -471,91 +476,91 @@
                                         @if($antecedentes_no_patologicos->vacunas <> 'N/A')
                                             <div class="col-md-12">
                                                 <label><b>Vacunas</b></label>
-                                                <input type="text" class="form-control" name="vacunas" value="{{$antecedentes_no_patologicos->vacunas}}" required>
+                                                <textarea type="text" class="form-control" name="vacunas" required>{{$antecedentes_no_patologicos->vacunas}}</textarea>
                                             </div>
                                             @endif
                                             @if($antecedentes_no_patologicos->vacunas_hpv <> 'N/A')
                                                 <div class="col-md-12">
                                                     <label><b>Vacunas hpv</b></label>
-                                                    <input type="text" class="form-control" name="vacunas_hpv" value="{{$antecedentes_no_patologicos->vacunas_hpv}}" required>
+                                                    <textarea type="text" class="form-control" name="vacunas_hpv" required>{{$antecedentes_no_patologicos->vacunas_hpv}}</textarea>
                                                 </div>
                                                 @endif
                                                 @if($antecedentes_no_patologicos->habitos_toxicos <> 'N/A')
                                                     <div class="col-md-12">
                                                         <label><b>Habitos toxicos</b></label>
-                                                        <input type="text" class="form-control" name="habitos_toxicos" value="{{$antecedentes_no_patologicos->habitos_toxicos}}" required>
+                                                        <textarea type="text" class="form-control" name="habitos_toxicos" required>{{$antecedentes_no_patologicos->habitos_toxicos}}</textarea>
                                                     </div>
                                                     @endif
                                                     @if($antecedentes_no_patologicos->alimentacion <> 'N/A')
                                                         <div class="col-md-12">
                                                             <label><b>Alimentacion</b></label>
-                                                            <input type="text" class="form-control" name="alimentacion" value="{{$antecedentes_no_patologicos->alimentacion}}" required>
+                                                            <textarea type="text" class="form-control" name="alimentacion" required>{{$antecedentes_no_patologicos->alimentacion}}</textarea>
                                                         </div>
                                                         @endif
                                                         @if($antecedentes_no_patologicos->habito_miccional <> 'N/A')
                                                             <div class="col-md-12">
                                                                 <label><b>Habito miccional</b></label>
-                                                                <input type="text" class="form-control" name="habito_miccional" value="{{$antecedentes_no_patologicos->habito_miccional}}" required>
+                                                                <textarea type="text" class="form-control" name="habito_miccional" required>{{$antecedentes_no_patologicos->habito_miccional}}</textarea>
                                                             </div>
                                                             @endif
                                                             @if($antecedentes_no_patologicos->habito_intestinal <> 'N/A')
                                                                 <div class="col-md-12">
                                                                     <label><b>Habito intestinal</b></label>
-                                                                    <input type="text" class="form-control" name="habito_intestinal" value="{{$antecedentes_no_patologicos->habito_intestinal}}" required>
+                                                                    <textarea type="text" class="form-control" name="habito_intestinal" required>{{$antecedentes_no_patologicos->habito_intestinal}}</textarea>
                                                                 </div>
                                                                 @endif
                                                                 @if($antecedentes_no_patologicos->vivienda_servicio_basico <> 'N/A')
                                                                     <div class="col-md-12">
                                                                         <label><b>Vivienda servicio basico</b></label>
-                                                                        <input type="text" class="form-control" name="vivienda_servicio_basico" value="{{$antecedentes_no_patologicos->vivienda_servicio_basico}}" required>
+                                                                        <textarea type="text" class="form-control" name="vivienda_servicio_basico" required>{{$antecedentes_no_patologicos->vivienda_servicio_basico}}</textarea>
                                                                     </div>
                                                                     @endif
                                                                     @if($antecedentes_no_patologicos->habito_alcoholico <> 'N/A')
                                                                         <div class="col-md-12">
                                                                             <label><b>Habito alcoholico</b></label>
-                                                                            <input type="text" class="form-control" name="habito_alcoholico" value="{{$antecedentes_no_patologicos->habito_alcoholico}}" required>
+                                                                            <textarea type="text" class="form-control" name="habito_alcoholico" required>{{$antecedentes_no_patologicos->habito_alcoholico}}</textarea>
                                                                         </div>
                                                                         @endif
                                                                         @if($antecedentes_no_patologicos->habito_tabaquico <> 'N/A')
                                                                             <div class="col-md-12">
                                                                                 <label><b>Habito tabaquico</b></label>
-                                                                                <input type="text" class="form-control" name="habito_tabaquico" value="{{$antecedentes_no_patologicos->habito_tabaquico}}" required>
+                                                                                <textarea type="text" class="form-control" name="habito_tabaquico" required>{{$antecedentes_no_patologicos->habito_tabaquico}}</textarea>
                                                                             </div>
                                                                             @endif
                                                                             @if($antecedentes_no_patologicos->exposicion_biomasa <> 'N/A')
                                                                                 <div class="col-md-12">
                                                                                     <label><b>Exposicion a biomasa</b></label>
-                                                                                    <input type="text" class="form-control" name="exposicion_biomasa" value="{{$antecedentes_no_patologicos->exposicion_biomasa}}" required>
+                                                                                    <textarea type="text" class="form-control" name="exposicion_biomasa" required>{{$antecedentes_no_patologicos->exposicion_biomasa}}</textarea>
                                                                                 </div>
                                                                                 @endif
                                                                                 @if($antecedentes_no_patologicos->contacto_con_tuberculosis <> 'N/A')
                                                                                     <div class="col-md-12">
                                                                                         <label><b>Contacto con tuberculosis</b></label>
-                                                                                        <input type="text" class="form-control" name="contacto_con_tuberculosis" value="{{$antecedentes_no_patologicos->contacto_con_tuberculosis}}" required>
+                                                                                        <textarea type="text" class="form-control" name="contacto_con_tuberculosis"  required>{{$antecedentes_no_patologicos->contacto_con_tuberculosis}}</textarea>
                                                                                     </div>
                                                                                     @endif
                                                                                     @if($antecedentes_no_patologicos->contacto_triatoma_infestans <> 'N/A')
                                                                                         <div class="col-md-12">
                                                                                             <label><b>Contacto triatoma infestans</b></label>
-                                                                                            <input type="text" class="form-control" name="contacto_triatoma_infestans" value="{{$antecedentes_no_patologicos->contacto_triatoma_infestans}}" required>
+                                                                                            <textarea type="text" class="form-control" name="contacto_triatoma_infestans"  required>{{$antecedentes_no_patologicos->contacto_triatoma_infestans}}</textarea>
                                                                                         </div>
                                                                                         @endif
                                                                                         @if($antecedentes_no_patologicos->toxicomanias_drogas <> 'N/A')
                                                                                             <div class="col-md-12">
                                                                                                 <label><b>Toxicomanias drogas</b></label>
-                                                                                                <input type="text" class="form-control" name="toxicomanias_drogas" value="{{$antecedentes_no_patologicos->toxicomanias_drogas}}" required>
+                                                                                                <textarea type="text" class="form-control" name="toxicomanias_drogas"  required>{{$antecedentes_no_patologicos->toxicomanias_drogas}}</textarea>
                                                                                             </div>
                                                                                             @endif
                                                                                             @if($antecedentes_no_patologicos->inmunizaciones <> 'N/A')
                                                                                                 <div class="col-md-12">
                                                                                                     <label><b>Inmunizaciones</b></label>
-                                                                                                    <input type="text" class="form-control" name="inmunizaciones" value="{{$antecedentes_no_patologicos->inmunizaciones}}" required>
+                                                                                                    <textarea type="text" class="form-control" name="inmunizaciones" required>{{$antecedentes_no_patologicos->inmunizaciones}}</textarea>
                                                                                                 </div>
                                                                                                 @endif
                                                                                                 @if($antecedentes_no_patologicos->antecedentes_sexuales <> 'N/A')
                                                                                                     <div class="col-md-12">
                                                                                                         <label><b>Antecedentes sexuales</b></label>
-                                                                                                        <input type="text" class="form-control" name="antecedentes_sexuales" value="{{$antecedentes_no_patologicos->antecedentes_sexuales}}" required>
+                                                                                                        <textarea type="text" class="form-control" name="antecedentes_sexuales" required>{{$antecedentes_no_patologicos->antecedentes_sexuales}}</textarea>
                                                                                                     </div>
                                                                                                     @endif
                                     </div><br>
@@ -583,85 +588,85 @@
                                         @if($Antecedentes_gineco_obsteticos->fecha_ultima_menstruacion <> 'N/A')
                                             <div class="col-md-12">
                                                 <label><b>Fecha de ultima menstruacion</b></label>
-                                                <input type="text" class="form-control" name="fecha_ultima_menstruacion" value="{{$Antecedentes_gineco_obsteticos->fecha_ultima_menstruacion}}" required>
+                                                <textarea type="text" class="form-control" name="fecha_ultima_menstruacion"  required>{{$Antecedentes_gineco_obsteticos->fecha_ultima_menstruacion}}</textarea>
                                             </div>
                                             @endif
                                             @if($Antecedentes_gineco_obsteticos->ritmo_menstrual <> 'N/A')
                                                 <div class="col-md-12">
                                                     <label><b>Ritmo menstrual</b></label>
-                                                    <input type="text" class="form-control" name="ritmo_menstrual" value="{{$Antecedentes_gineco_obsteticos->ritmo_menstrual}}" required>
+                                                    <textarea type="text" class="form-control" name="ritmo_menstrual" required>{{$Antecedentes_gineco_obsteticos->ritmo_menstrual}}</textarea>
                                                 </div>
                                                 @endif
                                                 @if($Antecedentes_gineco_obsteticos->menopausia <> 'N/A')
                                                     <div class="col-md-12">
                                                         <label><b>Menopausia</b></label>
-                                                        <input type="text" class="form-control" name="menopausia" value="{{$Antecedentes_gineco_obsteticos->menopausia}}" required>
+                                                        <textarea type="text" class="form-control" name="menopausia"  required>{{$Antecedentes_gineco_obsteticos->menopausia}}</textarea>
                                                     </div>
                                                     @endif
                                                     @if($Antecedentes_gineco_obsteticos->gestaciones <> 'N/A')
                                                         <div class="col-md-12">
                                                             <label><b>Gestaciones</b></label>
-                                                            <input type="text" class="form-control" name="gestaciones" value="{{$Antecedentes_gineco_obsteticos->gestaciones}}" required>
+                                                            <textarea type="text" class="form-control" name="gestaciones"  required>{{$Antecedentes_gineco_obsteticos->gestaciones}}</textarea>
                                                         </div>
                                                         @endif
                                                         @if($Antecedentes_gineco_obsteticos->partos <> 'N/A')
                                                             <div class="col-md-12">
                                                                 <label><b>Partos</b></label>
-                                                                <input type="text" class="form-control" name="partos" value="{{$Antecedentes_gineco_obsteticos->partos}}" required>
+                                                                <textarea type="text" class="form-control" name="partos" required>{{$Antecedentes_gineco_obsteticos->partos}}</textarea>
                                                             </div>
                                                             @endif
-                                                            @if($Antecedentes_gineco_obsteticos->cesareas <> 'N/A')
+                                                            @if($Antecedentes_gineco_obsteticos->cesareas <> 'N/A') 
                                                                 <div class="col-md-12">
                                                                     <label><b>Cesareas</b></label>
-                                                                    <input type="text" class="form-control" name="cesareas" value="{{$Antecedentes_gineco_obsteticos->cesareas}}" required>
+                                                                    <textarea type="text" class="form-control" name="cesareas" required>{{$Antecedentes_gineco_obsteticos->cesareas}}</textarea>
                                                                 </div>
                                                                 @endif
                                                                 @if($Antecedentes_gineco_obsteticos->abortos <> 'N/A')
                                                                     <div class="col-md-12">
                                                                         <label><b>Abortos</b></label>
-                                                                        <input type="text" class="form-control" name="abortos" value="{{$Antecedentes_gineco_obsteticos->abortos}}" required>
+                                                                        <textarea type="text" class="form-control" name="abortos" required>{{$Antecedentes_gineco_obsteticos->abortos}}</textarea>
                                                                     </div>
                                                                     @endif
                                                                     @if($Antecedentes_gineco_obsteticos->hijos_macrosomicos <> 'N/A')
                                                                         <div class="col-md-12">
                                                                             <label><b>Hijos macrosomicos</b></label>
-                                                                            <input type="text" class="form-control" name="hijos_macrosomicos" value="{{$Antecedentes_gineco_obsteticos->hijos_macrosomicos}}" required>
+                                                                            <textarea type="text" class="form-control" name="hijos_macrosomicos"required>{{$Antecedentes_gineco_obsteticos->hijos_macrosomicos}}</textarea>
                                                                         </div>
                                                                         @endif
                                                                         @if($Antecedentes_gineco_obsteticos->preeclampsia_eclampsia <> 'N/A')
                                                                             <div class="col-md-12">
                                                                                 <label><b>Preeclampsia eclampsia</b></label>
-                                                                                <input type="text" class="form-control" name="preeclampsia_eclampsia" value="{{$Antecedentes_gineco_obsteticos->preeclampsia_eclampsia}}" required>
+                                                                                <textarea type="text" class="form-control" name="preeclampsia_eclampsia" required>{{$Antecedentes_gineco_obsteticos->preeclampsia_eclampsia}}</textarea>
                                                                             </div>
                                                                             @endif
                                                                             @if($Antecedentes_gineco_obsteticos->anticonceptivos <> 'N/A')
                                                                                 <div class="col-md-12">
                                                                                     <label><b>Anticonceptivos</b></label>
-                                                                                    <input type="text" class="form-control" name="anticonceptivos" value="{{$Antecedentes_gineco_obsteticos->anticonceptivos}}" required>
+                                                                                    <textarea type="text" class="form-control" name="anticonceptivos" required>{{$Antecedentes_gineco_obsteticos->anticonceptivos}}</textarea>
                                                                                 </div>
                                                                                 @endif
                                                                                 @if($Antecedentes_gineco_obsteticos->fecha_ultima_papanicolau <> 'N/A')
                                                                                     <div class="col-md-12">
                                                                                         <label><b>Fecha ultima de papanicolau</b></label>
-                                                                                        <input type="text" class="form-control" name="fecha_ultima_papanicolau" value="{{$Antecedentes_gineco_obsteticos->fecha_ultima_papanicolau}}" required>
+                                                                                        <textarea type="text" class="form-control" name="fecha_ultima_papanicolau" required>{{$Antecedentes_gineco_obsteticos->fecha_ultima_papanicolau}}</textarea>
                                                                                     </div>
                                                                                     @endif
                                                                                     @if($Antecedentes_gineco_obsteticos->fecha_ultima_mamografia <> 'N/A')
                                                                                         <div class="col-md-12">
                                                                                             <label><b>Fecha ultima de mamografia</b></label>
-                                                                                            <input type="text" class="form-control" name="fecha_ultima_mamografia" value="{{$Antecedentes_gineco_obsteticos->fecha_ultima_mamografia}}" required>
+                                                                                            <textarea type="text" class="form-control" name="fecha_ultima_mamografia" required>{{$Antecedentes_gineco_obsteticos->fecha_ultima_mamografia}}</textarea>
                                                                                         </div>
                                                                                         @endif
                                                                                         @if($Antecedentes_gineco_obsteticos->fecha_ultima_densitometria <> 'N/A')
                                                                                             <div class="col-md-12">
                                                                                                 <label><b>Fecha ultimo densitometria</b></label>
-                                                                                                <input type="text" class="form-control" name="fecha_ultima_densitometria" value="{{$Antecedentes_gineco_obsteticos->fecha_ultima_densitometria}}" required>
+                                                                                                <textarea type="text" class="form-control" name="fecha_ultima_densitometria" required>{{$Antecedentes_gineco_obsteticos->fecha_ultima_densitometria}}</textarea>
                                                                                             </div>
                                                                                             @endif
                                                                                         @if($Antecedentes_gineco_obsteticos->fecha_ultimo_aborto <> 'N/A')
                                                                                                 <div class="col-md-12">
                                                                                                     <label><b>Fecha ultimo aborto</b></label>
-                                                                                                    <input type="text" class="form-control" name="fecha_ultimo_aborto" value="{{$Antecedentes_gineco_obsteticos->fecha_ultimo_aborto}}" required>
+                                                                                                    <textarea type="text" class="form-control" name="fecha_ultimo_aborto" required>{{$Antecedentes_gineco_obsteticos->fecha_ultimo_aborto}}</textarea>
                                                                                                 </div>
                                                                                                 @endif
 
@@ -691,43 +696,43 @@
                                     @if($anamnesis_sistema->cardiovascular_respiratorio <> 'N/A')
                                         <div class="col-md-12">
                                             <label><b>Cardiovascular respiratorio</b></label>
-                                            <input type="text" class="form-control" name="cardiovascular_respiratorio" value="{{$anamnesis_sistema->cardiovascular_respiratorio}}" required>
+                                            <textarea type="text" class="form-control" name="cardiovascular_respiratorio" required>{{$anamnesis_sistema->cardiovascular_respiratorio}}</textarea>
                                         </div>
                                         @endif
                                         @if($anamnesis_sistema->gastro_intestinal <> 'N/A')
                                             <div class="col-md-12">
                                                 <label><b>Gastro-intestinal</b></label>
-                                                <input type="text" class="form-control" name="gastro_intestinal" value="{{$anamnesis_sistema->gastro_intestinal}}" required>
+                                                <textarea type="text" class="form-control" name="gastro_intestinal" required>{{$anamnesis_sistema->gastro_intestinal}}</textarea>
                                             </div>
                                             @endif
                                             @if($anamnesis_sistema->genito_urinario <> 'N/A')
                                                 <div class="col-md-12">
                                                     <label><b>Genito-urinario</b></label>
-                                                    <input type="text" class="form-control" name="genito_urinario" value="{{$anamnesis_sistema->genito_urinario}}" required>
+                                                    <textarea type="text" class="form-control" name="genito_urinario" required>{{$anamnesis_sistema->genito_urinario}}</textarea>
                                                 </div>
                                                 @endif
                                                 @if($anamnesis_sistema->hematologico <> 'N/A')
                                                     <div class="col-md-12">
                                                         <label><b>Hematologico</b></label>
-                                                        <input type="text" class="form-control" name="hematologico" value="{{$anamnesis_sistema->hematologico}}" required>
+                                                        <textarea type="text" class="form-control" name="hematologico" required>{{$anamnesis_sistema->hematologico}}</textarea>
                                                     </div>
                                                     @endif
                                                     @if($anamnesis_sistema->dermatologico <> 'N/A')
                                                         <div class="col-md-12">
                                                             <label><b>Dermatologico</b></label>
-                                                            <input type="text" class="form-control" name="dermatologico" value="{{$anamnesis_sistema->dermatologico}}" required>
+                                                            <textarea type="text" class="form-control" name="dermatologico"  required>{{$anamnesis_sistema->dermatologico}}</textarea>
                                                         </div>
                                                         @endif
                                                         @if($anamnesis_sistema->neurologico <> 'N/A')
                                                             <div class="col-md-12">
                                                                 <label><b>Neurologico</b></label>
-                                                                <input type="text" class="form-control" name="neurologico" value="{{$anamnesis_sistema->neurologico}}" required>
+                                                                <textarea type="text" class="form-control" name="neurologico" required>{{$anamnesis_sistema->neurologico}}</textarea>
                                                             </div>
                                                             @endif
                                                             @if($anamnesis_sistema->locomotor <> 'N/A')
                                                                 <div class="col-md-12">
                                                                     <label><b>Locomotor</b></label>
-                                                                    <input type="text" class="form-control" name="locomotor" value="{{$anamnesis_sistema->locomotor}}" required>
+                                                                    <textarea type="text" class="form-control" name="locomotor" required>{{$anamnesis_sistema->locomotor}}</textarea>
                                                                 </div>
                                                                 @endif
 
@@ -756,7 +761,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <label><b>Motivo de internacion</b></label>
-                                        <input type="text" class="form-control" name="motivo_de_internacion" value="{{$motivo_de_internacion->motivo_internacion}}" required>
+                                        <textarea type="text" class="form-control" name="motivo_de_internacion" required>{{$motivo_de_internacion->motivo_internacion}}</textarea>
                                     </div>
                                 </div><br>
                                 <a href="{{ route('historial.show', $n_ser->id_servicio)}}" class="btn btn-danger btn-sm"><i class="fa fa-reply"></i> Cancelar</a>
@@ -782,7 +787,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <label><b>Historia de enfermedad actual</b></label>
-                                        <input type="text" class="form-control" name="historia_de_enfermedad_actual" value="{{$historia_enfermedad_actual->historia_de_enfermedad_actual}}" required>
+                                        <textarea type="text" class="form-control" name="historia_de_enfermedad_actual" required>{{$historia_enfermedad_actual->historia_de_enfermedad_actual}}</textarea>
                                     </div>
                                 </div><br>
                                 <a href="{{ route('historial.show', $n_ser->id_servicio)}}" class="btn btn-danger btn-sm"><i class="fa fa-reply"></i> Cancelar</a>
@@ -808,176 +813,177 @@
                                         @if($examen_fisico_general->examen_fisico_general <> 'N/A')
                                             <div class="col-md-12">
                                                 <label><b>Examen fisico general</b></label>
-                                                <input type="text" class="form-control" name="examen_fisico_general" value="{{$examen_fisico_general->examen_fisico_general}}" required>
+                                                <textarea type="text" class="form-control" name="examen_fisico_general" required>{{$examen_fisico_general->examen_fisico_general}}</textarea>
                                             </div>
                                             @endif
                                             @if($examen_fisico_general->estado_de_conciencia <> 'N/A')
                                                 <div class="col-md-12">
                                                     <label><b>Estado de conciencia</b></label>
-                                                    <input type="text" class="form-control" name="estado_de_conciencia" value="{{$examen_fisico_general->estado_de_conciencia}}" required>
+                                                    <textarea type="text" class="form-control" name="estado_de_conciencia"  required>{{$examen_fisico_general->estado_de_conciencia}}</textarea>
                                                 </div>
                                                 @endif
                                                 @if($examen_fisico_general->color_piel_mucosa <> 'N/A')
                                                     <div class="col-md-12">
                                                         <label><b>Color piel mucosa</b></label>
-                                                        <input type="text" class="form-control" name="color_piel_mucosa" value="{{$examen_fisico_general->color_piel_mucosa}}" required>
+                                                        <textarea type="text" class="form-control" name="color_piel_mucosa" required>{{$examen_fisico_general->color_piel_mucosa}}</textarea>
                                                     </div>
                                                     @endif
                                                     @if($examen_fisico_general->constitucion <> 'N/A')
                                                         <div class="col-md-12">
                                                             <label><b>Constitucion</b></label>
-                                                            <input type="text" class="form-control" name="constitucion" value="{{$examen_fisico_general->constitucion}}" required>
+                                                            <textarea type="text" class="form-control" name="constitucion" required>{{$examen_fisico_general->constitucion}}</textarea>
                                                         </div>
                                                         @endif
                                                         @if($examen_fisico_general->marcha <> 'N/A')
                                                             <div class="col-md-12">
                                                                 <label><b>Marcha</b></label>
-                                                                <input type="text" class="form-control" name="marcha" value="{{$examen_fisico_general->marcha}}" required>
+                                                                <textarea type="text" class="form-control" name="marcha" required>{{$examen_fisico_general->marcha}}</textarea>
                                                             </div>
                                                             @endif
                                                             @if($examen_fisico_general->posicion <> 'N/A')
                                                                 <div class="col-md-12">
                                                                     <label><b>Posicion</b></label>
-                                                                    <input type="text" class="form-control" name="posicion" value="{{$examen_fisico_general->posicion}}" required>
+                                                                    <textarea type="text" class="form-control" name="posicion" required>{{$examen_fisico_general->posicion}}</textarea>
                                                                 </div>
                                                                 @endif
                                                                 @if($examen_fisico_general->estado_hidratacion <> 'N/A')
                                                                     <div class="col-md-12">
                                                                         <label><b>Estado hidratacion</b></label>
-                                                                        <input type="text" class="form-control" name="estado_hidratacion" value="{{$examen_fisico_general->estado_hidratacion}}" required>
+                                                                        <textarea type="text" class="form-control" name="estado_hidratacion" required>{{$examen_fisico_general->estado_hidratacion}}</textarea>
                                                                     </div>
                                                                     @endif
 
                                                                     @if($examen_fisico_general->biotipo <> 'N/A')
                                                                         <div class="col-md-12">
                                                                             <label><b>Biotipo</b></label>
-                                                                            <input type="text" class="form-control" name="biotipo" value="{{$examen_fisico_general->biotipo}}" required>
+                                                                            <textarea type="text" class="form-control" name="biotipo"  required>{{$examen_fisico_general->biotipo}}</textarea>
                                                                         </div>
                                                                         @endif
                                                                         @if($examen_fisico_general->facies <> 'N/A')
                                                                             <div class="col-md-12">
                                                                                 <label><b>Facies</b></label>
-                                                                                <input type="text" class="form-control" name="facies" value="{{$examen_fisico_general->facies}}" required>
+                                                                                <textarea type="text" class="form-control" name="facies" required>{{$examen_fisico_general->facies}}</textarea>
                                                                             </div>
                                                                             @endif
                                                                             @if($examen_fisico_general->tension_arterial <> 'N/A')
                                                                                 <div class="col-md-12">
                                                                                     <label><b>Tension arterial</b></label>
-                                                                                    <input type="text" class="form-control" name="tension_arterial" value="{{$examen_fisico_general->tension_arterial}}" required>
+                                                                                    <textarea type="text" class="form-control" name="tension_arterial" required>{{$examen_fisico_general->tension_arterial}}</textarea>
                                                                                 </div>
                                                                                 @endif
                                                                                 @if($examen_fisico_general->tension_arterial_media <> 'N/A')
                                                                                     <div class="col-md-12">
                                                                                         <label><b>Tension arterial media</b></label>
-                                                                                        <input type="text" class="form-control" name="tension_arterial_media" value="{{$examen_fisico_general->tension_arterial_media}}" required>
+                                                                                        <textarea type="text" class="form-control" name="tension_arterial_media" required>{{$examen_fisico_general->tension_arterial_media}}</textarea>
                                                                                     </div>
                                                                                     @endif
                                                                                     @if($examen_fisico_general->frecuencia_cardiaca <> 'N/A')
                                                                                         <div class="col-md-12">
                                                                                             <label><b>Frecuencia cardiaca</b></label>
-                                                                                            <input type="text" class="form-control" name="frecuencia_cardiaca" value="{{$examen_fisico_general->frecuencia_cardiaca}}" required>
+                                                                                            <textarea type="text" class="form-control" name="frecuencia_cardiaca" required>{{$examen_fisico_general->frecuencia_cardiaca}}</textarea>
                                                                                         </div>
                                                                                         @endif
                                                                                         @if($examen_fisico_general->temperatura <> 'N/A')
                                                                                             <div class="col-md-12">
                                                                                                 <label><b>Temperatura</b></label>
-                                                                                                <input type="text" class="form-control" name="temperatura" value="{{$examen_fisico_general->temperatura}}" required>
+
+                                                                                                <textarea type="text" class="form-control" name="temperatura" required>{{$examen_fisico_general->temperatura}}</textarea>
                                                                                             </div>
                                                                                             @endif
                                                                                             @if($examen_fisico_general->peso <> 'N/A')
                                                                                                 <div class="col-md-12">
                                                                                                     <label><b>Peso</b></label>
-                                                                                                    <input type="text" class="form-control" name="peso" value="{{$examen_fisico_general->peso}}" required>
+                                                                                                    <textarea type="text" class="form-control" name="peso" required>{{$examen_fisico_general->peso}}</textarea>
                                                                                                 </div>
                                                                                                 @endif
                                                                                                 @if($examen_fisico_general->talla <> 'N/A')
                                                                                                     <div class="col-md-12">
                                                                                                         <label><b>Talla</b></label>
-                                                                                                        <input type="text" class="form-control" name="talla" value="{{$examen_fisico_general->talla}}" required>
+                                                                                                        <textarea type="text" class="form-control" name="talla" required>{{$examen_fisico_general->talla}}</textarea>
                                                                                                     </div>
                                                                                                     @endif
                                                                                                     @if($examen_fisico_general->imc <> 'N/A')
                                                                                                         <div class="col-md-12">
                                                                                                             <label><b>IMC</b></label>
-                                                                                                            <input type="text" class="form-control" name="imc" value="{{$examen_fisico_general->imc}}" required>
+                                                                                                            <textarea type="text" class="form-control" name="imc" required>{{$examen_fisico_general->imc}}</textarea>
                                                                                                         </div>
                                                                                                         @endif
                                                                                                         @if($examen_fisico_general->spo2 <> 'N/A')
                                                                                                             <div class="col-md-12">
                                                                                                                 <label><b>Sapo2</b></label>
-                                                                                                                <input type="text" class="form-control" name="spo2" value="{{$examen_fisico_general->spo2}}" required>
+                                                                                                                <textarea type="text" class="form-control" name="spo2" required>{{$examen_fisico_general->spo2}}</textarea>
                                                                                                             </div>
                                                                                                             @endif
                                                                                                             @if($examen_fisico_general->sato2 <> 'N/A')
                                                                                                                 <div class="col-md-12">
                                                                                                                     <label><b>Sato2</b></label>
-                                                                                                                    <input type="text" class="form-control" name="sato2" value="{{$examen_fisico_general->sato2}}" required>
+                                                                                                                    <textarea type="text" class="form-control" name="sato2" required>{{$examen_fisico_general->sato2}}</textarea>
                                                                                                                 </div>
                                                                                                                 @endif
                                                                                                                 @if($examen_fisico_general->fio2 <> 'N/A')
                                                                                                                     <div class="col-md-12">
                                                                                                                         <label><b>Fio2</b></label>
-                                                                                                                        <input type="text" class="form-control" name="fio2" value="{{$examen_fisico_general->fio2}}" required>
+                                                                                                                        <textarea type="text" class="form-control" name="fio2" required>{{$examen_fisico_general->fio2}}</textarea>
                                                                                                                     </div>
                                                                                                                     @endif
                                                                                                                     @if($examen_fisico_general->sc <> 'N/A')
                                                                                                                         <div class="col-md-12">
                                                                                                                             <label><b>SC</b></label>
-                                                                                                                            <input type="text" class="form-control" name="sc" value="{{$examen_fisico_general->sc}}" required>
+                                                                                                                            <textarea type="text" class="form-control" name="sc" required>{{$examen_fisico_general->sc}}</textarea>
                                                                                                                         </div>
                                                                                                                         @endif
                                                                                                                         @if($examen_fisico_general->apgar <> 'N/A')
                                                                                                                             <div class="col-md-12">
                                                                                                                                 <label><b>Apgar</b></label>
-                                                                                                                                <input type="text" class="form-control" name="apgar" value="{{$examen_fisico_general->apgar}}" required>
+                                                                                                                                <textarea type="text" class="form-control" name="apgar" required>{{$examen_fisico_general->apgar}}</textarea>
                                                                                                                             </div>
                                                                                                                             @endif
                                                                                                                             @if($examen_fisico_general->silverman <> 'N/A')
                                                                                                                                 <div class="col-md-12">
                                                                                                                                     <label><b>Silverman</b></label>
-                                                                                                                                    <input type="text" class="form-control" name="silverman" value="{{$examen_fisico_general->silverman}}" required>
+                                                                                                                                    <textarea type="text" class="form-control" name="silverman" required>{{$examen_fisico_general->silverman}}</textarea>
                                                                                                                                 </div>
                                                                                                                                 @endif
                                                                                                                                 @if($examen_fisico_general->edad_por_capurro <> 'N/A')
                                                                                                                                     <div class="col-md-12">
                                                                                                                                         <label><b>Edad por capurro</b></label>
-                                                                                                                                        <input type="text" class="form-control" name="edad_por_capurro" value="{{$examen_fisico_general->edad_por_capurro}}" required>
+                                                                                                                                        <textarea type="text" class="form-control" name="edad_por_capurro" required>{{$examen_fisico_general->edad_por_capurro}}</textarea>
                                                                                                                                     </div>
                                                                                                                                     @endif
                                                                                                                                     @if($examen_fisico_general->pa <> 'N/A')
                                                                                                                                         <div class="col-md-12">
                                                                                                                                             <label><b>PA</b></label>
-                                                                                                                                            <input type="text" class="form-control" name="pa" value="{{$examen_fisico_general->pa}}" required>
+                                                                                                                                            <textarea type="text" class="form-control" name="pa" required>{{$examen_fisico_general->pa}}</textarea>
                                                                                                                                         </div>
                                                                                                                                         @endif
                                                                                                                                         @if($examen_fisico_general->somatometria <> 'N/A')
                                                                                                                                             <div class="col-md-12">
                                                                                                                                                 <label><b>Somatometria</b></label>
-                                                                                                                                                <input type="text" class="form-control" name="somatometria" value="{{$examen_fisico_general->somatometria}}" required>
+                                                                                                                                                <textarea type="text" class="form-control" name="somatometria" required>{{$examen_fisico_general->somatometria}}</textarea>
                                                                                                                                             </div>
                                                                                                                                             @endif
                                                                                                                                             @if($examen_fisico_general->saturacion <> 'N/A')
                                                                                                                                                 <div class="col-md-12">
                                                                                                                                                     <label><b>Saturacion</b></label>
-                                                                                                                                                    <input type="text" class="form-control" name="saturacion" value="{{$examen_fisico_general->saturacion}}" required>
+                                                                                                                                                    <textarea type="text" class="form-control" name="saturacion"  required>{{$examen_fisico_general->saturacion}}</textarea>
                                                                                                                                                 </div>
                                                                                                                                                 @endif
                                                                                                                                                 @if($examen_fisico_general->perimetro_cefalico <> 'N/A')
                                                                                                                                                     <div class="col-md-12">
                                                                                                                                                         <label><b>Perimetro cefalico</b></label>
-                                                                                                                                                        <input type="text" class="form-control" name="perimetro_cefalico" value="{{$examen_fisico_general->perimetro_cefalico}}" required>
+                                                                                                                                                        <textarea type="text" class="form-control" name="perimetro_cefalico" required>{{$examen_fisico_general->perimetro_cefalico}}</textarea>
                                                                                                                                                     </div>
                                                                                                                                                     @endif
                                                                                                                                                     @if($examen_fisico_general->perimetro_toracico <> 'N/A')
                                                                                                                                                         <div class="col-md-12">
                                                                                                                                                             <label><b>Perimetro toracico</b></label>
-                                                                                                                                                            <input type="text" class="form-control" name="perimetro_toracico" value="{{$examen_fisico_general->perimetro_toracico}}" required>
+                                                                                                                                                            <textarea type="text" class="form-control" name="perimetro_toracico" required>{{$examen_fisico_general->perimetro_toracico}}</textarea>
                                                                                                                                                         </div>
                                                                                                                                                         @endif
                                                                                                                                                         @if($examen_fisico_general->perimetro_abdominal <> 'N/A')
                                                                                                                                                             <div class="col-md-12">
                                                                                                                                                                 <label><b>Perimetro abdominal</b></label>
-                                                                                                                                                                <input type="text" class="form-control" name="perimetro_abdominal" value="{{$examen_fisico_general->perimetro_abdominal}}" required>
+                                                                                                                                                                <textarea type="text" class="form-control" name="perimetro_abdominal" required>{{$examen_fisico_general->perimetro_abdominal}}</textarea>
                                                                                                                                                             </div>
                                                                                                                                                             @endif
                                     </div><br>
@@ -1005,320 +1011,320 @@
                                         @if($examen_fisico_segmentado->cabeza <> 'N/A')
                                             <div class="col-md-12">
                                                 <label><b>Cabeza</b></label>
-                                                <input type="text" class="form-control" name="cabeza" value="{{$examen_fisico_segmentado->cabeza}}" required>
+                                                <textarea type="text" class="form-control" name="cabeza" required>{{$examen_fisico_segmentado->cabeza}}</textarea>
                                             </div>
                                             @endif
                                             @if($examen_fisico_segmentado->frontales <> 'N/A')
                                                 <div class="col-md-12">
                                                     <label><b>Frontales</b></label>
-                                                    <input type="text" class="form-control" name="frontales" value="{{$examen_fisico_segmentado->frontales}}" required>
+                                                    <textarea type="text" class="form-control" name="frontales" required>{{$examen_fisico_segmentado->frontales}}</textarea>
                                                 </div>
                                                 @endif
                                                 @if($examen_fisico_segmentado->cabellos <> 'N/A')
                                                     <div class="col-md-12">
                                                         <label><b>Cabellos</b></label>
-                                                        <input type="text" class="form-control" name="cabellos" value="{{$examen_fisico_segmentado->cabellos}}" required>
+                                                        <textarea type="text" class="form-control" name="cabellos" required>{{$examen_fisico_segmentado->cabellos}}</textarea>
                                                     </div>
                                                     @endif
                                                     @if($examen_fisico_segmentado->cara <> 'N/A')
                                                         <div class="col-md-12">
                                                             <label><b>Cara</b></label>
-                                                            <input type="text" class="form-control" name="cara" value="{{$examen_fisico_segmentado->cara}}" required>
+                                                            <textarea type="text" class="form-control" name="cara" required>{{$examen_fisico_segmentado->cara}}</textarea>
                                                         </div>
                                                         @endif
                                                         @if($examen_fisico_segmentado->apertura_ocular <> 'N/A')
                                                             <div class="col-md-12">
                                                                 <label><b>Apertura ocular</b></label>
-                                                                <input type="text" class="form-control" name="apertura_ocular" value="{{$examen_fisico_segmentado->apertura_ocular}}" required>
+                                                                <textarea type="text" class="form-control" name="apertura_ocular" required>{{$examen_fisico_segmentado->apertura_ocular}}</textarea>
                                                             </div>
                                                             @endif
                                                             @if($examen_fisico_segmentado->ojos <> 'N/A')
                                                                 <div class="col-md-12">
                                                                     <label><b>Ojos</b></label>
-                                                                    <input type="text" class="form-control" name="ojos" value="{{$examen_fisico_segmentado->ojos}}" required>
+                                                                    <textarea type="text" class="form-control" name="ojos" required>{{$examen_fisico_segmentado->ojos}}</textarea>
                                                                 </div>
                                                                 @endif
                                                                 @if($examen_fisico_segmentado->nariz <> 'N/A')
                                                                     <div class="col-md-12">
                                                                         <label><b>Nariz</b></label>
-                                                                        <input type="text" class="form-control" name="nariz" value="{{$examen_fisico_segmentado->nariz}}" required>
+                                                                        <textarea type="text" class="form-control" name="nariz" required>{{$examen_fisico_segmentado->nariz}}</textarea>
                                                                     </div>
                                                                     @endif
                                                                     @if($examen_fisico_segmentado->fosas_nasales <> 'N/A')
                                                                         <div class="col-md-12">
                                                                             <label><b>Fosas nasales</b></label>
-                                                                            <input type="text" class="form-control" name="fosas_nasales" value="{{$examen_fisico_segmentado->fosas_nasales}}" required>
+                                                                            <textarea type="text" class="form-control" name="fosas_nasales" required>{{$examen_fisico_segmentado->fosas_nasales}}</textarea>
                                                                         </div>
                                                                         @endif
                                                                         @if($examen_fisico_segmentado->piramide_nasal <> 'N/A')
                                                                             <div class="col-md-12">
                                                                                 <label><b>Piramide nasal</b></label>
-                                                                                <input type="text" class="form-control" name="piramide_nasal" value="{{$examen_fisico_segmentado->piramide_nasal}}" required>
+                                                                                <textarea type="text" class="form-control" name="piramide_nasal" required>{{$examen_fisico_segmentado->piramide_nasal}}</textarea>
                                                                             </div>
                                                                             @endif
                                                                             @if($examen_fisico_segmentado->coanas <> 'N/A')
                                                                                 <div class="col-md-12">
                                                                                     <label><b>Coanas</b></label>
-                                                                                    <input type="text" class="form-control" name="coanas" value="{{$examen_fisico_segmentado->coanas}}" required>
+                                                                                    <textarea type="text" class="form-control" name="coanas" required>{{$examen_fisico_segmentado->coanas}}</textarea>
                                                                                 </div>
                                                                                 @endif
                                                                                 @if($examen_fisico_segmentado->pabellon_auricular <> 'N/A')
                                                                                     <div class="col-md-12">
                                                                                         <label><b>Pabellon auricular</b></label>
-                                                                                        <input type="text" class="form-control" name="pabellon_auricular" value="{{$examen_fisico_segmentado->pabellon_auricular}}" required>
+                                                                                        <textarea type="text" class="form-control" name="pabellon_auricular" required>{{$examen_fisico_segmentado->pabellon_auricular}}</textarea>
                                                                                     </div>
                                                                                     @endif
                                                                                     @if($examen_fisico_segmentado->curvatura <> 'N/A')
                                                                                         <div class="col-md-12">
                                                                                             <label><b>Curvatura</b></label>
-                                                                                            <input type="text" class="form-control" name="curvatura" value="{{$examen_fisico_segmentado->curvatura}}" required>
+                                                                                            <textarea type="text" class="form-control" name="curvatura" required>{{$examen_fisico_segmentado->curvatura}}</textarea>
                                                                                         </div>
                                                                                         @endif
                                                                                         @if($examen_fisico_segmentado->boca <> 'N/A')
                                                                                             <div class="col-md-12">
                                                                                                 <label><b>Boca</b></label>
-                                                                                                <input type="text" class="form-control" name="boca" value="{{$examen_fisico_segmentado->boca}}" required>
+                                                                                                <textarea type="text" class="form-control" name="boca" required>{{$examen_fisico_segmentado->boca}}</textarea>
                                                                                             </div>
                                                                                             @endif
                                                                                             @if($examen_fisico_segmentado->apertura_bucal <> 'N/A')
                                                                                                 <div class="col-md-12">
                                                                                                     <label><b>Apertura bucal</b></label>
-                                                                                                    <input type="text" class="form-control" name="apertura_bucal" value="{{$examen_fisico_segmentado->apertura_bucal}}" required>
+                                                                                                    <textarea type="text" class="form-control" name="apertura_bucal" required>{{$examen_fisico_segmentado->apertura_bucal}}</textarea>
                                                                                                 </div>
                                                                                                 @endif
                                                                                                 @if($examen_fisico_segmentado->paladar <> 'N/A')
                                                                                                     <div class="col-md-12">
                                                                                                         <label><b>Paladar</b></label>
-                                                                                                        <input type="text" class="form-control" name="paladar" value="{{$examen_fisico_segmentado->paladar}}" required>
+                                                                                                        <textarea type="text" class="form-control" name="paladar" required>{{$examen_fisico_segmentado->paladar}}</textarea>
                                                                                                     </div>
                                                                                                     @endif
                                                                                                     @if($examen_fisico_segmentado->mucosa_oral <> 'N/A')
                                                                                                         <div class="col-md-12">
                                                                                                             <label><b>Mucosa oral</b></label>
-                                                                                                            <input type="text" class="form-control" name="mucosa_oral" value="{{$examen_fisico_segmentado->mucosa_oral}}" required>
+                                                                                                            <textarea type="text" class="form-control" name="mucosa_oral" required>{{$examen_fisico_segmentado->mucosa_oral}}</textarea>
                                                                                                         </div>
                                                                                                         @endif
                                                                                                         @if($examen_fisico_segmentado->pulmones <> 'N/A')
                                                                                                             <div class="col-md-12">
                                                                                                                 <label><b>Pulmones</b></label>
-                                                                                                                <input type="text" class="form-control" name="pulmones" value="{{$examen_fisico_segmentado->pulmones}}" required>
+                                                                                                                <textarea type="text" class="form-control" name="pulmones" required>{{$examen_fisico_segmentado->pulmones}}</textarea>
                                                                                                             </div>
                                                                                                             @endif
                                                                                                             @if($examen_fisico_segmentado->pulmones_inspeccion <> 'N/A')
                                                                                                                 <div class="col-md-12">
                                                                                                                     <label><b>Pulmones inspeccion</b></label>
-                                                                                                                    <input type="text" class="form-control" name="pulmones_inspeccion" value="{{$examen_fisico_segmentado->pulmones_inspeccion}}" required>
+                                                                                                                    <textarea type="text" class="form-control" name="pulmones_inspeccion" required>{{$examen_fisico_segmentado->pulmones_inspeccion}}</textarea>
                                                                                                                 </div>
                                                                                                                 @endif
                                                                                                                 @if($examen_fisico_segmentado->pulmones_palpacion <> 'N/A')
                                                                                                                     <div class="col-md-12">
                                                                                                                         <label><b>Pulmones palpacion</b></label>
-                                                                                                                        <input type="text" class="form-control" name="pulmones_palpacion" value="{{$examen_fisico_segmentado->pulmones_palpacion}}" required>
+                                                                                                                        <textarea type="text" class="form-control" name="pulmones_palpacion" required>{{$examen_fisico_segmentado->pulmones_palpacion}}</textarea>
                                                                                                                     </div>
                                                                                                                     @endif
                                                                                                                     @if($examen_fisico_segmentado->pulmones_percusion <> 'N/A')
                                                                                                                         <div class="col-md-12">
                                                                                                                             <label><b>Pulmones percusion</b></label>
-                                                                                                                            <input type="text" class="form-control" name="pulmones_percusion" value="{{$examen_fisico_segmentado->pulmones_percusion}}" required>
+                                                                                                                            <textarea type="text" class="form-control" name="pulmones_percusion" required>{{$examen_fisico_segmentado->pulmones_percusion}}</textarea>
                                                                                                                         </div>
                                                                                                                         @endif
                                                                                                                         @if($examen_fisico_segmentado->pulmones_auscultacion <> 'N/A')
                                                                                                                             <div class="col-md-12">
                                                                                                                                 <label><b>Pulmones auscultacion</b></label>
-                                                                                                                                <input type="text" class="form-control" name="pulmones_auscultacion" value="{{$examen_fisico_segmentado->pulmones_auscultacion}}" required>
+                                                                                                                                <textarea type="text" class="form-control" name="pulmones_auscultacion" required>{{$examen_fisico_segmentado->pulmones_auscultacion}}</textarea>
                                                                                                                             </div>
                                                                                                                             @endif
                                                                                                                             @if($examen_fisico_segmentado->corazon <> 'N/A')
                                                                                                                                 <div class="col-md-12">
                                                                                                                                     <label><b>Corazon</b></label>
-                                                                                                                                    <input type="text" class="form-control" name="corazon" value="{{$examen_fisico_segmentado->corazon}}" required>
+                                                                                                                                    <textarea type="text" class="form-control" name="corazon" required>{{$examen_fisico_segmentado->corazon}}</textarea>
                                                                                                                                 </div>
                                                                                                                                 @endif
                                                                                                                                 @if($examen_fisico_segmentado->corazon_inspeccion <> 'N/A')
                                                                                                                                     <div class="col-md-12">
                                                                                                                                         <label><b>Corazon inspeccion</b></label>
-                                                                                                                                        <input type="text" class="form-control" name="corazon_inspeccion" value="{{$examen_fisico_segmentado->corazon_inspeccion}}" required>
+                                                                                                                                        <textarea type="text" class="form-control" name="corazon_inspeccion" required>{{$examen_fisico_segmentado->corazon_inspeccion}}</textarea>
                                                                                                                                     </div>
                                                                                                                                     @endif
                                                                                                                                     @if($examen_fisico_segmentado->corazon_palpacion <> 'N/A')
                                                                                                                                         <div class="col-md-12">
                                                                                                                                             <label><b>Corazon palpacion</b></label>
-                                                                                                                                            <input type="text" class="form-control" name="corazon_palpacion" value="{{$examen_fisico_segmentado->corazon_palpacion}}" required>
+                                                                                                                                            <textarea type="text" class="form-control" name="corazon_palpacion" required>{{$examen_fisico_segmentado->corazon_palpacion}}</textarea>
                                                                                                                                         </div>
                                                                                                                                         @endif
                                                                                                                                         @if($examen_fisico_segmentado->corazon_percusion <> 'N/A')
                                                                                                                                             <div class="col-md-12">
                                                                                                                                                 <label><b>Corazon percusion</b></label>
-                                                                                                                                                <input type="text" class="form-control" name="corazon_percusion" value="{{$examen_fisico_segmentado->corazon_percusion}}" required>
+                                                                                                                                                <textarea type="text" class="form-control" name="corazon_percusion" required>{{$examen_fisico_segmentado->corazon_percusion}}</textarea>
                                                                                                                                             </div>
                                                                                                                                             @endif
                                                                                                                                             @if($examen_fisico_segmentado->corazon_auscultacion <> 'N/A')
                                                                                                                                                 <div class="col-md-12">
                                                                                                                                                     <label><b>Corazon auscultacion</b></label>
-                                                                                                                                                    <input type="text" class="form-control" name="corazon_auscultacion" value="{{$examen_fisico_segmentado->corazon_auscultacion}}" required>
+                                                                                                                                                    <textarea type="text" class="form-control" name="corazon_auscultacion" required>{{$examen_fisico_segmentado->corazon_auscultacion}}</textarea>
                                                                                                                                                 </div>
                                                                                                                                                 @endif
                                                                                                                                                 @if($examen_fisico_segmentado->abdomen <> 'N/A')
                                                                                                                                                     <div class="col-md-12">
                                                                                                                                                         <label><b>Abdomen</b></label>
-                                                                                                                                                        <input type="text" class="form-control" name="abdomen" value="{{$examen_fisico_segmentado->abdomen}}" required>
+                                                                                                                                                        <textarea type="text" class="form-control" name="abdomen" required>{{$examen_fisico_segmentado->abdomen}}</textarea>
                                                                                                                                                     </div>
                                                                                                                                                     @endif
                                                                                                                                                     @if($examen_fisico_segmentado->abdomen_inspeccion <> 'N/A')
                                                                                                                                                         <div class="col-md-12">
                                                                                                                                                             <label><b>Abdomen inspeccion</b></label>
-                                                                                                                                                            <input type="text" class="form-control" name="abdomen_inspeccion" value="{{$examen_fisico_segmentado->abdomen_inspeccion}}" required>
+                                                                                                                                                            <textarea type="text" class="form-control" name="abdomen_inspeccion" required>{{$examen_fisico_segmentado->abdomen_inspeccion}}</textarea>
                                                                                                                                                         </div>
                                                                                                                                                         @endif
                                                                                                                                                         @if($examen_fisico_segmentado->abdomen_palpacion <> 'N/A')
                                                                                                                                                             <div class="col-md-12">
                                                                                                                                                                 <label><b>Abdomen palpacion</b></label>
-                                                                                                                                                                <input type="text" class="form-control" name="abdomen_palpacion" value="{{$examen_fisico_segmentado->abdomen_palpacion}}" required>
+                                                                                                                                                                <textarea type="text" class="form-control" name="abdomen_palpacion" required>{{$examen_fisico_segmentado->abdomen_palpacion}}</textarea>
                                                                                                                                                             </div>
                                                                                                                                                             @endif
                                                                                                                                                             @if($examen_fisico_segmentado->abdomen_percusion <> 'N/A')
                                                                                                                                                                 <div class="col-md-12">
                                                                                                                                                                     <label><b>Abdomen percusion</b></label>
-                                                                                                                                                                    <input type="text" class="form-control" name="abdomen_percusion" value="{{$examen_fisico_segmentado->abdomen_percusion}}" required>
+                                                                                                                                                                    <textarea type="text" class="form-control" name="abdomen_percusion" required>{{$examen_fisico_segmentado->abdomen_percusion}}</textarea>
                                                                                                                                                                 </div>
                                                                                                                                                                 @endif
                                                                                                                                                                 @if($examen_fisico_segmentado->precordio <> 'N/A')
                                                                                                                                                                     <div class="col-md-12">
                                                                                                                                                                         <label><b>Precordio</b></label>
-                                                                                                                                                                        <input type="text" class="form-control" name="precordio" value="{{$examen_fisico_segmentado->precordio}}" required>
+                                                                                                                                                                        <textarea type="text" class="form-control" name="precordio" required>{{$examen_fisico_segmentado->precordio}}</textarea>
                                                                                                                                                                     </div>
                                                                                                                                                                     @endif
                                                                                                                                                                     @if($examen_fisico_segmentado->cordon_umbilical <> 'N/A')
                                                                                                                                                                         <div class="col-md-12">
                                                                                                                                                                             <label><b>Cordon umbilical</b></label>
-                                                                                                                                                                            <input type="text" class="form-control" name="cordon_umbilical" value="{{$examen_fisico_segmentado->cordon_umbilical}}" required>
+                                                                                                                                                                            <textarea type="text" class="form-control" name="cordon_umbilical" required>{{$examen_fisico_segmentado->cordon_umbilical}}</textarea>
                                                                                                                                                                         </div>
                                                                                                                                                                         @endif
                                                                                                                                                                         @if($examen_fisico_segmentado->relacion_arteriovenosa <> 'N/A')
                                                                                                                                                                             <div class="col-md-12">
                                                                                                                                                                                 <label><b>Relacion arteriovenosa</b></label>
-                                                                                                                                                                                <input type="text" class="form-control" name="relacion_arteriovenosa" value="{{$examen_fisico_segmentado->relacion_arteriovenosa}}" required>
+                                                                                                                                                                                <textarea type="text" class="form-control" name="relacion_arteriovenosa" required>{{$examen_fisico_segmentado->relacion_arteriovenosa}}</textarea>
                                                                                                                                                                             </div>
                                                                                                                                                                             @endif
                                                                                                                                                                             @if($examen_fisico_segmentado->genitales_acuerdo_sexo_edad <> 'N/A')
                                                                                                                                                                                 <div class="col-md-12">
                                                                                                                                                                                     <label><b>Genitales de acuerdo a sexo y edad</b></label>
-                                                                                                                                                                                    <input type="text" class="form-control" name="genitales_acuerdo_sexo_edad" value="{{$examen_fisico_segmentado->genitales_acuerdo_sexo_edad}}" required>
+                                                                                                                                                                                    <textarea type="text" class="form-control" name="genitales_acuerdo_sexo_edad" required>{{$examen_fisico_segmentado->genitales_acuerdo_sexo_edad}}</textarea>
                                                                                                                                                                                 </div>
                                                                                                                                                                                 @endif
                                                                                                                                                                                 @if($examen_fisico_segmentado->pies <> 'N/A')
                                                                                                                                                                                     <div class="col-md-12">
                                                                                                                                                                                         <label><b>Pies</b></label>
-                                                                                                                                                                                        <input type="text" class="form-control" name="pies" value="{{$examen_fisico_segmentado->pies}}" required>
+                                                                                                                                                                                        <textarea type="text" class="form-control" name="pies" required>{{$examen_fisico_segmentado->pies}}</textarea>
                                                                                                                                                                                     </div>
                                                                                                                                                                                     @endif
                                                                                                                                                                                     @if($examen_fisico_segmentado->surcos_plantales <> 'N/A')
                                                                                                                                                                                         <div class="col-md-12">
                                                                                                                                                                                             <label><b>Surcos plantales</b></label>
-                                                                                                                                                                                            <input type="text" class="form-control" name="surcos_plantales" value="{{$examen_fisico_segmentado->surcos_plantales}}" required>
+                                                                                                                                                                                            <textarea type="text" class="form-control" name="surcos_plantales" required>{{$examen_fisico_segmentado->surcos_plantales}}</textarea>
                                                                                                                                                                                         </div>
                                                                                                                                                                                         @endif
                                                                                                                                                                                         @if($examen_fisico_segmentado->reflejos_succion <> 'N/A')
                                                                                                                                                                                             <div class="col-md-12">
                                                                                                                                                                                                 <label><b>Reflejos succion</b></label>
-                                                                                                                                                                                                <input type="text" class="form-control" name="reflejos_succion" value="{{$examen_fisico_segmentado->reflejos_succion}}" required>
+                                                                                                                                                                                                <textarea type="text" class="form-control" name="reflejos_succion" required>{{$examen_fisico_segmentado->reflejos_succion}}</textarea>
                                                                                                                                                                                             </div>
                                                                                                                                                                                             @endif
                                                                                                                                                                                             @if($examen_fisico_segmentado->genitourinarios <> 'N/A')
                                                                                                                                                                                                 <div class="col-md-12">
                                                                                                                                                                                                     <label><b>Genitourinarios</b></label>
-                                                                                                                                                                                                    <input type="text" class="form-control" name="genitourinarios" value="{{$examen_fisico_segmentado->genitourinarios}}" required>
+                                                                                                                                                                                                    <textarea type="text" class="form-control" name="genitourinarios" required>{{$examen_fisico_segmentado->genitourinarios}}</textarea>
                                                                                                                                                                                                 </div>
                                                                                                                                                                                                 @endif
                                                                                                                                                                                                 @if($examen_fisico_segmentado->extremidades <> 'N/A')
                                                                                                                                                                                                     <div class="col-md-12">
                                                                                                                                                                                                         <label><b>Extremidades</b></label>
-                                                                                                                                                                                                        <input type="text" class="form-control" name="extremidades" value="{{$examen_fisico_segmentado->extremidades}}" required>
+                                                                                                                                                                                                        <textarea type="text" class="form-control" name="extremidades" required>{{$examen_fisico_segmentado->extremidades}}</textarea>
                                                                                                                                                                                                     </div>
                                                                                                                                                                                                     @endif
                                                                                                                                                                                                     @if($examen_fisico_segmentado->neurologicos <> 'N/A')
                                                                                                                                                                                                         <div class="col-md-12">
                                                                                                                                                                                                             <label><b>Neurologicos</b></label>
-                                                                                                                                                                                                            <input type="text" class="form-control" name="neurologicos" value="{{$examen_fisico_segmentado->neurologicos}}" required>
+                                                                                                                                                                                                            <textarea type="text" class="form-control" name="neurologicos" required>{{$examen_fisico_segmentado->neurologicos}}</textarea>
                                                                                                                                                                                                         </div>
                                                                                                                                                                                                         @endif
                                                                                                                                                                                                         @if($examen_fisico_segmentado->craneo <> 'N/A')
                                                                                                                                                                                                             <div class="col-md-12">
                                                                                                                                                                                                                 <label><b>Craneo</b></label>
-                                                                                                                                                                                                                <input type="text" class="form-control" name="craneo" value="{{$examen_fisico_segmentado->craneo}}" required>
+                                                                                                                                                                                                                <textarea type="text" class="form-control" name="craneo" required>{{$examen_fisico_segmentado->craneo}}</textarea>
                                                                                                                                                                                                             </div>
                                                                                                                                                                                                             @endif
                                                                                                                                                                                                             @if($examen_fisico_segmentado->cavidad_bucal <> 'N/A')
                                                                                                                                                                                                                 <div class="col-md-12">
                                                                                                                                                                                                                     <label><b>Cavidad bucal</b></label>
-                                                                                                                                                                                                                    <input type="text" class="form-control" name="cavidad_bucal" value="{{$examen_fisico_segmentado->cavidad_bucal}}" required>
+                                                                                                                                                                                                                    <textarea type="text" class="form-control" name="cavidad_bucal" required>{{$examen_fisico_segmentado->cavidad_bucal}}</textarea>
                                                                                                                                                                                                                 </div>
                                                                                                                                                                                                                 @endif
                                                                                                                                                                                                                 @if($examen_fisico_segmentado->cuello <> 'N/A')
                                                                                                                                                                                                                     <div class="col-md-12">
                                                                                                                                                                                                                         <label><b>Cuello</b></label>
-                                                                                                                                                                                                                        <input type="text" class="form-control" name="cuello" value="{{$examen_fisico_segmentado->cuello}}" required>
+                                                                                                                                                                                                                        <textarea type="text" class="form-control" name="cuello" required>{{$examen_fisico_segmentado->cuello}}</textarea>
                                                                                                                                                                                                                     </div>
                                                                                                                                                                                                                     @endif
                                                                                                                                                                                                                     @if($examen_fisico_segmentado->cuello_inspeccion <> 'N/A')
                                                                                                                                                                                                                         <div class="col-md-12">
                                                                                                                                                                                                                             <label><b>Cuello inspeccion</b></label>
-                                                                                                                                                                                                                            <input type="text" class="form-control" name="cuello_inspeccion" value="{{$examen_fisico_segmentado->cuello_inspeccion}}" required>
+                                                                                                                                                                                                                            <textarea type="text" class="form-control" name="cuello_inspeccion" required>{{$examen_fisico_segmentado->cuello_inspeccion}}</textarea>
                                                                                                                                                                                                                         </div>
                                                                                                                                                                                                                         @endif
                                                                                                                                                                                                                         @if($examen_fisico_segmentado->cuello_palpacion <> 'N/A')
                                                                                                                                                                                                                             <div class="col-md-12">
                                                                                                                                                                                                                                 <label><b>Cuello palpacion</b></label>
-                                                                                                                                                                                                                                <input type="text" class="form-control" name="cuello_palpacion" value="{{$examen_fisico_segmentado->cuello_palpacion}}" required>
+                                                                                                                                                                                                                                <textarea type="text" class="form-control" name="cuello_palpacion" required>{{$examen_fisico_segmentado->cuello_palpacion}}</textarea>
                                                                                                                                                                                                                             </div>
                                                                                                                                                                                                                             @endif
                                                                                                                                                                                                                             @if($examen_fisico_segmentado->cuello_auscultacion <> 'N/A')
                                                                                                                                                                                                                                 <div class="col-md-12">
                                                                                                                                                                                                                                     <label><b>Cuello auscultacion</b></label>
-                                                                                                                                                                                                                                    <input type="text" class="form-control" name="cuello_auscultacion" value="{{$examen_fisico_segmentado->cuello_auscultacion}}" required>
+                                                                                                                                                                                                                                    <textarea type="text" class="form-control" name="cuello_auscultacion" required>{{$examen_fisico_segmentado->cuello_auscultacion}}</textarea>
                                                                                                                                                                                                                                 </div>
                                                                                                                                                                                                                                 @endif
                                                                                                                                                                                                                                 @if($examen_fisico_segmentado->torax <> 'N/A')
                                                                                                                                                                                                                                     <div class="col-md-12">
                                                                                                                                                                                                                                         <label><b>Torax</b></label>
-                                                                                                                                                                                                                                        <input type="text" class="form-control" name="torax" value="{{$examen_fisico_segmentado->torax}}" required>
+                                                                                                                                                                                                                                        <textarea type="text" class="form-control" name="torax" required>{{$examen_fisico_segmentado->torax}}</textarea>
                                                                                                                                                                                                                                     </div>
                                                                                                                                                                                                                                     @endif
 
                                                                                                                                                                                                                                     @if($examen_fisico_segmentado->torax_inspeccion_estatico <> 'N/A')
                                                                                                                                                                                                                                         <div class="col-md-12">
                                                                                                                                                                                                                                             <label><b>Torax inspeccion estatico</b></label>
-                                                                                                                                                                                                                                            <input type="text" class="form-control" name="torax_inspeccion_estatico" value="{{$examen_fisico_segmentado->torax_inspeccion_estatico}}" required>
+                                                                                                                                                                                                                                            <textarea type="text" class="form-control" name="torax_inspeccion_estatico" required>{{$examen_fisico_segmentado->torax_inspeccion_estatico}}</textarea>
                                                                                                                                                                                                                                         </div>
                                                                                                                                                                                                                                         @endif
                                                                                                                                                                                                                                         @if($examen_fisico_segmentado->torax_inspeccion_dinamico <> 'N/A')
                                                                                                                                                                                                                                             <div class="col-md-12">
                                                                                                                                                                                                                                                 <label><b>Torax inspeccion dinamico</b></label>
-                                                                                                                                                                                                                                                <input type="text" class="form-control" name="torax_inspeccion_dinamico" value="{{$examen_fisico_segmentado->torax_inspeccion_dinamico}}" required>
+                                                                                                                                                                                                                                                <textarea type="text" class="form-control" name="torax_inspeccion_dinamico" required>{{$examen_fisico_segmentado->torax_inspeccion_dinamico}}</textarea>
                                                                                                                                                                                                                                             </div>
                                                                                                                                                                                                                                             @endif
                                                                                                                                                                                                                                             @if($examen_fisico_segmentado->torax_palpacion <> 'N/A')
                                                                                                                                                                                                                                                 <div class="col-md-12">
                                                                                                                                                                                                                                                     <label><b>Torax palpacion</b></label>
-                                                                                                                                                                                                                                                    <input type="text" class="form-control" name="torax_palpacion" value="{{$examen_fisico_segmentado->torax_palpacion}}" required>
+                                                                                                                                                                                                                                                    <textarea type="text" class="form-control" name="torax_palpacion" required>{{$examen_fisico_segmentado->torax_palpacion}}</textarea>
                                                                                                                                                                                                                                                 </div>
                                                                                                                                                                                                                                                 @endif
                                                                                                                                                                                                                                                 @if($examen_fisico_segmentado->torax_percusion <> 'N/A')
                                                                                                                                                                                                                                                     <div class="col-md-12">
                                                                                                                                                                                                                                                         <label><b>Torax percusion</b></label>
-                                                                                                                                                                                                                                                        <input type="text" class="form-control" name="torax_percusion" value="{{$examen_fisico_segmentado->torax_percusion}}" required>
+                                                                                                                                                                                                                                                        <textarea type="text" class="form-control" name="torax_percusion" required>{{$examen_fisico_segmentado->torax_percusion}}</textarea>
                                                                                                                                                                                                                                                     </div>
                                                                                                                                                                                                                                                     @endif
                                                                                                                                                                                                                                                     @if($examen_fisico_segmentado->torax_auscultacion <> 'N/A')
                                                                                                                                                                                                                                                         <div class="col-md-12">
                                                                                                                                                                                                                                                             <label><b>Torax auscultacion</b></label>
-                                                                                                                                                                                                                                                            <input type="text" class="form-control" name="torax_auscultacion" value="{{$examen_fisico_segmentado->torax_auscultacion}}" required>
+                                                                                                                                                                                                                                                            <textarea type="text" class="form-control" name="torax_auscultacion" required>{{$examen_fisico_segmentado->torax_auscultacion}}</textarea>
                                                                                                                                                                                                                                                         </div>
                                                                                                                                                                                                                                                         @endif
                                                                                                                                                                                                                                                         @if($examen_fisico_segmentado->mamas <> 'N/A')
                                                                                                                                                                                                                                                             <div class="col-md-12">
                                                                                                                                                                                                                                                                 <label><b>Mamas </b></label>
-                                                                                                                                                                                                                                                                <input type="text" class="form-control" name="mamas" value="{{$examen_fisico_segmentado->mamas}}" required>
+                                                                                                                                                                                                                                                                <textarea type="text" class="form-control" name="mamas" required>{{$examen_fisico_segmentado->mamas}}</textarea>
                                                                                                                                                                                                                                                             </div>
                                                                                                                                                                                                                                                             @endif
                                     </div><br>
@@ -1347,56 +1353,56 @@
                                         @if($examen_obstetrico->genitales <> 'N/A')
                                             <div class="col-md-12">
                                                 <label><b>Genitales</b></label>
-                                                <input type="text" class="form-control" name="genitales" value="{{$examen_obstetrico->genitales}}" required>
+                                                <textarea type="text" class="form-control" name="genitales" required>{{$examen_obstetrico->genitales}}</textarea>
                                             </div>
                                             @endif
                                             @if($examen_obstetrico->flujos <> 'N/A')
                                                 <div class="col-md-12">
                                                     <label><b>Flujos</b></label>
-                                                    <input type="text" class="form-control" name="flujos" value="{{$examen_obstetrico->flujos}}" required>
+                                                    <textarea type="text" class="form-control" name="flujos" required>{{$examen_obstetrico->flujos}}</textarea>
                                                 </div>
                                                 @endif
                                                 @if($examen_obstetrico->afu <> 'N/A')
                                                     <div class="col-md-12">
                                                         <label><b>AFU</b></label>
-                                                        <input type="text" class="form-control" name="afu" value="{{$examen_obstetrico->afu}}" required>
+                                                        <textarea type="text" class="form-control" name="afu" required>{{$examen_obstetrico->afu}}</textarea>
                                                     </div>
                                                     @endif
                                                     @if($examen_obstetrico->situacion <> 'N/A')
                                                         <div class="col-md-12">
                                                             <label><b>Situacion</b></label>
-                                                            <input type="text" class="form-control" name="situacion" value="{{$examen_obstetrico->situacion}}" required>
+                                                            <textarea type="text" class="form-control" name="situacion" required>{{$examen_obstetrico->situacion}}</textarea>
                                                         </div>
                                                         @endif
                                                         @if($examen_obstetrico->posicion <> 'N/A')
                                                             <div class="col-md-12">
                                                                 <label><b>Posicion</b></label>
-                                                                <input type="text" class="form-control" name="posicion" value="{{$examen_obstetrico->posicion}}" required>
+                                                                <textarea type="text" class="form-control" name="posicion" required>{{$examen_obstetrico->posicion}}</textarea>
                                                             </div>
                                                             @endif
                                                             @if($examen_obstetrico->tacto_vaginal <> 'N/A')
                                                                 <div class="col-md-12">
                                                                     <label><b>Tacto vaginal</b></label>
-                                                                    <input type="text" class="form-control" name="tacto_vaginal" value="{{$examen_obstetrico->tacto_vaginal}}" required>
+                                                                    <textarea type="text" class="form-control" name="tacto_vaginal" required>{{$examen_obstetrico->tacto_vaginal}}</textarea>
                                                                 </div>
                                                                 @endif
 
                                                                 @if($examen_obstetrico->fcf <> 'N/A')
                                                                     <div class="col-md-12">
                                                                         <label><b>FCF</b></label>
-                                                                        <input type="text" class="form-control" name="fcf" value="{{$examen_obstetrico->fcf}}" required>
+                                                                        <textarea type="text" class="form-control" name="fcf" required>{{$examen_obstetrico->fcf}}</textarea>
                                                                     </div>
                                                                     @endif
                                                                     @if($examen_obstetrico->presentacion <> 'N/A')
                                                                         <div class="col-md-12">
                                                                             <label><b>Presentacion</b></label>
-                                                                            <input type="text" class="form-control" name="presentacion" value="{{$examen_obstetrico->presentacion}}" required>
+                                                                            <textarea type="text" class="form-control" name="presentacion" required>{{$examen_obstetrico->presentacion}}</textarea>
                                                                         </div>
                                                                         @endif
                                                                         @if($examen_obstetrico->movimientos_fetales <> 'N/A')
                                                                             <div class="col-md-12">
                                                                                 <label><b>Movimientos fetales </b></label>
-                                                                                <input type="text" class="form-control" name="movimientos_fetales" value="{{$examen_obstetrico->movimientos_fetales}}" required>
+                                                                                <textarea type="text" class="form-control" name="movimientos_fetales" required>{{$examen_obstetrico->movimientos_fetales}}</textarea>
                                                                             </div>
                                                                             @endif
                                     </div><br>
@@ -1425,62 +1431,62 @@
                                         @if($examen_ginecologico->vello_pubiano <> 'N/A')
                                             <div class="col-md-12">
                                                 <label><b>Vello pubiano</b></label>
-                                                <input type="text" class="form-control" name="vello_pubiano" value="{{$examen_ginecologico->vello_pubiano}}" required>
+                                                <textarea type="text" class="form-control" name="vello_pubiano" required>{{$examen_ginecologico->vello_pubiano}}</textarea>
                                             </div>
                                             @endif
                                             @if($examen_ginecologico->vulva <> 'N/A')
                                                 <div class="col-md-12">
                                                     <label><b>Vulva</b></label>
-                                                    <input type="text" class="form-control" name="vulva" value="{{$examen_ginecologico->vulva}}" required>
+                                                    <textarea type="text" class="form-control" name="vulva" required>{{$examen_ginecologico->vulva}}</textarea>
                                                 </div>
                                                 @endif
                                                 @if($examen_ginecologico->uretra <> 'N/A')
                                                     <div class="col-md-12">
                                                         <label><b>Uretra</b></label>
-                                                        <input type="text" class="form-control" name="uretra" value="{{$examen_ginecologico->uretra}}" required>
+                                                        <textarea type="text" class="form-control" name="uretra" required>{{$examen_ginecologico->uretra}}</textarea>
                                                     </div>
                                                     @endif
                                                     @if($examen_ginecologico->glandulas_bys <> 'N/A')
                                                         <div class="col-md-12">
                                                             <label><b>Glandulas ByS</b></label>
-                                                            <input type="text" class="form-control" name="glandulas_bys" value="{{$examen_ginecologico->glandulas_bys}}" required>
+                                                            <textarea type="text" class="form-control" name="glandulas_bys" required>{{$examen_ginecologico->glandulas_bys}}</textarea>
                                                         </div>
                                                         @endif
                                                         @if($examen_ginecologico->clitoris <> 'N/A')
                                                             <div class="col-md-12">
                                                                 <label><b>Clitoris</b></label>
-                                                                <input type="text" class="form-control" name="clitoris" value="{{$examen_ginecologico->clitoris}}" required>
+                                                                <textarea type="text" class="form-control" name="clitoris" required>{{$examen_ginecologico->clitoris}}</textarea>
                                                             </div>
                                                             @endif
                                                             @if($examen_ginecologico->perineo <> 'N/A')
                                                                 <div class="col-md-12">
                                                                     <label><b>Perineo</b></label>
-                                                                    <input type="text" class="form-control" name="perineo" value="{{$examen_ginecologico->perineo}}" required>
+                                                                    <textarea type="text" class="form-control" name="perineo" required>{{$examen_ginecologico->perineo}}</textarea>
                                                                 </div>
                                                                 @endif
 
                                                                 @if($examen_ginecologico->vagina <> 'N/A')
                                                                     <div class="col-md-12">
                                                                         <label><b>Vagina</b></label>
-                                                                        <input type="text" class="form-control" name="vagina" value="{{$examen_ginecologico->vagina}}" required>
+                                                                        <textarea type="text" class="form-control" name="vagina" required>{{$examen_ginecologico->vagina}}</textarea>
                                                                     </div>
                                                                     @endif
                                                                     @if($examen_ginecologico->cuello_uterino <> 'N/A')
                                                                         <div class="col-md-12">
                                                                             <label><b>Cuello uterino</b></label>
-                                                                            <input type="text" class="form-control" name="cuello_uterino" value="{{$examen_ginecologico->cuello_uterino}}" required>
+                                                                            <textarea type="text" class="form-control" name="cuello_uterino" required>{{$examen_ginecologico->cuello_uterino}}</textarea>
                                                                         </div>
                                                                         @endif
                                                                         @if($examen_ginecologico->cuerpo_uterino <> 'N/A')
                                                                             <div class="col-md-12">
                                                                                 <label><b>Cuerpo uterino</b></label>
-                                                                                <input type="text" class="form-control" name="cuerpo_uterino" value="{{$examen_ginecologico->cuerpo_uterino}}" required>
+                                                                                <textarea type="text" class="form-control" name="cuerpo_uterino" required>{{$examen_ginecologico->cuerpo_uterino}}</textarea>
                                                                             </div>
                                                                             @endif
                                                                             @if($examen_ginecologico->anexos <> 'N/A')
                                                                                 <div class="col-md-12">
                                                                                     <label><b>Anexos</b></label>
-                                                                                    <input type="text" class="form-control" name="anexos" value="{{$examen_ginecologico->anexos}}" required>
+                                                                                    <textarea type="text" class="form-control" name="anexos" required>{{$examen_ginecologico->anexos}}</textarea>
                                                                                 </div>
                                                                                 @endif
 
@@ -1488,13 +1494,13 @@
                                                                                 @if($examen_ginecologico->especuloscopia <> 'N/A')
                                                                                     <div class="col-md-12">
                                                                                         <label><b>Especuloscopia </b></label>
-                                                                                        <input type="text" class="form-control" name="especuloscopia" value="{{$examen_ginecologico->especuloscopia}}" required>
+                                                                                        <textarea type="text" class="form-control" name="especuloscopia" required>{{$examen_ginecologico->especuloscopia}}</textarea>
                                                                                     </div>
                                                                                     @endif
                                                                                     @if($examen_ginecologico->tacto_rectal <> 'N/A')
                                                                                         <div class="col-md-12">
                                                                                             <label><b>Tacto rectal</b></label>
-                                                                                            <input type="text" class="form-control" name="tacto_rectal" value="{{$examen_ginecologico->tacto_rectal}}" required>
+                                                                                            <textarea type="text" class="form-control" name="tacto_rectal" required>{{$examen_ginecologico->tacto_rectal}}</textarea>
                                                                                         </div>
                                                                                         @endif
                                     </div><br>
@@ -1522,80 +1528,80 @@
                                         @if($examen_cardiovascular->cardiovascular_palpacion <> 'N/A')
                                             <div class="col-md-12">
                                                 <label><b>Cardiovascular palpacion</b></label>
-                                                <input type="text" class="form-control" name="cardiovascular_palpacion" value="{{$examen_cardiovascular->cardiovascular_palpacion}}" required>
+                                                <textarea type="text" class="form-control" name="cardiovascular_palpacion" required>{{$examen_cardiovascular->cardiovascular_palpacion}}</textarea>
                                             </div>
                                             @endif
                                             @if($examen_cardiovascular->cardiovascular_percusion <> 'N/A')
                                                 <div class="col-md-12">
                                                     <label><b>Cardiovascular percusion</b></label>
-                                                    <input type="text" class="form-control" name="cardiovascular_percusion" value="{{$examen_cardiovascular->cardiovascular_percusion}}" required>
+                                                    <textarea type="text" class="form-control" name="cardiovascular_percusion" required>{{$examen_cardiovascular->cardiovascular_percusion}}</textarea>
                                                 </div>
                                                 @endif
                                                 @if($examen_cardiovascular->cardiovascular_auscultacion <> 'N/A')
                                                     <div class="col-md-12">
                                                         <label><b>Cardiovascular auscultacion</b></label>
-                                                        <input type="text" class="form-control" name="cardiovascular_auscultacion" value="{{$examen_cardiovascular->cardiovascular_auscultacion}}" required>
+                                                        <textarea type="text" class="form-control" name="cardiovascular_auscultacion" required>{{$examen_cardiovascular->cardiovascular_auscultacion}}</textarea>
                                                     </div>
                                                     @endif
                                                     @if($examen_cardiovascular->cardiovascular_agregados <> 'N/A')
                                                         <div class="col-md-12">
                                                             <label><b>Cardiovascular agregados</b></label>
-                                                            <input type="text" class="form-control" name="cardiovascular_agregados" value="{{$examen_cardiovascular->cardiovascular_agregados}}" required>
+                                                            <textarea type="text" class="form-control" name="cardiovascular_agregados" required>{{$examen_cardiovascular->cardiovascular_agregados}}</textarea>
                                                         </div>
                                                         @endif
                                                         @if($examen_cardiovascular->cardiovascular_soplos <> 'N/A')
                                                             <div class="col-md-12">
                                                                 <label><b>Cardiovascular soplos </b></label>
-                                                                <input type="text" class="form-control" name="cardiovascular_soplos" value="{{$examen_cardiovascular->cardiovascular_soplos}}" required>
+                                                                <textarea type="text" class="form-control" name="cardiovascular_soplos" required>{{$examen_cardiovascular->cardiovascular_soplos}}</textarea>
                                                             </div>
                                                             @endif
                                                             @if($examen_cardiovascular->cardiovascular_fremito <> 'N/A')
                                                                 <div class="col-md-12">
                                                                     <label><b>Cardiovascular fremito</b></label>
-                                                                    <input type="text" class="form-control" name="cardiovascular_fremito" value="{{$examen_cardiovascular->cardiovascular_fremito}}" required>
+                                                                    <textarea type="text" class="form-control" name="cardiovascular_fremito" required>{{$examen_cardiovascular->cardiovascular_fremito}}</textarea>
                                                                 </div>
                                                                 @endif
                                                                 @if($examen_cardiovascular->pulsos_perifericos <> 'N/A')
                                                                     <div class="col-md-12">
                                                                         <label><b>Pulsos perifericos</b></label>
-                                                                        <input type="text" class="form-control" name="pulsos_perifericos" value="{{$examen_cardiovascular->pulsos_perifericos}}" required>
+                                                                        <textarea type="text" class="form-control" name="pulsos_perifericos" required>{{$examen_cardiovascular->pulsos_perifericos}}</textarea>
                                                                     </div>
                                                                     @endif
 
                                                                     @if($examen_cardiovascular->branquial <> 'N/A')
                                                                         <div class="col-md-12">
                                                                             <label><b>Branquial</b></label>
-                                                                            <input type="text" class="form-control" name="branquial" value="{{$examen_cardiovascular->branquial}}" required>
+                                                                            <textarea type="text" class="form-control" name="branquial" required>{{$examen_cardiovascular->branquial}}</textarea>
                                                                         </div>
                                                                         @endif
                                                                         @if($examen_cardiovascular->femoral <> 'N/A')
                                                                             <div class="col-md-12">
                                                                                 <label><b>Femoral</b></label>
-                                                                                <input type="text" class="form-control" name="femoral" value="{{$examen_cardiovascular->femoral}}" required>
+                                                                                <textarea type="text" class="form-control" name="femoral" required>{{$examen_cardiovascular->femoral}}</textarea>
                                                                             </div>
                                                                             @endif
                                                                             @if($examen_cardiovascular->tibia <> 'N/A')
                                                                                 <div class="col-md-12">
                                                                                     <label><b>Tibia</b></label>
-                                                                                    <input type="text" class="form-control" name="tibia" value="{{$examen_cardiovascular->tibia}}" required>
+                                                                                    <textarea type="text" class="form-control" name="tibia" required>{{$examen_cardiovascular->tibia}}</textarea>
                                                                                 </div>
                                                                                 @endif
                                                                                 @if($examen_cardiovascular->radial <> 'N/A')
                                                                                     <div class="col-md-12">
                                                                                         <label><b>Radial</b></label>
-                                                                                        <input type="text" class="form-control" name="radial" value="{{$examen_cardiovascular->radial}}" required>
+                                                                                        <textarea type="text" class="form-control" name="radial" required>{{$examen_cardiovascular->radial}}</textarea>
                                                                                     </div>
                                                                                     @endif
                                                                                     @if($examen_cardiovascular->popliteo <> 'N/A')
                                                                                         <div class="col-md-12">
                                                                                             <label><b>Popliteo </b></label>
-                                                                                            <input type="text" class="form-control" name="popliteo" value="{{$examen_cardiovascular->popliteo}}" required>
+                                                                                            <textarea type="text" class="form-control" name="popliteo" required>{{$examen_cardiovascular->popliteo}}</textarea>
                                                                                         </div>
                                                                                         @endif
                                                                                         @if($examen_cardiovascular->pedio <> 'N/A')
                                                                                             <div class="col-md-12">
                                                                                                 <label><b>Pedio</b></label>
-                                                                                                <input type="text" class="form-control" name="pedio" value="{{$examen_cardiovascular->pedio}}" required>
+                                                                                                <textarea type="text" class="form-control" name="pedio" required>{{$examen_cardiovascular->pedio}}</textarea>
                                                                                             </div>
                                                                                             @endif
                                     </div><br>
@@ -1623,25 +1629,25 @@
                                         @if($examen_genito_urinario->punio_percusion_renal <> 'N/A')
                                             <div class="col-md-12">
                                                 <label><b>Puño percusion renal </b></label>
-                                                <input type="text" class="form-control" name="punio_percusion_renal" value="{{$examen_genito_urinario->punio_percusion_renal}}" required>
+                                                <textarea type="text" class="form-control" name="punio_percusion_renal" required>{{$examen_genito_urinario->punio_percusion_renal}}</textarea>
                                             </div>
                                             @endif
                                             @if($examen_genito_urinario->palpacion_renal <> 'N/A')
                                                 <div class="col-md-12">
                                                     <label><b>Palpacion renal</b></label>
-                                                    <input type="text" class="form-control" name="palpacion_renal" value="{{$examen_genito_urinario->palpacion_renal}}" required>
+                                                    <textarea type="text" class="form-control" name="palpacion_renal" required>{{$examen_genito_urinario->palpacion_renal}}</textarea>
                                                 </div>
                                                 @endif
                                                 @if($examen_genito_urinario->puntos_ureterales <> 'N/A')
                                                     <div class="col-md-12">
                                                         <label><b>Puntos ureterales</b></label>
-                                                        <input type="text" class="form-control" name="puntos_ureterales" value="{{$examen_genito_urinario->puntos_ureterales}}" required>
+                                                        <textarea type="text" class="form-control" name="puntos_ureterales" required>{{$examen_genito_urinario->puntos_ureterales}}</textarea>
                                                     </div>
                                                     @endif
                                                     @if($examen_genito_urinario->genitales <> 'N/A')
                                                         <div class="col-md-12">
                                                             <label><b>Genitales</b></label>
-                                                            <input type="text" class="form-control" name="genitales" value="{{$examen_genito_urinario->genitales}}" required>
+                                                            <textarea type="text" class="form-control" name="genitales" required>{{$examen_genito_urinario->genitales}}</textarea>
                                                         </div>
                                                         @endif
                                     </div><br>
@@ -1669,25 +1675,25 @@
                                         @if($examen_extremidades_superiores->s_simetria <> 'N/A')
                                             <div class="col-md-12">
                                                 <label><b>Simetria</b></label>
-                                                <input type="text" class="form-control" name="s_simetria" value="{{$examen_extremidades_superiores->s_simetria}}" required>
+                                                <textarea type="text" class="form-control" name="s_simetria" required>{{$examen_extremidades_superiores->s_simetria}}</textarea>
                                             </div>
                                             @endif
                                             @if($examen_extremidades_superiores->s_deformidades <> 'N/A')
                                                 <div class="col-md-12">
                                                     <label><b>Deformidades </b></label>
-                                                    <input type="text" class="form-control" name="s_deformidades" value="{{$examen_extremidades_superiores->s_deformidades}}" required>
+                                                    <textarea type="text" class="form-control" name="s_deformidades" required>{{$examen_extremidades_superiores->s_deformidades}}</textarea>
                                                 </div>
                                                 @endif
                                                 @if($examen_extremidades_superiores->s_articulaciones <> 'N/A')
                                                     <div class="col-md-12">
                                                         <label><b>Articulaciones</b></label>
-                                                        <input type="text" class="form-control" name="s_articulaciones" value="{{$examen_extremidades_superiores->s_articulaciones}}" required>
+                                                        <textarea type="text" class="form-control" name="s_articulaciones" required>{{$examen_extremidades_superiores->s_articulaciones}}</textarea>
                                                     </div>
                                                     @endif
                                                     @if($examen_extremidades_superiores->s_piel <> 'N/A')
                                                         <div class="col-md-12">
                                                             <label><b>Piel</b></label>
-                                                            <input type="text" class="form-control" name="s_piel" value="{{$examen_extremidades_superiores->s_piel}}" required>
+                                                            <textarea type="text" class="form-control" name="s_piel" required>{{$examen_extremidades_superiores->s_piel}}</textarea>
                                                         </div>
                                                         @endif
                                     </div><br>
@@ -1715,25 +1721,25 @@
                                         @if($examen_extremidades_inferiores->i_simetria <> 'N/A')
                                             <div class="col-md-12">
                                                 <label><b>Simetria</b></label>
-                                                <input type="text" class="form-control" name="i_simetria" value="{{$examen_extremidades_inferiores->i_simetria}}" required>
+                                                <textarea type="text" class="form-control" name="i_simetria" required>{{$examen_extremidades_inferiores->i_simetria}}</textarea>
                                             </div>
                                             @endif
                                             @if($examen_extremidades_inferiores->i_deformidades <> 'N/A')
                                                 <div class="col-md-12">
                                                     <label><b>Deformidades </b></label>
-                                                    <input type="text" class="form-control" name="i_deformidades" value="{{$examen_extremidades_inferiores->i_deformidades}}" required>
+                                                    <textarea type="text" class="form-control" name="i_deformidades" required>{{$examen_extremidades_inferiores->i_deformidades}}</textarea>
                                                 </div>
                                                 @endif
                                                 @if($examen_extremidades_inferiores->i_articulaciones <> 'N/A')
                                                     <div class="col-md-12">
                                                         <label><b>Deformidades </b></label>
-                                                        <input type="text" class="form-control" name="i_articulaciones" value="{{$examen_extremidades_inferiores->i_articulaciones}}" required>
+                                                        <textarea type="text" class="form-control" name="i_articulaciones" required>{{$examen_extremidades_inferiores->i_articulaciones}}</textarea>
                                                     </div>
                                                     @endif
                                                     @if($examen_extremidades_inferiores->i_piel <> 'N/A')
                                                         <div class="col-md-12">
                                                             <label><b>Piel</b></label>
-                                                            <input type="text" class="form-control" name="i_piel" value="{{$examen_extremidades_inferiores->i_piel}}" required>
+                                                            <textarea type="text" class="form-control" name="i_piel" required>{{$examen_extremidades_inferiores->i_piel}}</textarea>
                                                         </div>
                                                         @endif
                                     </div><br>
@@ -1761,43 +1767,43 @@
                                         @if($dermatologia->piel <> 'N/A')
                                             <div class="col-md-12">
                                                 <label><b>Piel</b></label>
-                                                <input type="text" class="form-control" name="piel" value="{{$dermatologia->piel}}" required>
+                                                <textarea type="text" class="form-control" name="piel" required>{{$dermatologia->piel}}</textarea>
                                             </div>
                                             @endif
                                             @if($dermatologia->pelo <> 'N/A')
                                                 <div class="col-md-12">
                                                     <label><b>Pelo </b></label>
-                                                    <input type="text" class="form-control" name="pelo" value="{{$dermatologia->pelo}}" required>
+                                                    <textarea type="text" class="form-control" name="pelo" required>{{$dermatologia->pelo}}</textarea>
                                                 </div>
                                                 @endif
                                                 @if($dermatologia->unias <> 'N/A')
                                                     <div class="col-md-12">
                                                         <label><b>Uñas </b></label>
-                                                        <input type="text" class="form-control" name="unias" value="{{$dermatologia->unias}}" required>
+                                                        <textarea type="text" class="form-control" name="unias" required>{{$dermatologia->unias}}</textarea>
                                                     </div>
                                                     @endif
                                                     @if($dermatologia->mucosas <> 'N/A')
                                                         <div class="col-md-12">
                                                             <label><b>Mucosas</b></label>
-                                                            <input type="text" class="form-control" name="mucosas" value="{{$dermatologia->mucosas}}" required>
+                                                            <textarea type="text" class="form-control" name="mucosas" required>{{$dermatologia->mucosas}}</textarea>
                                                         </div>
                                                         @endif
                                                         @if($dermatologia->topografia <> 'N/A')
                                                             <div class="col-md-12">
                                                                 <label><b>Topografia</b></label>
-                                                                <input type="text" class="form-control" name="topografia" value="{{$dermatologia->topografia}}" required>
+                                                                <textarea type="text" class="form-control" name="topografia" required>{{$dermatologia->topografia}}</textarea>
                                                             </div>
                                                             @endif
                                                             @if($dermatologia->iconografia <> 'N/A')
                                                                 <div class="col-md-12">
                                                                     <label><b>Iconografia</b></label>
-                                                                    <input type="text" class="form-control" name="iconografia" value="{{$dermatologia->iconografia}}" required>
+                                                                    <textarea type="text" class="form-control" name="iconografia" required>{{$dermatologia->iconografia}}</textarea>
                                                                 </div>
                                                                 @endif
                                                                 @if($dermatologia->morfologia <> 'N/A')
                                                                     <div class="col-md-12">
                                                                         <label><b>Morfologia</b></label>
-                                                                        <input type="text" class="form-control" name="morfologia" value="{{$dermatologia->morfologia}}" required>
+                                                                        <textarea type="text" class="form-control" name="morfologia" required>{{$dermatologia->morfologia}}</textarea>
                                                                     </div>
                                                                     @endif
 
@@ -1825,7 +1831,7 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <label><b>Ganglios linfaticos </b></label>
-                                            <input type="text" class="form-control" name="ganglios_linfaticos" value="{{$ganglios_linfaticos->ganglios_linfaticos}}" required>
+                                            <textarea type="text" class="form-control" name="ganglios_linfaticos" required>{{$ganglios_linfaticos->ganglios_linfaticos}}</textarea>
                                         </div>
                                     </div><br>
                                     <a href="{{ route('historial.show', $n_ser->id_servicio)}}" class="btn btn-danger btn-sm"><i class="fa fa-reply"></i> Cancelar</a>
@@ -1853,73 +1859,73 @@
                                         @if($sistema_nervioso->piel <> 'N/A')
                                             <div class="col-12 col-md-6">
                                                 <label><b>CONCIENCIA </b></label>
-                                                <input type="text" class="form-control" name="conciencia" value="{{$sistema_nervioso->conciencia}}" required>
+                                                <textarea type="text" class="form-control" name="conciencia" required>{{$sistema_nervioso->conciencia}}</textarea>
                                             </div>
                                             @endif
                                             @if($sistema_nervioso->piel <> 'N/A')
                                                 <div class="col-12 col-md-6">
                                                     <label><b>GNOSIA</b></label>
-                                                    <input type="text" class="form-control" name="gnosia" value="{{$sistema_nervioso->gnosia}}" required>
+                                                    <textarea type="text" class="form-control" name="gnosia" required>{{$sistema_nervioso->gnosia}}</textarea>
                                                 </div>
                                                 @endif
                                                 @if($sistema_nervioso->piel <> 'N/A')
                                                     <div class="col-12 col-md-6">
                                                         <label><b>PRAXIA</b></label>
-                                                        <input type="text" class="form-control" name="praxia" value="{{$sistema_nervioso->praxia}}" required>
+                                                        <textarea type="text" class="form-control" name="praxia" required>{{$sistema_nervioso->praxia}}</textarea>
                                                     </div>
                                                     @endif
                                                     @if($sistema_nervioso->piel <> 'N/A')
                                                         <div class="col-12 col-md-6">
                                                             <label><b>LENGUAJE</b></label>
-                                                            <input type="text" class="form-control" name="lenguaje" value="{{$sistema_nervioso->lenguaje}}" required>
+                                                            <textarea type="text" class="form-control" name="lenguaje" required>{{$sistema_nervioso->lenguaje}}</textarea>
                                                         </div>
                                                         @endif
                                                         @if($sistema_nervioso->piel <> 'N/A')
                                                             <div class="col-12 col-md-6">
                                                                 <label><b>MEMORIA</b></label>
-                                                                <input type="text" class="form-control" name="memoria" value="{{$sistema_nervioso->memoria}}" required>
+                                                                <textarea type="text" class="form-control" name="memoria" required>{{$sistema_nervioso->memoria}}</textarea>
                                                             </div>
                                                             @endif
                                                             @if($sistema_nervioso->piel <> 'N/A')
                                                                 <div class="col-12 col-md-6">
                                                                     <label><b>CALCULO</b></label>
-                                                                    <input type="text" class="form-control" name="calculo" value="{{$sistema_nervioso->calculo}}" required>
+                                                                    <textarea type="text" class="form-control" name="calculo" required>{{$sistema_nervioso->calculo}}</textarea>
                                                                 </div>
                                                                 @endif
                                                                 @if($sistema_nervioso->piel <> 'N/A')
                                                                     <div class="col-12 col-md-6">
                                                                         <label><b>INTELIGENCIA</b></label>
-                                                                        <input type="text" class="form-control" name="inteligencia" value="{{$sistema_nervioso->inteligencia}}" required>
+                                                                        <textarea type="text" class="form-control" name="inteligencia" required>{{$sistema_nervioso->inteligencia}}</textarea>
                                                                     </div>
                                                                     @endif
                                                                     @if($sistema_nervioso->piel <> 'N/A')
                                                                         <div class="col-12 col-md-6">
                                                                             <label><b>ATENCION</b></label>
-                                                                            <input type="text" class="form-control" name="atencion" value="{{$sistema_nervioso->atencion}}" required>
+                                                                            <textarea type="text" class="form-control" name="atencion" required>{{$sistema_nervioso->atencion}}</textarea>
                                                                         </div>
                                                                         @endif
                                                                         @if($sistema_nervioso->piel <> 'N/A')
                                                                             <div class="col-12 col-md-6">
                                                                                 <label><b>EMOTIVIDAD</b></label>
-                                                                                <input type="text" class="form-control" name="emotividad" value="{{$sistema_nervioso->emotividad}}" required>
+                                                                                <textarea type="text" class="form-control" name="emotividad" required>{{$sistema_nervioso->emotividad}}</textarea>
                                                                             </div>
                                                                             @endif
                                                                             @if($sistema_nervioso->piel <> 'N/A')
                                                                                 <div class="col-12 col-md-6">
                                                                                     <label><b>PLANIFICACION</b></label>
-                                                                                    <input type="text" class="form-control" name="planificacion" value="{{$sistema_nervioso->planificacion}}" required>
+                                                                                    <textarea type="text" class="form-control" name="planificacion" required>{{$sistema_nervioso->planificacion}}</textarea>
                                                                                 </div>
                                                                                 @endif
                                                                                 @if($sistema_nervioso->piel <> 'N/A')
                                                                                     <div class="col-12 col-md-6">
                                                                                         <label><b>DECISION</b></label>
-                                                                                        <input type="text" class="form-control" name="decision" value="{{$sistema_nervioso->decision}}" required>
+                                                                                        <textarea type="text" class="form-control" name="decision" required>{{$sistema_nervioso->decision}}</textarea>
                                                                                     </div>
                                                                                     @endif
                                                                                     @if($sistema_nervioso->piel <> 'N/A')
                                                                                         <div class="col-12 col-md-6">
                                                                                             <label><b>PERCEPCION</b></label>
-                                                                                            <input type="text" class="form-control" name="percepcion" value="{{$sistema_nervioso->percepcion}}" required>
+                                                                                            <textarea type="text" class="form-control" name="percepcion" required>{{$sistema_nervioso->percepcion}}</textarea>
                                                                                         </div>
                                                                                         @endif
                                     </div>
@@ -1931,99 +1937,99 @@
                                             <tr class="align-middle">
                                                 <th style="width: 10%" rowspan="2">I</th>
                                                 <th style="width: 40%"> Percepcion</th>
-                                                <th style="width: 50%"> <input type="text" class="form-control" name="paredes_craneales_percepcion" value="{{$sistema_nervioso->paredes_craneales_percepcion}}" required></th>
+                                                <th style="width: 50%"> <textarea type="text" class="form-control" name="paredes_craneales_percepcion" required>{{$sistema_nervioso->paredes_craneales_percepcion}}</textarea></th>
                                             </tr>
                                             <tr class="align-middle">
 
                                                 <th> Identificacion</th>
-                                                <th><input type="text" class="form-control" name="identificacion" value="{{$sistema_nervioso->identificacion}}" required></th>
+                                                <th><textarea type="text" class="form-control" name="identificacion" required>{{$sistema_nervioso->identificacion}}</textarea></th>
                                             </tr>
                                             <tr class="align-middle">
                                                 <th rowspan="4">II</th>
                                                 <th> Agudez visual</th>
-                                                <th><input type="text" class="form-control" name="agudez_visual" value="{{$sistema_nervioso->agudez_visual}}" required></th>
+                                                <th><textarea type="text" class="form-control" name="agudez_visual" required>{{$sistema_nervioso->agudez_visual}}</textarea></th>
                                             </tr>
                                             <tr class="align-middle">
                                                 <th> Vision de color</th>
-                                                <th><input type="text" class="form-control" name="vision_de_colores" value="{{$sistema_nervioso->vision_de_colores}}" required></th>
+                                                <th><textarea type="text" class="form-control" name="vision_de_colores" required>{{$sistema_nervioso->vision_de_colores}}</textarea></th>
                                             </tr>
                                             <tr class="align-middle">
                                                 <th> Campo visula</th>
-                                                <th><input type="text" class="form-control" name="campo_visual" value="{{$sistema_nervioso->campo_visual}}" required></th>
+                                                <th><textarea type="text" class="form-control" name="campo_visual" required>{{$sistema_nervioso->campo_visual}}</textarea></th>
                                             </tr>
                                             <tr class="align-middle">
                                                 <th> Pupilas</th>
-                                                <th><input type="text" class="form-control" name="pupilas" value="{{$sistema_nervioso->pupilas}}" required></th>
+                                                <th><textarea type="text" class="form-control" name="pupilas" required>{{$sistema_nervioso->pupilas}}</textarea></th>
                                             </tr>
                                             <tr class="align-middle">
                                                 <th>III</th>
                                                 <th> Motilidad del globo ocular</th>
-                                                <th><input type="text" class="form-control" name="motilidad_del_globo_ocular" value="{{$sistema_nervioso->motilidad_del_globo_ocular}}" required></th>
+                                                <th><textarea type="text" class="form-control" name="motilidad_del_globo_ocular" required>{{$sistema_nervioso->motilidad_del_globo_ocular}}</textarea></th>
                                             </tr>
                                             <tr class="align-middle">
                                                 <th>IV</th>
                                                 <th> Reflejos fotomotor</th>
-                                                <th><input type="text" class="form-control" name="reflejo_fotomotor" value="{{$sistema_nervioso->reflejo_fotomotor}}" required></th>
+                                                <th><textarea type="text" class="form-control" name="reflejo_fotomotor" required>{{$sistema_nervioso->reflejo_fotomotor}}</textarea></th>
                                             </tr>
                                             <tr class="align-middle">
                                                 <th>V</th>
                                                 <th> Reflejos de acomodacion</th>
-                                                <th><input type="text" class="form-control" name="reflejos_de_acomodacion" value="{{$sistema_nervioso->reflejos_de_acomodacion}}" required></th>
+                                                <th><textarea type="text" class="form-control" name="reflejos_de_acomodacion" required>{{$sistema_nervioso->reflejos_de_acomodacion}}</textarea></th>
                                             </tr>
                                             <tr class="align-middle">
                                                 <th rowspan="4">VI</th>
                                                 <th>Sensitivo</th>
-                                                <th><input type="text" class="form-control" name="sensitivo" value="{{$sistema_nervioso->sensitivo}}" required></th>
+                                                <th><textarea type="text" class="form-control" name="sensitivo" required>{{$sistema_nervioso->sensitivo}}</textarea></th>
                                             </tr>
                                             <tr class="align-middle">
                                                 <th>Reflejos corneales</th>
-                                                <th><input type="text" class="form-control" name="reflejo_corneal" value="{{$sistema_nervioso->reflejo_corneal}}" required></th>
+                                                <th><textarea type="text" class="form-control" name="reflejo_corneal" required>{{$sistema_nervioso->reflejo_corneal}}</textarea></th>
                                             </tr>
                                             <tr class="align-middle">
                                                 <th>Motor</th>
-                                                <th><input type="text" class="form-control" name="motor" value="{{$sistema_nervioso->motor}}" required></th>
+                                                <th><textarea type="text" class="form-control" name="motor" required>{{$sistema_nervioso->motor}}</textarea></th>
                                             </tr>
                                             <tr class="align-middle">
                                                 <th>Reflejos maseteros</th>
-                                                <th><input type="text" class="form-control" name="reflejo_maseterino" value="{{$sistema_nervioso->reflejo_maseterino}}" required></th>
+                                                <th><textarea type="text" class="form-control" name="reflejo_maseterino" required>{{$sistema_nervioso->reflejo_maseterino}}</textarea></th>
                                             </tr>
                                             <tr class="align-middle">
                                                 <th>VII</th>
                                                 <th>Valoracion muscular de la expresion facial</th>
-                                                <th><input type="text" class="form-control" name="valora_musculos_expresion_facial" value="{{$sistema_nervioso->valora_musculos_expresion_facial}}" required></th>
+                                                <th><textarea type="text" class="form-control" name="valora_musculos_expresion_facial" required>{{$sistema_nervioso->valora_musculos_expresion_facial}}</textarea></th>
                                             </tr>
                                             <tr class="align-middle">
                                                 <th rowspan="2">VIII</th>
                                                 <th>Audicion (prueba de Rinne, Weber)</th>
-                                                <th><input type="text" class="form-control" name="audicion_prueba_rinnne_weber" value="{{$sistema_nervioso->audicion_prueba_rinnne_weber}}" required></th>
+                                                <th><textarea type="text" class="form-control" name="audicion_prueba_rinnne_weber" required>{{$sistema_nervioso->audicion_prueba_rinnne_weber}}</textarea></th>
                                             </tr>
                                             <tr class="align-middle">
                                                 <th>Vestibular</th>
-                                                <th><input type="text" class="form-control" name="vestibular" value="{{$sistema_nervioso->vestibular}}" required></th>
+                                                <th><textarea type="text" class="form-control" name="vestibular" required>{{$sistema_nervioso->vestibular}}</textarea></th>
                                             </tr>
                                             <tr class="align-middle">
                                                 <th>IX</th>
                                                 <th>Reflejos nauseoso</th>
-                                                <th><input type="text" class="form-control" name="reflejo_nauseoso" value="{{$sistema_nervioso->reflejo_nauseoso}}" required></th>
+                                                <th><textarea type="text" class="form-control" name="reflejo_nauseoso" required>{{$sistema_nervioso->reflejo_nauseoso}}</textarae></th>
                                             </tr>
                                             <tr class="align-middle">
                                                 <th rowspan="2">X</th>
                                                 <th>Tos debil o disfonia</th>
-                                                <th><input type="text" class="form-control" name="tos_debil_o_disfonia" value="{{$sistema_nervioso->tos_debil_o_disfonia}}" required></th>
+                                                <th><textarea type="text" class="form-control" name="tos_debil_o_disfonia" required>{{$sistema_nervioso->tos_debil_o_disfonia}}</textarea></th>
                                             </tr>
                                             <tr class="align-middle">
                                                 <th>Asimetria paladar blando/trapecio reflejos nauseoso</th>
-                                                <th><input type="text" class="form-control" name="asimetria_paladar_blando_perdida_reflejo_nauseoso" value="{{$sistema_nervioso->asimetria_paladar_blando_perdida_reflejo_nauseoso}}" required></th>
+                                                <th><textarea type="text" class="form-control" name="asimetria_paladar_blando_perdida_reflejo_nauseoso" required>{{$sistema_nervioso->asimetria_paladar_blando_perdida_reflejo_nauseoso}}</textarea></th>
                                             </tr>
                                             <tr class="align-middle">
                                                 <th>XI</th>
                                                 <th>Valor fuerza de esternocleidomastoideo/trapecio</th>
-                                                <th><input type="text" class="form-control" name="valor_fuerza_esternocleidomastoideo_trapecio" value="{{$sistema_nervioso->valor_fuerza_esternocleidomastoideo_trapecio}}" required></th>
+                                                <th><textarea type="text" class="form-control" name="valor_fuerza_esternocleidomastoideo_trapecio" required>{{$sistema_nervioso->valor_fuerza_esternocleidomastoideo_trapecio}}</textarea></th>
                                             </tr>
                                             <tr class="align-middle">
                                                 <th>XII</th>
                                                 <th>Desviacion de la lengua/fasciculacion de la lengua</th>
-                                                <th><input type="text" class="form-control" name="desviacion_o_fasciculacion_de_lengua" value="{{$sistema_nervioso->desviacion_o_fasciculacion_de_lengua}}" required></th>
+                                                <th><textarea type="text" class="form-control" name="desviacion_o_fasciculacion_de_lengua" required>{{$sistema_nervioso->desviacion_o_fasciculacion_de_lengua}}</textarea></th>
                                             </tr>
                                         </tbody>
 
@@ -2053,19 +2059,19 @@
                                         @if($sistema_motor->tono <> 'N/A')
                                             <div class="col-md-12">
                                                 <label><b>Tono </b></label>
-                                                <input type="text" class="form-control" name="tono" value="{{$sistema_motor->tono}}" required>
+                                                <textarea type="text" class="form-control" name="tono" required>{{$sistema_motor->tono}}</textarea>
                                             </div>
                                             @endif
                                             @if($sistema_motor->trofismo <> 'N/A')
                                                 <div class="col-md-12">
                                                     <label><b>Trofismo</b></label>
-                                                    <input type="text" class="form-control" name="trofismo" value="{{$sistema_motor->trofismo}}" required>
+                                                    <textarea type="text" class="form-control" name="trofismo" required>{{$sistema_motor->trofismo}}</textarea>
                                                 </div>
                                                 @endif
                                                 @if($sistema_motor->reflejos_de_estiramiento <> 'N/A')
                                                     <div class="col-md-12">
                                                         <label><b>Reflejos de estiramiento </b></label>
-                                                        <input type="text" class="form-control" name="reflejos_de_estiramiento" value="{{$sistema_motor->reflejos_de_estiramiento}}" required>
+                                                        <textarea type="text" class="form-control" name="reflejos_de_estiramiento" required>{{$sistema_motor->reflejos_de_estiramiento}}</textarea>
                                                     </div>
                                                     @endif
                                     </div><br>
@@ -2087,33 +2093,33 @@
                                                 <tbody>
                                                     <tr>
                                                         <td><b>Brazo</b></td>
-                                                        <td><input type="text" class="form-control" name="balance_muscular_brazo_derecho" value="{{$sistema_motor->balance_muscular_brazo_derecho}}" required></td>
-                                                        <td><input type="text" class="form-control" name="balance_muscular_brazo_izquierdo" value="{{$sistema_motor->balance_muscular_brazo_izquierdo}}" required></td>
+                                                        <td><textarea type="text" class="form-control" name="balance_muscular_brazo_derecho" required>{{$sistema_motor->balance_muscular_brazo_derecho}}</textarea></td>
+                                                        <td><textarea type="text" class="form-control" name="balance_muscular_brazo_izquierdo" required>{{$sistema_motor->balance_muscular_brazo_izquierdo}}</textarea></td>
                                                     </tr>
                                                     <tr>
                                                         <td><b>Antebrazo</b></td>
-                                                        <td><input type="text" class="form-control" name="balance_muscular_antebrazo_derecho" value="{{$sistema_motor->balance_muscular_antebrazo_derecho}}" required></td>
-                                                        <td><input type="text" class="form-control" name="balance_muscular_antebrazo_izquierdo" value="{{$sistema_motor->balance_muscular_antebrazo_izquierdo}}" required></td>
+                                                        <td><textarea type="text" class="form-control" name="balance_muscular_antebrazo_derecho" required>{{$sistema_motor->balance_muscular_antebrazo_derecho}}</textarea></td>
+                                                        <td><textarea type="text" class="form-control" name="balance_muscular_antebrazo_izquierdo" required>{{$sistema_motor->balance_muscular_antebrazo_izquierdo}}</textarea></td>
                                                     </tr>
                                                     <tr>
                                                         <td><b>Mano</b></td>
-                                                        <td><input type="text" class="form-control" name="balance_muscular_mano_derecho" value="{{$sistema_motor->balance_muscular_mano_derecho}}" required></td>
-                                                        <td><input type="text" class="form-control" name="balance_muscular_mano_izquierdo" value="{{$sistema_motor->balance_muscular_mano_izquierdo}}" required></td>
+                                                        <td><textarea type="text" class="form-control" name="balance_muscular_mano_derecho" required>{{$sistema_motor->balance_muscular_mano_derecho}}</textarea></td>
+                                                        <td><textarea type="text" class="form-control" name="balance_muscular_mano_izquierdo" required>{{$sistema_motor->balance_muscular_mano_izquierdo}}</textarea></td>
                                                     </tr>
                                                     <tr>
                                                         <td><b>Muslo</b></td>
-                                                        <td><input type="text" class="form-control" name="balance_muscular_muslo_derecho" value="{{$sistema_motor->balance_muscular_muslo_derecho}}" required></td>
-                                                        <td><input type="text" class="form-control" name="balance_muscular_muslo_izquierdo" value="{{$sistema_motor->balance_muscular_muslo_izquierdo}}" required></td>
+                                                        <td><textarea type="text" class="form-control" name="balance_muscular_muslo_derecho" required>{{$sistema_motor->balance_muscular_muslo_derecho}}</textarea></td>
+                                                        <td><textarea type="text" class="form-control" name="balance_muscular_muslo_izquierdo" required>{{$sistema_motor->balance_muscular_muslo_izquierdo}}</textarea></td>
                                                     </tr>
                                                     <tr>
                                                         <td><b>Pierna</b></td>
-                                                        <td><input type="text" class="form-control" name="balance_muscular_pierna_derecho" value="{{$sistema_motor->balance_muscular_pierna_derecho}}" required></td>
-                                                        <td><input type="text" class="form-control" name="balance_muscular_pierna_izquierdo" value="{{$sistema_motor->balance_muscular_pierna_izquierdo}}" required></td>
+                                                        <td><textarea type="text" class="form-control" name="balance_muscular_pierna_derecho" required>{{$sistema_motor->balance_muscular_pierna_derecho}}</textarea></td>
+                                                        <td><textarea type="text" class="form-control" name="balance_muscular_pierna_izquierdo" required>{{$sistema_motor->balance_muscular_pierna_izquierdo}}</textarea></td>
                                                     </tr>
                                                     <tr>
                                                         <td><b>Pie</b></td>
-                                                        <td><input type="text" class="form-control" name="balance_muscular_pie_derecho" value="{{$sistema_motor->balance_muscular_pie_derecho}}" required></td>
-                                                        <td><input type="text" class="form-control" name="balance_muscular_pie_izquierdo" value="{{$sistema_motor->balance_muscular_pie_izquierdo}}" required></td>
+                                                        <td><textarea type="text" class="form-control" name="balance_muscular_pie_derecho" required>{{$sistema_motor->balance_muscular_pie_derecho}}</textarea></td>
+                                                        <td><textarea type="text" class="form-control" name="balance_muscular_pie_izquierdo" required>{{$sistema_motor->balance_muscular_pie_izquierdo}}</textarea></td>
                                                     </tr>
                                                 </tbody>
 
@@ -2144,37 +2150,37 @@
                                         @if($sistema_sensitivo->sensibilidad_superficial <> 'N/A')
                                             <div class="col-md-12">
                                                 <label><b>Sensibilidad superficial</b></label>
-                                                <input type="text" class="form-control" name="sensibilidad_superficial" value="{{$sistema_sensitivo->sensibilidad_superficial}}" required>
+                                                <textarea type="text" class="form-control" name="sensibilidad_superficial" required>{{$sistema_sensitivo->sensibilidad_superficial}}</textarea>
                                             </div>
                                             @endif
                                             @if($sistema_sensitivo->sensibilidad_profunda_consciente <> 'N/A')
                                                 <div class="col-md-12">
                                                     <label><b>Sensibilidad profunda consciente </b></label>
-                                                    <input type="text" class="form-control" name="sensibilidad_profunda_consciente" value="{{$sistema_sensitivo->sensibilidad_profunda_consciente}}" required>
+                                                    <textarea type="text" class="form-control" name="sensibilidad_profunda_consciente" required>{{$sistema_sensitivo->sensibilidad_profunda_consciente}}</textarea>
                                                 </div>
                                                 @endif
                                                 @if($sistema_sensitivo->sensibilidad_profunda_inconsciente <> 'N/A')
                                                     <div class="col-md-12">
                                                         <label><b>Sensibilidad profunda inconsciente </b></label>
-                                                        <input type="text" class="form-control" name="sensibilidad_profunda_inconsciente" value="{{$sistema_sensitivo->sensibilidad_profunda_inconsciente}}" required>
+                                                        <textarea type="text" class="form-control" name="sensibilidad_profunda_inconsciente" required>{{$sistema_sensitivo->sensibilidad_profunda_inconsciente}}</texrtarea>
                                                     </div>
                                                     @endif
                                                     @if($sistema_sensitivo->sistema_vestibulo_cerebeloso <> 'N/A')
                                                         <div class="col-md-12">
                                                             <label><b>Sistema vestibulo cerebeloso</b></label>
-                                                            <input type="text" class="form-control" name="sistema_vestibulo_cerebeloso" value="{{$sistema_sensitivo->sistema_vestibulo_cerebeloso}}" required>
+                                                            <textarea type="text" class="form-control" name="sistema_vestibulo_cerebeloso" required>{{$sistema_sensitivo->sistema_vestibulo_cerebeloso}}</textarea>
                                                         </div>
                                                         @endif
                                                         @if($sistema_sensitivo->signos_irritacion_meningea <> 'N/A')
                                                             <div class="col-md-12">
                                                                 <label><b>Signos irritacion meningea</b></label>
-                                                                <input type="text" class="form-control" name="signos_irritacion_meningea" value="{{$sistema_sensitivo->signos_irritacion_meningea}}" required>
+                                                                <textarea type="text" class="form-control" name="signos_irritacion_meningea" required>{{$sistema_sensitivo->signos_irritacion_meningea}}</textarea>
                                                             </div>
                                                             @endif
                                                             @if($sistema_sensitivo->marcha <> 'N/A')
                                                                 <div class="col-md-12">
                                                                     <label><b>Marcha</b></label>
-                                                                    <input type="text" class="form-control" name="marcha" value="{{$sistema_sensitivo->marcha}}" required>
+                                                                    <textarea type="text" class="form-control" name="marcha" required>{{$sistema_sensitivo->marcha}}</textarea>
                                                                 </div>
                                                                 @endif
 
@@ -2202,7 +2208,7 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <label><b> Diagnostico sindromatico</b></label>
-                                            <input type="text" class="form-control" name="diagnostico_sindromatico" value="{{$diagnostico_sindromatico->diagnostico_sindromatico}}" required>
+                                            <textarea type="text" class="form-control" name="diagnostico_sindromatico" required>{{$diagnostico_sindromatico->diagnostico_sindromatico}}</textarea>
                                         </div>
                                     </div><br>
                                     <a href="{{ route('historial.show', $n_ser->id_servicio)}}" class="btn btn-danger btn-sm"><i class="fa fa-reply"></i> Cancelar</a>
@@ -2228,7 +2234,7 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <label><b> Examenes complementarios</b></label>
-                                            <input type="text" class="form-control" name="examenes_complementarios" value="{{$examenes_complementarios->examenes_complementarios}}" required>
+                                            <textarea type="text" class="form-control" name="examenes_complementarios" required>{{$examenes_complementarios->examenes_complementarios}}</textarea>
                                         </div>
                                     </div><br>
                                     <a href="{{ route('historial.show', $n_ser->id_servicio)}}" class="btn btn-danger btn-sm"><i class="fa fa-reply"></i> Cancelar</a>
@@ -2254,7 +2260,7 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <label><b>Impresion diagnostica </b></label>
-                                            <input type="text" class="form-control" name="impresion_diagnostica" value="{{$impresion_diagnostica->impresion_diagnostica}}" required>
+                                            <textarea type="text" class="form-control" name="impresion_diagnostica" required>{{$impresion_diagnostica->impresion_diagnostica}}</textarea>
                                         </div>
                                     </div><br>
                                     <a href="{{ route('historial.show', $n_ser->id_servicio)}}" class="btn btn-danger btn-sm"><i class="fa fa-reply"></i> Cancelar</a>
@@ -2280,7 +2286,7 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <label><b>Comentarios </b></label>
-                                            <input type="text" class="form-control" name="comentarios" value="{{$comentarios->comentarios}}" required>
+                                            <textarea type="text" class="form-control" name="comentarios" required>{{$comentarios->comentarios}}</textarea>
                                         </div>
                                     </div><br>
                                     <a href="{{ route('historial.show', $n_ser->id_servicio)}}" class="btn btn-danger btn-sm"><i class="fa fa-reply"></i> Cancelar</a>
@@ -2306,7 +2312,7 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <label><b>Interpretacion laboratorios de estudio y gabinetes </b></label>
-                                            <input type="text" class="form-control" name="laboratorios_de_estudio_y_gabinete_solicitados" value="{{$interpretacion_laboratorios->laboratorios_de_estudio_y_gabinete_solicitados}}" required>
+                                            <textarea type="text" class="form-control" name="laboratorios_de_estudio_y_gabinete_solicitados" required>{{$interpretacion_laboratorios->laboratorios_de_estudio_y_gabinete_solicitados}}</textarea>
                                         </div>
                                     </div><br>
                                     <a href="{{ route('historial.show', $n_ser->id_servicio)}}" class="btn btn-danger btn-sm"><i class="fa fa-reply"></i> Cancelar</a>

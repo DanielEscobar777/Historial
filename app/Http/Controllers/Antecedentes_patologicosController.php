@@ -18,7 +18,7 @@ class Antecedentes_patologicosController extends Controller
         foreach (['clinicos', 'quirurjicos', 'alergicos', 'otros', 'internaciones', 'cirujias','transfusion_de_sangre',
         'iras','gastroenteritis', 'traumatismos', 'medicamentos','enfermedades'] as $field) {
             if ($request->has($field)) {
-                $rules[$field] = 'required|string|max:255';
+                $rules[$field] = 'required|string';
                 $messages["$field.required"] = "El campo $field es obligatorio.";
             }
         }

@@ -18,7 +18,7 @@ class Examen_obstetricoController extends Controller
         foreach (['genitales', 'flujos', 'afu', 'situacion', 'posicion', 'tacto_vaginal','fcf',
         'presentacion'] as $field) {
             if ($request->has($field)) {
-                $rules[$field] = 'required|string|max:255';
+                $rules[$field] = 'required|string';
                 $messages["$field.required"] = "El campo $field es obligatorio.";
             }
         }

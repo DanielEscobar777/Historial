@@ -12,7 +12,7 @@ class Antecedentes_familiaresController extends Controller
     {
         $userId = Auth::id();
         $validated = $request->validate([
-            'antecedentes_familiares' => 'required|string|max:255',
+            'antecedentes_familiares' => 'required|string',
         ], [
             'antecedentes_familiares.required' => 'El campo antecedentes familiares es obligatorio.'
 

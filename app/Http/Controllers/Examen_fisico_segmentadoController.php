@@ -23,7 +23,7 @@ class Examen_fisico_segmentadoController extends Controller
         'extremidades','neurologicos','craneo','cavidad_bucal','cuello','cuello_inspeccion','cuello_palpacion','cuello_auscultacion','torax',
         'torax_inspeccion_estatico','torax_inspeccion_dinamico','torax_palpacion','torax_percusion','torax_auscultacion','mamas'] as $field) {
             if ($request->has($field)) {
-                $rules[$field] = 'required|string|max:255';
+                $rules[$field] = 'required|string';
                 $messages["$field.required"] = "El campo $field es obligatorio.";
             }
         }

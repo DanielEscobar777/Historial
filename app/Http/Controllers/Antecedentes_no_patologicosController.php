@@ -19,7 +19,7 @@ class Antecedentes_no_patologicosController extends Controller
         'habito_alcoholico','habito_tabaquico', 'exposicion_biomasa', 'contacto_con_tuberculosis','contacto_triatoma_infestans','toxicomanias_drogas',
         'nmunizaciones','antecedentes_sexuales','inmunizaciones'] as $field) {
             if ($request->has($field)) {
-                $rules[$field] = 'required|string|max:255';
+                $rules[$field] = 'required|string';
                 $messages["$field.required"] = "El campo $field es obligatorio.";
             }
         }

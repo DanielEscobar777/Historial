@@ -19,7 +19,7 @@ class Antecedentes_heredofamiliaresController extends Controller
         // Solo validar los campos que vienen en el request
         foreach (['padre', 'madre', 'hermanos', 'esposo', 'hijos', 'abuelos'] as $field) {
             if ($request->has($field)) {
-                $rules[$field] = 'required|string|max:255';
+                $rules[$field] = 'required|string';
                 $messages["$field.required"] = "El campo $field es obligatorio.";
             }
         }

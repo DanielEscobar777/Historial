@@ -25,7 +25,7 @@ class Sistema_sensitivoController extends Controller
             ] as $field
         ) {
             if ($request->has($field)) {
-                $rules[$field] = 'required|string|max:255';
+                $rules[$field] = 'required|string';
                 $messages["$field.required"] = "El campo $field es obligatorio.";
             }
         }

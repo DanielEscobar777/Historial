@@ -40,7 +40,7 @@ class EvolucionController extends Controller
         $id_historial = $request->id_historial;
         $userId = Auth::id();
         $validated = $request->validate([
-            'diagnostico' => 'required|string|max:255',
+            'diagnostico' => 'required|string',
         ], [
             'diagnostico.required' => 'El campo diagnostico es obligatorio.',
         ]);

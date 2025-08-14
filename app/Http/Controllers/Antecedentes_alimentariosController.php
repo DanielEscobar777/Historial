@@ -12,7 +12,7 @@ class Antecedentes_alimentariosController extends Controller
     {
         $userId = Auth::id();
         $validated = $request->validate([
-            'antecedentes_alimentarios' => 'required|string|max:255',
+            'antecedentes_alimentarios' => 'required|string',
         ], [
             'antecedentes_alimentarios.required' => 'El campo antecedentes perinatologicos es obligatorio.'
 
