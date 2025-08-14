@@ -7,6 +7,10 @@ use App\Http\Controllers\HistorialController;
 use App\Http\Controllers\PdfController;
 use App\Http\Controllers\LoginExternoController;
 use App\Http\Controllers\PacienteController;
+use App\Http\Controllers\kardexController;
+
+Route::get('/kardex/index', [kardexController::class, 'index'])->name('kardex.index');
+
 
 require __DIR__.'/evolucion_temp.php';
 require __DIR__.'/evolucion_final.php';
