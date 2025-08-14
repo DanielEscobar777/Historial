@@ -32,7 +32,7 @@ class ValidarTokenExterno
 
             try {
                 $response = Http::withToken($token)
-                    ->get('http://192.168.4.55:8000/api/auth/test_token');
+                   ->get('http://192.168.4.55:8000/api/auth/test_token');
                   // ->get('http://localhost/tokkens/token-test.php');
                  //->get('https://67a7434660c5.ngrok-free.app/tokkens/token-test.php');
 

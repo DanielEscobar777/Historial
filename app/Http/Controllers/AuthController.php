@@ -43,7 +43,7 @@ public function loguear(Request $request)
         'email' => 'required',
         'password' => 'required'
     ]);
-
+    //$response = Http::post('http://localhost/tokkens/login.php', [
     $response = Http::post('http://192.168.4.55:8000/api/auth/login_service', [
         'email' => $request->email,
         'password' => $request->password,
@@ -77,7 +77,7 @@ public function loguear(Request $request)
     Auth::login($user);
     Session::put('login_time', now());
 
-    
+//  $usuariosResponse = Http::get('http://localhost/tokkens/usuarios_residentes.php');
     $usuariosResponse = Http::get('http://192.168.4.55:8001/api/s1/administracion/user_residente');
 
     if ($usuariosResponse->ok()) {
@@ -97,23 +97,31 @@ public function loguear(Request $request)
                 ];
 
                 if (isset($rolesMap[$rolTexto])) {
-                    $roleId = $rolesMap[$rolTexto];
+    $roleId = $rolesMap[$rolTexto];
 
-                   
-                    $yaAsignado = DB::table('role_user')
-                        ->where('user_id', $user->id)
-                        ->where('role_id', $roleId)
-                        ->exists();
+    $yaAsignado = DB::table('role_user')
+        ->where('user_id', $user->id)
+        ->where('role_id', $roleId)
+        ->exists();
 
-                    if (!$yaAsignado) {
-                  
-                        DB::table('role_user')->insert([
-                            'user_id' => $user->id,
-                            'role_id' => $roleId,
-                            'assigned_at' => now()
-                        ]);
-                    }
-                }
+    if (!$yaAsignado) {
+        try {
+            DB::table('role_user')->insert([
+                'user_id' => $user->id,
+                'role_id' => $roleId,
+                'assigned_at' => now()
+            ]);
+        } catch (\Exception $e) {
+            // Guardamos un error en el log y lo mandamos como alerta visual
+            Log::error("Error al asignar rol al usuario {$user->email}: " . $e->getMessage());
+            return back()->with('error', 'No se pudo asignar el rol al usuario. Contacte al administrador.');
+        }
+    }
+} else {
+    // El rol no está en el mapa de roles válidos
+    return back()->with('error', 'El rol "' . $externo['rol'] . '" no está definido en el sistema.');
+}
+
 
                 break;
             }

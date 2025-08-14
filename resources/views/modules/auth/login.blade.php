@@ -18,6 +18,12 @@
 </head>
 
 <body style="background-color: white;">
+    @if (session('error'))
+    <div style="background: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+        {{ session('error') }}
+    </div>
+@endif
+
     <div id="root" class="root front-container">
         <section id="content" class="content">
             <div class="content__boxed w-100 min-vh-100 d-flex flex-column align-items-center justify-content-center">
