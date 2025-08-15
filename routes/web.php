@@ -10,7 +10,7 @@ use App\Http\Controllers\PacienteController;
 use App\Http\Controllers\KardexController;
 
 
-Route::get('/Kardex/index', [kardexController::class, 'index'])->name('Kardex.index');
+Route::get('/Kardex/index', [KardexController::class, 'index'])->name('Kardex.index');
 
 
 require __DIR__.'/evolucion_temp.php';
