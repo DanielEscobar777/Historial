@@ -18,6 +18,7 @@ class PacienteController extends Controller
     // ✅ Método principal para actualizar RN desde API
     public function actualizarRecienNacidosDesdeApi()
     {
+        Log::info('Método actualizarRecienNacidosDesdeApi llamado');
         try {
             $recienNacidos = DB::table('pacientes')
                 ->where('nombres', 'LIKE', 'RN_%')
