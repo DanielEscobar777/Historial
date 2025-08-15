@@ -103,7 +103,7 @@
                     @auth
                     @if (auth()->user()->hasRole('residente'))
                     <div class="menu-item  active">
-                        <a href="{{route('kardex.index')}}" class="menu-link">
+                        <a href="{{route('Kardex.index')}}" class="menu-link">
                             <div class="menu-icon">
                                 <i class="fa fa-clipboard-list text-info"></i>
                             </div>
