@@ -23,6 +23,8 @@ class PacienteController extends Controller
                 ->where('nombres', 'LIKE', 'RN_%')
                 ->get();
 
+            Log::info("👶 Recién nacidos encontrados: " . $recienNacidos->count());
+
             if ($recienNacidos->isEmpty()) {
                 return response()->json(['mensaje' => 'No se encontraron recién nacidos en la base de datos.']);
             }
@@ -49,15 +51,22 @@ class PacienteController extends Controller
                 return $agrupadosPorFecha[Carbon::parse($paciente->fecha_nacimiento)->toDateString()]->count() === 1;
             });
 
+            Log::info("🧼 Pacientes sin conflicto: " . $pacientesSinConflicto->count());
+
             $afiliados = $this->obtenerTodosLosAfiliados();
 
             if (is_array($afiliados) && isset($afiliados['error'])) {
+                Log::warning("⚠️ Error al obtener afiliados: " . $afiliados['error']);
                 return response()->json($afiliados, 500);
             }
+
+            Log::info("📂 Afiliados cargados: " . count($afiliados));
 
             foreach ($pacientesSinConflicto as $paciente) {
                 $fechaNac = Carbon::parse($paciente->fecha_nacimiento)->toDateString();
                 $matches = collect($afiliados)->where('fecha_nacimiento', $fechaNac);
+
+                Log::info("🔍 Buscando coincidencias para paciente ID {$paciente->id} con fecha {$fechaNac}: " . $matches->count());
 
                 if ($matches->count() === 1) {
                     $match = $matches->first();
@@ -86,6 +95,9 @@ class PacienteController extends Controller
                         'paciente' => $paciente->nombres,
                         'mensaje' => "Actualizado con datos del afiliado '{$match['nombres']}'"
                     ];
+
+                    Log::info("✅ Actualizado paciente ID {$paciente->id} con afiliado '{$match['nombres']}'");
+
                 } elseif ($matches->count() > 1) {
                     $nombresCoincidentes = $matches->pluck('nombres')->implode(', ');
                     $resultados[] = [
@@ -117,6 +129,8 @@ class PacienteController extends Controller
                 ->where('nombres', 'LIKE', 'RN_%')
                 ->get();
 
+            Log::info("🔎 buscarRecienNacidos: RN encontrados: " . $recienNacidos->count());
+
             if ($recienNacidos->isEmpty()) {
                 return response()->json(['mensaje' => 'No se encontraron recién nacidos en la base de datos.']);
             }
@@ -139,6 +153,8 @@ class PacienteController extends Controller
                     'encontrado_api' => $encontrado ? true : false
                 ];
             }
+
+            Log::info("🔍 Comparación de RN finalizada.");
 
             return response()->json($resultados);
         } catch (\Throwable $e) {
@@ -167,6 +183,7 @@ class PacienteController extends Controller
             $usuarios = Cache::get($cacheKey);
 
             if (!$usuarios) {
+                Log::info("⏳ Cache vacío para user ID: {$user->id}, leyendo desde archivo...");
                 $usuarios = $this->obtenerTodosLosAfiliados();
 
                 if (is_array($usuarios) && isset($usuarios['error'])) {
@@ -176,8 +193,7 @@ class PacienteController extends Controller
                 Cache::put($cacheKey, $usuarios, $this->cacheTTL);
             }
 
-            // ✅ Log para depuración
-            Log::info("Buscando CI: {$term}");
+            Log::info("🔍 Buscando CI: {$term}");
 
             $resultados = collect($usuarios)
                 ->filter(function ($usuario) use ($term) {
@@ -186,7 +202,7 @@ class PacienteController extends Controller
                 ->take(50)
                 ->values();
 
-            Log::info("Resultados encontrados: " . count($resultados));
+            Log::info("🎯 Resultados encontrados: " . count($resultados));
 
             return response()->json($resultados);
         } catch (\Throwable $e) {
@@ -206,6 +222,7 @@ class PacienteController extends Controller
                 return ['error' => 'El archivo de afiliados aún no ha sido generado.'];
             }
 
+           
             $contenido = file_get_contents($cachePath);
             $afiliados = json_decode($contenido, true);
 

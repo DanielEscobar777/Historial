@@ -550,11 +550,11 @@ class HistorialController extends Controller
                         //\Log::info("Registro en $tabla insertado con id_historial = $historialId");
                     }
                 } catch (\Throwable $e) {
-                    \Log::error("Error al insertar o actualizar en tabla {$tabla}: " . $e->getMessage(), [
+                    /*\Log::error("Error al insertar o actualizar en tabla {$tabla}: " . $e->getMessage(), [
                         'tabla' => $tabla,
                         'datos_procesados' => $data,
                         'exception' => $e,
-                    ]);
+                    ]);*/
                     if (!\Schema::hasTable($tabla)) {
                         //\Log::warning("La tabla $tabla no existe en la base de datos.");
                         continue;
