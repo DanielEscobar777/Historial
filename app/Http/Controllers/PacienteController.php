@@ -168,54 +168,11 @@ class PacienteController extends Controller
     }
 
     // ✅ Método para buscar afiliados por CI
-    public function buscarPorCI(Request $request)
-    {
-     dd('Entró al método Ci');   
-        Log::info('Cicd');
-        if (!$request->filled('term')) {
-            return response()->json([]);
-        }
-
-        $term = trim($request->input('term'));
-
-        if ($term === '') {
-            return response()->json([]);
-        }
-
-        try {
-            $user = Auth::user();
-            $cacheKey = $this->cacheKeyPrefix . $user->id;
-
-            $usuarios = Cache::get($cacheKey);
-
-            if (!$usuarios) {
-                Log::info("⏳ Cache vacío para user ID: {$user->id}, leyendo desde archivo...");
-                $usuarios = $this->obtenerTodosLosAfiliados();
-
-                if (is_array($usuarios) && isset($usuarios['error'])) {
-                    return response()->json($usuarios, 500);
-                }
-
-                Cache::put($cacheKey, $usuarios, $this->cacheTTL);
-            }
-
-            Log::info("🔍 Buscando CI: {$term}");
-
-            $resultados = collect($usuarios)
-                ->filter(function ($usuario) use ($term) {
-                    return stripos((string)$usuario['ci'], $term) !== false;
-                })
-                ->take(50)
-                ->values();
-
-            Log::info("🎯 Resultados encontrados: " . count($resultados));
-
-            return response()->json($resultados);
-        } catch (\Throwable $e) {
-            Log::error('❌ Error en buscarPorCI: ' . $e->getMessage());
-            return response()->json(['error' => 'Error interno. Revisa el log.'], 500);
-        }
-    }
+   public function buscarPorCI(Request $request)
+{
+    \Log::info('Entró al método buscarPorCI en IP: ' . $request->ip());
+    return response()->json([]);
+}
 
     // ✅ Método para obtener afiliados desde el archivo cache
     protected function obtenerTodosLosAfiliados()
