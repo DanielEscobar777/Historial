@@ -18,6 +18,7 @@ class PacienteController extends Controller
     // ✅ Método principal para actualizar RN desde API
     public function actualizarRecienNacidosDesdeApi()
     {
+        dd('Entró al método api');
         Log::info('Método actualizarRecienNacidosDesdeApi llamado');
         try {
             $recienNacidos = DB::table('pacientes')
@@ -125,7 +126,7 @@ class PacienteController extends Controller
     // ✅ Método para buscar coincidencias RN vs API
     public function buscarRecienNacidos()
     {
-        
+     dd('Entró al método recien nacido');
         Log::info('Recien naccidos');
         try {
             $recienNacidos = DB::table('pacientes')
@@ -169,7 +170,7 @@ class PacienteController extends Controller
     // ✅ Método para buscar afiliados por CI
     public function buscarPorCI(Request $request)
     {
-        
+     dd('Entró al método Ci');   
         Log::info('Cicd');
         if (!$request->filled('term')) {
             return response()->json([]);
