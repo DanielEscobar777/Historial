@@ -251,6 +251,12 @@ public function buscarPorCI(Request $request)
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $token
             ])->get($url);
+            dd([
+    'url' => $url,
+    'status' => $response->status(),
+    'body' => $response->body()
+]);
+
 
             if (!$response->ok()) {
                 return response()->json(['error' => 'Error al acceder a la API externa'], 500);
