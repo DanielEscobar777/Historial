@@ -107,7 +107,7 @@ class PacienteController extends Controller
 
             return response()->json($resultados);
         } catch (\Throwable $e) {
-            Log::error('Error en actualizarRecienNacidosDesdeApi: ' . $e->getMessage());
+           // Log::error('Error en actualizarRecienNacidosDesdeApi: ' . $e->getMessage());
             return response()->json(['error' => 'Error interno. Revisa el log.'], 500);
         }
     }
@@ -145,7 +145,7 @@ class PacienteController extends Controller
 
             return response()->json($resultados);
         } catch (\Throwable $e) {
-            Log::error('Error en buscarRecienNacidos: ' . $e->getMessage());
+          //  Log::error('Error en buscarRecienNacidos: ' . $e->getMessage());
             return response()->json(['error' => 'Error interno. Revisa el log.'], 500);
         }
     }
@@ -188,7 +188,7 @@ class PacienteController extends Controller
 
             return response()->json($resultados);
         } catch (\Throwable $e) {
-            Log::error('Error en buscarPorCI: ' . $e->getMessage());
+          //  Log::error('Error en buscarPorCI: ' . $e->getMessage());
             return response()->json(['error' => 'Error interno. Revisa el log.'], 500);
         }
     }
@@ -212,7 +212,7 @@ class PacienteController extends Controller
 
         return $afiliados;
     } catch (\Throwable $e) {
-        Log::error('Error al leer afiliados_cache.json: ' . $e->getMessage());
+      //  Log::error('Error al leer afiliados_cache.json: ' . $e->getMessage());
         return ['error' => 'Error interno al leer el archivo de afiliados.'];
     }
 }

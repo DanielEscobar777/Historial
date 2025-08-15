@@ -148,12 +148,12 @@ class AuthController extends Controller
 
                 $this->registrarActualizacionAfiliados();
 
-                Log::info('Afiliados actualizados en background para usuario ID: ' . $user->id);
+              //  Log::info('Afiliados actualizados en background para usuario ID: ' . $user->id);
             } catch (\Throwable $e) {
-                Log::error('Error lanzando comando afiliados en background: ' . $e->getMessage());
+            //    Log::error('Error lanzando comando afiliados en background: ' . $e->getMessage());
             }
         } else {
-            Log::info('No se actualizó afiliados: actualización reciente detectada (menos de 5 minutos).');
+           // Log::info('No se actualizó afiliados: actualización reciente detectada (menos de 5 minutos).');
         }
 
         return to_route('welcome');
