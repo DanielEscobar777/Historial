@@ -25,7 +25,7 @@ class KardexController extends Controller
         $pacientes = DB::table('pacientes')
             ->get();
 
-        return view('kardex.index', compact('servicios','pacientes'));
+        return view('Kardex.index', compact('servicios','pacientes'));
     }
 
     public function consulta(Request $request)
@@ -48,13 +48,13 @@ class KardexController extends Controller
             ->whereBetween('h.fecha_registro', [$desde, $hasta])
             ->get();
 
-        return view('kardex.reporte', compact('datos','paciente','servicio'));
+        return view('Kardex.reporte', compact('datos','paciente','servicio'));
     }
 
     public function soap($id_historial)
     {
         $evoluciones = Evolucion::traerEvolucion($id_historial);
-        return view('kardex.soap', [
+        return view('Kardex.soap', [
             'evoluciones' => $evoluciones,
             'id_historial' => $id_historial,
           
