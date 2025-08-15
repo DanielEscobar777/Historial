@@ -181,7 +181,7 @@ class PacienteController extends Controller
 
             $resultados = collect($usuarios)
                 ->filter(function ($usuario) use ($term) {
-                    return stripos($usuario['ci'], $term) !== false;
+                    return stripos((string)$usuario['ci'], $term) !== false;
                 })
                 ->take(50)
                 ->values();
@@ -205,7 +205,9 @@ class PacienteController extends Controller
 
         $contenido = file_get_contents($cachePath);
         $afiliados = json_decode($contenido, true);
-
+        if (json_last_error() !== JSON_ERROR_NONE) {
+    dd('Error en JSON:', json_last_error_msg());
+}
         if (!is_array($afiliados)) {
             return ['error' => 'El formato del archivo de afiliados es inválido.'];
         }
