@@ -61,9 +61,10 @@ public function actualizarRecienNacidosDesdeApi()
             return response()->json(['error' => 'Token inválido'], 401);
         }
 
-        // 3. Llamar a la API externa
-        $response = Http::withToken($token)
-            ->get("http://192.168.4.55:8001/api/s1/administracion/pacientes");
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $token
+        ])->get('http://192.168.4.55:8001/api/s1/administracion/pacientes');
+
            // ->get("http://localhost/tokkens/lista_afiliados.php");
 
         if (!$response->ok()) {
@@ -159,8 +160,10 @@ public function actualizarRecienNacidosDesdeApi()
         return response()->json(['error' => 'Token inválido'], 401);
     }
 
-    $response = Http::withToken($token)
-        ->get("http://192.168.4.55:8001/api/s1/administracion/pacientes");
+    $response = Http::withHeaders([
+        'Authorization' => 'Bearer ' . $token
+    ])->get('http://192.168.4.55:8001/api/s1/administracion/pacientes');
+
 
     if (!$response->ok()) {
         return response()->json(['error' => 'Error al acceder a la API externa'], 500);
@@ -221,9 +224,10 @@ public function actualizarRecienNacidosDesdeApi()
 
         if (!$usuarios) {
           
-            $response = Http::withToken($token)
-            
-              ->get("http://192.168.4.55:8001/api/s1/administracion/pacientes");
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $token
+            ])->get('http://192.168.4.55:8001/api/s1/administracion/pacientes');
+
              //   ->get("http://localhost/tokkens/lista_afiliados.php");
 
             if (!$response->ok()) {

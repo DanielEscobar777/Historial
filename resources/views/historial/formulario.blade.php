@@ -151,7 +151,7 @@
                         @foreach ($grupo['subcampos'] as $subcampo)
                         <div class="col-md-12">
                             <label><b>{{ ucwords(str_replace('_', ' ', $subcampo['etiqueta'])) }}</b></label>
-                            <textarea type="text" class="form-control" name="campos_dinamicos[{{ $subcampo['nombre'] }}]" value="{{ old('campos_dinamicos.' . $subcampo['nombre']) }}" placeholder="Escriba descripcion..."></textarea>
+                            <textarea type="text" class="form-control" name="campos_dinamicos[{{ $subcampo['nombre'] }}]" placeholder="Escriba descripcion...">{{ old('campos_dinamicos.' . $subcampo['nombre']) }}</textarea>
                         </div>
                         @endforeach
                         <?php $n++ ?>
