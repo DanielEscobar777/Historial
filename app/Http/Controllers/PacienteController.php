@@ -12,13 +12,10 @@ use Carbon\Carbon;
 
 class PacienteController extends Controller
 {
-
     protected $cacheKeyPrefix = 'afiliados_cache_';
-    protected $cacheTTL = 3600;
+    protected $cacheTTL = 3600; // 1 hora
 
-    
-
-    // Método principal para actualizar RN desde la API
+    // ✅ Método principal para actualizar RN desde API
     public function actualizarRecienNacidosDesdeApi()
     {
         try {
@@ -107,12 +104,12 @@ class PacienteController extends Controller
 
             return response()->json($resultados);
         } catch (\Throwable $e) {
-           // Log::error('Error en actualizarRecienNacidosDesdeApi: ' . $e->getMessage());
+            Log::error('❌ Error en actualizarRecienNacidosDesdeApi: ' . $e->getMessage());
             return response()->json(['error' => 'Error interno. Revisa el log.'], 500);
         }
     }
 
-    // Método para buscar coincidencias RN vs API
+    // ✅ Método para buscar coincidencias RN vs API
     public function buscarRecienNacidos()
     {
         try {
@@ -145,12 +142,12 @@ class PacienteController extends Controller
 
             return response()->json($resultados);
         } catch (\Throwable $e) {
-          //  Log::error('Error en buscarRecienNacidos: ' . $e->getMessage());
+            Log::error('❌ Error en buscarRecienNacidos: ' . $e->getMessage());
             return response()->json(['error' => 'Error interno. Revisa el log.'], 500);
         }
     }
 
-    // Método para buscar por CI
+    // ✅ Método para buscar afiliados por CI
     public function buscarPorCI(Request $request)
     {
         if (!$request->filled('term')) {
@@ -179,6 +176,9 @@ class PacienteController extends Controller
                 Cache::put($cacheKey, $usuarios, $this->cacheTTL);
             }
 
+            // ✅ Log para depuración
+            Log::info("Buscando CI: {$term}");
+
             $resultados = collect($usuarios)
                 ->filter(function ($usuario) use ($term) {
                     return stripos((string)$usuario['ci'], $term) !== false;
@@ -186,37 +186,45 @@ class PacienteController extends Controller
                 ->take(50)
                 ->values();
 
+            Log::info("Resultados encontrados: " . count($resultados));
+
             return response()->json($resultados);
         } catch (\Throwable $e) {
-          //  Log::error('Error en buscarPorCI: ' . $e->getMessage());
+            Log::error('❌ Error en buscarPorCI: ' . $e->getMessage());
             return response()->json(['error' => 'Error interno. Revisa el log.'], 500);
         }
     }
 
-    // 🔁 Método reutilizable para obtener todos los afiliados paginando
+    // ✅ Método para obtener afiliados desde el archivo cache
     protected function obtenerTodosLosAfiliados()
-{
-    try {
-        $cachePath = storage_path('app/afiliados_cache.json');
+    {
+        try {
+            $cachePath = storage_path('app/afiliados_cache.json');
 
-        if (!file_exists($cachePath)) {
-            return ['error' => 'El archivo de afiliados aún no ha sido generado.'];
+            if (!file_exists($cachePath)) {
+                Log::warning("⚠️ El archivo no existe: {$cachePath}");
+                return ['error' => 'El archivo de afiliados aún no ha sido generado.'];
+            }
+
+            $contenido = file_get_contents($cachePath);
+            $afiliados = json_decode($contenido, true);
+
+            // ✅ Validación de JSON
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                Log::error('❌ Error de JSON: ' . json_last_error_msg());
+                return ['error' => 'Error de formato JSON: ' . json_last_error_msg()];
+            }
+
+            if (!is_array($afiliados)) {
+                Log::error('❌ El JSON no es un array válido.');
+                return ['error' => 'El formato del archivo de afiliados es inválido.'];
+            }
+
+            Log::info('✅ Archivo de afiliados leído con éxito. Total: ' . count($afiliados));
+            return $afiliados;
+        } catch (\Throwable $e) {
+            Log::error('❌ Error al leer afiliados_cache.json: ' . $e->getMessage());
+            return ['error' => 'Error interno al leer el archivo de afiliados.'];
         }
-
-        $contenido = file_get_contents($cachePath);
-        $afiliados = json_decode($contenido, true);
-        if (json_last_error() !== JSON_ERROR_NONE) {
-    dd('Error en JSON:', json_last_error_msg());
-}
-        if (!is_array($afiliados)) {
-            return ['error' => 'El formato del archivo de afiliados es inválido.'];
-        }
-
-        return $afiliados;
-    } catch (\Throwable $e) {
-      //  Log::error('Error al leer afiliados_cache.json: ' . $e->getMessage());
-        return ['error' => 'Error interno al leer el archivo de afiliados.'];
     }
-}
-
 }
