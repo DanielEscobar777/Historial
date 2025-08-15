@@ -86,8 +86,13 @@
             <td style="text-align: left; width: 80%; "><b>Nombre: </b> {!! nl2br(e($h_antecedentes->nombre_recien_necido)) !!}</td>
         </tr>
         <tr>
-            <td style="text-align: left; width: 80%; "><b>Sexo: </b> {!! nl2br(e($h_antecedentes->sexo)) !!}</td>
-        </tr>
+            @if($filiacion->sexo == 'M')
+            <td style="text-align: left; "><b>Sexo : </b>Masculino</td>
+            @else
+            <td style="text-align: left; "><b>Sexo : </b>Femeninos</td>
+            @endif
+            <td style="text-align: left; "><b>Hora: </b> {{$filiacion->hora_registro}}</td>
+        </tr>
         <tr>
             <td style="text-align: left; width: 80%; "><b>Fecha de nacimiento: </b> {!! nl2br(e($h_antecedentes->fecha_recien_necido)) !!}</td>
         </tr>

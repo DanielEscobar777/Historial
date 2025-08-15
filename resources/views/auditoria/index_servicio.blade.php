@@ -44,7 +44,11 @@
                         <td>{{ $historial->fecha_registro}} {{$historial->hora_registro}}</td>
                         @if($servicio->nombre_servicio == 'NEONATOLOGIA')
                         <td>{{ $historial->fecha_recien_necido}} {{ $historial->hora_recien_necido}}</td>
-                        <td>{{ $historial->sexo}}</td>
+                        @if($historial->sexo == 'M')
+                         <td>Masculino</td>
+                              @else
+                               <td>Femenino</td>
+                         @endif
                         @endif
                         <td>{{ $historial->cama}}</td>
                         <td><a href="{{ route('auditoria.auditoria', $historial->id_historia)}}"><button class=" btn btn-primary"><i class="fa fa-search-plus"></i>Explorar</button></a></td>

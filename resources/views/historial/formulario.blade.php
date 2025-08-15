@@ -150,7 +150,16 @@
                         </div>
                         @foreach ($grupo['subcampos'] as $subcampo)
                         <div class="col-md-12">
+                            @switch($subcampo['etiqueta'])
+                            @case('Unias')
+                            <label><b>Uñas</b></label>
+                            @break
+                            @case('Punio_percusion_renal')
+                            <label><b>Puño Percusion Renal</b></label>
+                            @break
+                            @default
                             <label><b>{{ ucwords(str_replace('_', ' ', $subcampo['etiqueta'])) }}</b></label>
+                            @endswitch
                             <textarea type="text" class="form-control" name="campos_dinamicos[{{ $subcampo['nombre'] }}]" placeholder="Escriba descripcion...">{{ old('campos_dinamicos.' . $subcampo['nombre']) }}</textarea>
                         </div>
                         @endforeach

@@ -55,7 +55,11 @@
                         <td>{{ $historial->fecha_registro}}</td>
                          @if($servicio->nombre_servicio == 'NEONATOLOGIA')
                          <td>{{ $historial->fecha_recien_necido}} {{ $historial->hora_recien_necido}}</td>
-                         <td>{{ $historial->sexo}}</td>
+                         @if($historial->sexo == 'M')
+                         <td>Masculino</td>
+                              @else
+                               <td>Femenino</td>
+                         @endif
                          @endif
                         <td>{{ $historial->cama}}</td>
                         <td><a target="_blank" href="/generate-pdf/{{ $historial->id_historia }}"><button class=" btn btn-danger"><i class="fa fa-file-pdf"></i></button></a>

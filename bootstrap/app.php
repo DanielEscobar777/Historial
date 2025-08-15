@@ -4,6 +4,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use App\Http\Middleware\ValidarTokenExterno;
+use App\Console\Commands\DescargarAfiliados; // 👈 Importar tu comando
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -22,4 +23,8 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
-    })->create();
+    })
+    ->withCommands([ // 👈 Registrar el comando aquí
+        DescargarAfiliados::class,
+    ])
+    ->create();

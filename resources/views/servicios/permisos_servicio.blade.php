@@ -38,7 +38,8 @@
                             <h2 class="accordion-header" id="heading{{ $idAcordeon }}">
                                 <button class="accordion-button collapsed bg-light fw-bold text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ $idAcordeon }}" aria-expanded="false" aria-controls="collapse{{ $idAcordeon }}">
                                     <input class="form-check-input me-2" type="checkbox" value="<?= $niv_1['id_permisos_historia'] ?>" name="permisos[]" <?= $niv_1['nombre_permiso'] ?> <?php if (isset($asignado[$niv_1['id_permisos_historia']])) echo 'checked'; ?>>
-                                    <?= $niv_1['nombre_permiso'] ?>
+                                    <?=
+                                      ucwords(str_replace('_', ' ', $niv_1['nombre_permiso'])) ?>
                                 </button>
                             </h2>
                             <div id="collapse{{ $idAcordeon }}" class="accordion-collapse collapse" aria-labelledby="heading{{ $idAcordeon }}" data-bs-parent="#accordionPermisos">
@@ -48,7 +49,19 @@
                                             if ($modulo == $niv_2['modulo']) { ?>
                                                 <li class="list-group-item">
                                                     <input class="form-check-input me-2" type="checkbox" value="<?= $niv_2['id_permisos_historia'] ?>" name="permisos[]" <?= $niv_2['nombre_permiso'] ?> <?php if (isset($asignado[$niv_2['id_permisos_historia']])) echo 'checked'; ?>>
-                                                    <?= $niv_2['nombre_permiso'] ?>
+                                                    @switch($niv_2['nombre_permiso'])
+                                                    @case('Unias')
+                                                    <?= 'Uñas' ?>
+                                                    @break
+                                                    @case('Punio_percusion_renal')
+                                                    <?= 'Puño Percusion Renal' ?>
+                                                    @break
+                                                    @default
+                                                    <?=
+                                                    ucwords(str_replace('_', ' ', $niv_2['nombre_permiso']))
+                                                    
+                                                   ?> @endswitch
+
                                                 </li>
                                         <?php }
                                         } ?>
