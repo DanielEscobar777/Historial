@@ -13,7 +13,7 @@ class PacienteController extends Controller
 public function actualizarRecienNacidosDesdeApi()
 {
     try {
-        // 1. Obtener pacientes recién nacidos
+   
         $recienNacidos = \DB::table('pacientes')
             ->where('nombres', 'LIKE', 'RN_%')
             ->get();
@@ -22,7 +22,6 @@ public function actualizarRecienNacidosDesdeApi()
             return response()->json(['mensaje' => 'No se encontraron recién nacidos en la base de datos.']);
         }
 
-        // Verificar si hay más de un RN con la misma fecha de nacimiento
         $agrupadosPorFecha = $recienNacidos->groupBy(function ($item) {
             return \Carbon\Carbon::parse($item->fecha_nacimiento)->toDateString();
         });
@@ -41,12 +40,11 @@ public function actualizarRecienNacidosDesdeApi()
             }
         }
 
-        // Continuar solo con pacientes sin conflicto local
         $pacientesSinConflicto = $recienNacidos->filter(function ($paciente) use ($agrupadosPorFecha) {
             return $agrupadosPorFecha[\Carbon\Carbon::parse($paciente->fecha_nacimiento)->toDateString()]->count() === 1;
         });
 
-        // 2. Obtener token
+
         $user = Auth::user();
         $tokenPath = storage_path('app/token_sesion_' . $user->id . '.json');
 
@@ -61,30 +59,41 @@ public function actualizarRecienNacidosDesdeApi()
             return response()->json(['error' => 'Token inválido'], 401);
         }
 
-        $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $token
-        ])->get('http://192.168.4.55:8001/api/s1/administracion/pacientes');
 
-           // ->get("http://localhost/tokkens/lista_afiliados.php");
+        $pagina = 1;
+        $afiliados = [];
 
-        if (!$response->ok()) {
-            return response()->json(['error' => 'Error al acceder a la API externa'], 500);
+        while (true) {
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $token
+            ])->get('http://192.168.4.55:8001/api/s1/administracion/pacientes', [
+                'pagina' => $pagina
+            ]);
+
+            if (!$response->ok()) {
+                return response()->json(['error' => 'Error al acceder a la API externa'], 500);
+            }
+
+            $data = $response->json();
+            $datosPagina = $data['data'] ?? [];
+
+            if (empty($datosPagina)) {
+                break; 
+            }
+
+            $afiliados = array_merge($afiliados, $datosPagina);
+            $pagina++;
         }
 
-        $apiData = $response->json();
-        $afiliados = $apiData['data'] ?? [];
-
-        // 4. Procesar pacientes sin conflicto local
+ 
         foreach ($pacientesSinConflicto as $paciente) {
             $fechaNac = \Carbon\Carbon::parse($paciente->fecha_nacimiento)->toDateString();
 
-            // Buscar coincidencias por fecha
             $matches = collect($afiliados)->where('fecha_nacimiento', $fechaNac);
 
             if ($matches->count() === 1) {
                 $match = $matches->first();
 
-                // Actualizar paciente
                 \DB::table('pacientes')->where('id', $paciente->id)->update([
                     'nombres' => $match['nombres'],
                     'p_apellido' => $match['p_apellido'],
@@ -100,7 +109,6 @@ public function actualizarRecienNacidosDesdeApi()
                     'updated_at' => now()
                 ]);
 
-                // Actualizar tabla historials
                 \DB::table('historials')
                     ->where('id_paciente', $paciente->id)
                     ->update([
@@ -123,7 +131,7 @@ public function actualizarRecienNacidosDesdeApi()
                 $resultados[] = [
                     'tipo' => 'no_encontrado',
                     'paciente' => $paciente->nombres,
-                    'mensaje' => "No se encontraron actualizaciones en el recien nacido '{$paciente->nombres}' con la fecha de nacimiento de {$fechaNac}."
+                    'mensaje' => "No se encontraron actualizaciones en el recién nacido '{$paciente->nombres}' con la fecha de nacimiento de {$fechaNac}."
                 ];
             }
         }
@@ -136,7 +144,8 @@ public function actualizarRecienNacidosDesdeApi()
 }
 
 
-    public function buscarRecienNacidos()
+
+public function buscarRecienNacidos()
 {
     $recienNacidos = \DB::table('pacientes')
         ->where('nombres', 'LIKE', 'RN_%')
@@ -160,25 +169,37 @@ public function actualizarRecienNacidosDesdeApi()
         return response()->json(['error' => 'Token inválido'], 401);
     }
 
-    $response = Http::withHeaders([
-        'Authorization' => 'Bearer ' . $token
-    ])->get('http://192.168.4.55:8001/api/s1/administracion/pacientes');
+    // Obtener todos los afiliados con paginación
+    $pagina = 1;
+    $afiliados = [];
 
+    while (true) {
 
-    if (!$response->ok()) {
-        return response()->json(['error' => 'Error al acceder a la API externa'], 500);
+        
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $token
+        ])->get('http://192.168.4.55:8001/api/s1/administracion/pacientes?pagina=' . $pagina);
+        Http::dd();
+
+        if (!$response->ok()) {
+            return response()->json(['error' => 'Error al acceder a la API externa'], 500);
+        }
+
+        $data = $response->json();
+        $datosPagina = $data['data'] ?? [];
+
+        if (empty($datosPagina)) {
+            break;
+        }
+
+        $afiliados = array_merge($afiliados, $datosPagina);
+        $pagina++;
     }
-
-    $apiData = $response->json();
-    $afiliados = $apiData['data'] ?? [];
 
     $resultados = [];
 
     foreach ($recienNacidos as $paciente) {
-        // Obtener fecha desde campo fecha_nacimiento
         $fechaNac = \Carbon\Carbon::parse($paciente->fecha_nacimiento)->toDateString();
-
-        // Buscar coincidencia exacta de fecha_nacimiento en la API
         $encontrado = collect($afiliados)->firstWhere('fecha_nacimiento', $fechaNac);
 
         $resultados[] = [
@@ -191,71 +212,76 @@ public function actualizarRecienNacidosDesdeApi()
     return response()->json($resultados);
 }
 
-    public function buscarPorCI(Request $request)
-    {
-        if (!$request->has('term')) {
-            return response()->json([]);
-        }
 
-        $term = trim($request->input('term'));
-        if ($term === '') {
-            return response()->json([]);
-        }
+public function buscarPorCI(Request $request)
+{
+    if (!$request->has('term')) {
+        return response()->json([]);
+    }
 
-      
-        $user = Auth::user();
-        $tokenPath = storage_path('app/token_sesion_' . $user->id . '.json');
+    $term = trim($request->input('term'));
+    if ($term === '') {
+        return response()->json([]);
+    }
 
-        if (!file_exists($tokenPath)) {
-            return response()->json(['error' => 'Token no encontrado'], 401);
-        }
+    $user = Auth::user();
+    $tokenPath = storage_path('app/token_sesion_' . $user->id . '.json');
 
-        $tokenData = json_decode(file_get_contents($tokenPath), true);
-        $token = $tokenData['access_token'] ?? null;
+    if (!file_exists($tokenPath)) {
+        return response()->json(['error' => 'Token no encontrado'], 401);
+    }
 
-        if (!$token) {
-            return response()->json(['error' => 'Token inválido'], 401);
-        }
+    $tokenData = json_decode(file_get_contents($tokenPath), true);
+    $token = $tokenData['access_token'] ?? null;
 
-        $cacheKey = $this->cacheKeyPrefix . $user->id;
+    if (!$token) {
+        return response()->json(['error' => 'Token inválido'], 401);
+    }
 
-        
-        $usuarios = Cache::get($cacheKey);
+    $cacheKey = $this->cacheKeyPrefix . $user->id;
+    $usuarios = Cache::get($cacheKey);
 
-        if (!$usuarios) {
-          
+    if (!$usuarios) {
+        $pagina = 1;
+        $usuarios = [];
+
+        while (true) {
+            $url = 'http://192.168.4.55:8001/api/s1/administracion/pacientes?pagina=' . $pagina;
+            Http::dd();
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $token
-            ])->get('http://192.168.4.55:8001/api/s1/administracion/pacientes');
-
-             //   ->get("http://localhost/tokkens/lista_afiliados.php");
+            ])->get($url);
 
             if (!$response->ok()) {
                 return response()->json(['error' => 'Error al acceder a la API externa'], 500);
             }
 
             $data = $response->json();
+            $datosPagina = $data['data'] ?? [];
 
-            if (!isset($data['data']) || !is_array($data['data'])) {
-                return response()->json([]);
+            if (empty($datosPagina)) {
+                break;
             }
 
-            $usuarios = $data['data'];
-
-         
-            Cache::put($cacheKey, $usuarios, $this->cacheTTL);
+            $usuarios = array_merge($usuarios, $datosPagina);
+            $pagina++;
         }
 
-        $resultados = [];
+        Cache::put($cacheKey, $usuarios, $this->cacheTTL);
+    }
 
-        
-        foreach ($usuarios as $usuario) {
-            if (stripos($usuario['ci'], $term) !== false) {
-                $resultados[] = $usuario;
-            }
+    $resultados = [];
+
+    foreach ($usuarios as $usuario) {
+        if (stripos($usuario['ci'], $term) !== false) {
+            $resultados[] = $usuario;
         }
-        $resultados = array_slice($resultados, 0, 50);
+    }
 
-        return response()->json($resultados);
-    }    
+    $resultados = array_slice($resultados, 0, 50);
+
+    return response()->json($resultados);
+}
+
+ 
 }
