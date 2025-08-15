@@ -125,6 +125,8 @@ class PacienteController extends Controller
     // ✅ Método para buscar coincidencias RN vs API
     public function buscarRecienNacidos()
     {
+        
+        Log::info('Recien naccidos');
         try {
             $recienNacidos = DB::table('pacientes')
                 ->where('nombres', 'LIKE', 'RN_%')
@@ -167,6 +169,8 @@ class PacienteController extends Controller
     // ✅ Método para buscar afiliados por CI
     public function buscarPorCI(Request $request)
     {
+        
+        Log::info('Cicd');
         if (!$request->filled('term')) {
             return response()->json([]);
         }
