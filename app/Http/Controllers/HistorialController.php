@@ -412,12 +412,12 @@ class HistorialController extends Controller
             ];
             $conn = \Doctrine\DBAL\DriverManager::getConnection($connectionParams, $config);
             $schemaManager = $conn->createSchemaManager();
-            \Log::info('Campos dinámicos recibidos:', $datosFormulario);
+            //\Log::info('Campos dinámicos recibidos:', $datosFormulario);
 
             foreach ($modulos as $tabla => $camposPermitidos) {
-                \Log::info("Procesando tabla dinámica: $tabla");
+                //\Log::info("Procesando tabla dinámica: $tabla");
                 if (!\Schema::hasTable($tabla)) {
-                    \Log::warning("La tabla $tabla no existe en la base de datos.");
+                    //\Log::warning("La tabla $tabla no existe en la base de datos.");
                     echo $tabla;
                     die();
 
@@ -432,7 +432,7 @@ class HistorialController extends Controller
                 try {
                     $columns = $schemaManager->listTableColumns($tabla);
 
-                    \Log::info("Columnas encontradas en tabla $tabla:", array_keys($columns));
+                    //\Log::info("Columnas encontradas en tabla $tabla:", array_keys($columns));
 
                     foreach ($columns as $columna => $colInfo) {
                         if ($colInfo->getAutoincrement()) continue;
@@ -535,7 +535,7 @@ class HistorialController extends Controller
                             }
                         }
                     }
-                    \Log::debug("Preparando para insertar o actualizar en $tabla:", $data);
+                    //\Log::debug("Preparando para insertar o actualizar en $tabla:", $data);
 
                     // Aquí verificamos si ya existe un registro con el id_historial
                     $existe = DB::table($tabla)->where('id_historial', $historialId)->exists();
@@ -543,11 +543,11 @@ class HistorialController extends Controller
                     if ($existe) {
                         // Si existe, actualizamos
                         DB::table($tabla)->where('id_historial', $historialId)->update($data);
-                        \Log::info("Registro en $tabla actualizado con id_historial = $historialId");
+                        //\Log::info("Registro en $tabla actualizado con id_historial = $historialId");
                     } else {
                         // Si no existe, insertamos
                         DB::table($tabla)->insert($data);
-                        \Log::info("Registro en $tabla insertado con id_historial = $historialId");
+                        //\Log::info("Registro en $tabla insertado con id_historial = $historialId");
                     }
                 } catch (\Throwable $e) {
                     \Log::error("Error al insertar o actualizar en tabla {$tabla}: " . $e->getMessage(), [
@@ -556,7 +556,7 @@ class HistorialController extends Controller
                         'exception' => $e,
                     ]);
                     if (!\Schema::hasTable($tabla)) {
-                        \Log::warning("La tabla $tabla no existe en la base de datos.");
+                        //\Log::warning("La tabla $tabla no existe en la base de datos.");
                         continue;
                     }
                 }
@@ -635,7 +635,7 @@ class HistorialController extends Controller
                     $usuarios_encontrados = array_values($usuarios_encontrados); // Reindexar
                 }
             } catch (\Exception $e) {
-                \Log::error('Error consultando lista_afiliados.php: ' . $e->getMessage());
+                //\Log::error('Error consultando lista_afiliados.php: ' . $e->getMessage());
                 $usuarios_encontrados = [];
             }
         }
@@ -715,11 +715,11 @@ public function update(Request $request, $id_historial)
             'sexo',
         ]));
 
-        \Log::info('🧪 Datos recibidos desde formulario para NEONATOLOGIA:', $request->all());
+        //\Log::info('🧪 Datos recibidos desde formulario para NEONATOLOGIA:', $request->all());
 
         // Si se seleccionó un paciente desde el select (caso manual con datos de API precargados)
         if ($request->filled('id_usuario_seleccionado')) {
-            \Log::info('✅ id_usuario_seleccionado presente, actualizando historial y paciente por id_paciente.');
+            //\Log::info('✅ id_usuario_seleccionado presente, actualizando historial y paciente por id_paciente.');
 
             // Obtener el historial
             $historial = Historial::findOrFail($id_historial);
@@ -728,7 +728,7 @@ public function update(Request $request, $id_historial)
             $paciente = Paciente::find($historial->id_paciente);
 
             if ($paciente) {
-                \Log::info('🔍 Paciente encontrado por ID', ['id' => $paciente->id]);
+                //\Log::info('🔍 Paciente encontrado por ID', ['id' => $paciente->id]);
 
                 // Datos a actualizar en paciente
                 $datosPaciente = [];
@@ -747,9 +747,9 @@ public function update(Request $request, $id_historial)
                 $datosPaciente['updated_at'] = now();
 
                 $paciente->update($datosPaciente);
-                \Log::info('✅ Paciente actualizado', $datosPaciente);
+                //\Log::info('✅ Paciente actualizado', $datosPaciente);
             } else {
-                \Log::warning('⚠️ No se encontró paciente con id: ' . $historial->id_paciente);
+                //\Log::warning('⚠️ No se encontró paciente con id: ' . $historial->id_paciente);
             }
 
             // Datos a actualizar en historial
@@ -775,7 +775,7 @@ public function update(Request $request, $id_historial)
             }
 
             $historial->update($datosHistorial);
-            \Log::info('📝 Historial actualizado', $datosHistorial);
+            //\Log::info('📝 Historial actualizado', $datosHistorial);
         }
 
 

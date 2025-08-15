@@ -34,7 +34,6 @@ class AuthController extends Controller
         return to_route('login');
     }
 
-    // --- Método privado para chequear si se puede actualizar ---
     private function puedeActualizarAfiliados()
     {
         $path = storage_path('app/ultima_actualizacion_afiliados.txt');
@@ -46,11 +45,9 @@ class AuthController extends Controller
         $ultimaActualizacion = (int) file_get_contents($path);
         $ahora = time();
 
-        // 5 minutos = 300 segundos
-        return ($ahora - $ultimaActualizacion) >= 300;
+        return ($ahora - $ultimaActualizacion) >= 300; // 5 minutos
     }
 
-    // --- Método privado para registrar hora de última actualización ---
     private function registrarActualizacionAfiliados()
     {
         $path = storage_path('app/ultima_actualizacion_afiliados.txt');
@@ -94,6 +91,7 @@ class AuthController extends Controller
         Auth::login($user);
         Session::put('login_time', now());
 
+        // Asignación de roles
         $usuariosResponse = Http::withHeaders([
             'Authorization' => 'Bearer ' . $accessToken
         ])->get('http://192.168.4.55:8001/api/s1/administracion/user_residente');
@@ -133,27 +131,19 @@ class AuthController extends Controller
             }
         }
 
-        // Aquí lanzamos el comando en segundo plano para no bloquear la respuesta HTTP
+        // Ejecutar descarga en segundo plano (Linux)
         if ($this->puedeActualizarAfiliados()) {
             try {
                 $tokenEscapado = escapeshellarg($accessToken);
-
-                // Comando para Linux/macOS - Windows tiene comando diferente (te dejo abajo)
                 $cmd = "php " . base_path('artisan') . " afiliados:descargar {$tokenEscapado} > /dev/null 2>&1 &";
-
-                // Para Windows podrías usar (quita el comentario si usas Windows):
-                // $cmd = "start /B php " . base_path('artisan') . " afiliados:descargar {$tokenEscapado}";
-
                 exec($cmd);
-
                 $this->registrarActualizacionAfiliados();
-
-              //  Log::info('Afiliados actualizados en background para usuario ID: ' . $user->id);
+                Log::info('Afiliados actualizados en background para usuario ID: ' . $user->id);
             } catch (\Throwable $e) {
-            //    Log::error('Error lanzando comando afiliados en background: ' . $e->getMessage());
+                Log::error('Error lanzando comando afiliados en background: ' . $e->getMessage());
             }
         } else {
-           // Log::info('No se actualizó afiliados: actualización reciente detectada (menos de 5 minutos).');
+            Log::info('No se actualizó afiliados: actualización reciente detectada (menos de 5 minutos).');
         }
 
         return to_route('welcome');

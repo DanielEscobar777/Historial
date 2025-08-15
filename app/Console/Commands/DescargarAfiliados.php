@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Log;
 
 class DescargarAfiliados extends Command
 {
-    // Acepta un token como argumento
     protected $signature = 'afiliados:descargar {token}';
     protected $description = 'Descarga todos los afiliados paginados y los guarda en un archivo JSON';
 
@@ -56,11 +55,12 @@ class DescargarAfiliados extends Command
                 $this->info("Página {$pagina} descargada.");
 
                 $pagina++;
-                usleep(500000); // Esperar 0.5 segundos
+                usleep(500000); // Esperar 0.5 segundos para no saturar la API
             }
 
             Storage::put('afiliados_cache.json', json_encode($afiliados));
             $this->info('Afiliados descargados y guardados exitosamente.');
+            Log::info('Afiliados descargados exitosamente. Total: ' . count($afiliados));
         } catch (\Throwable $e) {
             Log::error('Error en comando afiliados: ' . $e->getMessage());
             $this->error('Ocurrió un error. Revisa el log.');
