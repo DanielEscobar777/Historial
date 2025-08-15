@@ -50,7 +50,7 @@
                         <td><a target="_blank" href="/generate-pdf/{{ $dato->id_historia }}"><button class=" btn btn-danger"><i class="fa fa-file-pdf"></i></button></a>
                         </td>
                         <td>
-                            <a href="{{ route('kardex.soap', $dato->id_historia)}}"><button class=" btn btn-info"><i class="fa fa-file"></i></button></a>
+                            <a href="{{ route('Kardex.soap', $dato->id_historia)}}"><button class=" btn btn-info"><i class="fa fa-file"></i></button></a>
                         </td>
                     </tr>
 

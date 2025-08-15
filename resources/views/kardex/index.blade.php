@@ -36,7 +36,7 @@
                         </div>
                         <div class="modal-body">
                             <div class="form-group">
-                                <form action="{{ route('kardex.consulta') }}" method="POST">
+                                <form action="{{ route('Kardex.consulta') }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="id_servicio" id="inputServicioif">
                                     <div class="row">

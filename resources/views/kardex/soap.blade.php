@@ -55,7 +55,7 @@
 
                 </div><br>
                 <div class="col-12" style="text-align: left;">
-                    <a href="{{ route('kardex.index')}}" class="btn btn-danger "><i class="fa fa-reply"></i> Cancelar</a>
+                    <a href="{{ route('Kardex.index')}}" class="btn btn-danger "><i class="fa fa-reply"></i> Cancelar</a>
 
                 </div>
             </div>
