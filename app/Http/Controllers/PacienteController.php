@@ -168,8 +168,8 @@ class PacienteController extends Controller
     // ✅ Método para buscar afiliados por CI
     public function buscarPorCI(Request $request)
     {
-    
-        Log::info('Cicd');
+        Log::info('Usuario autenticado:', ['user' => Auth::user()]);
+   
         if (!$request->filled('term')) {
             return response()->json([]);
         }
