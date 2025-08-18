@@ -86,12 +86,11 @@
             <td style="text-align: left; width: 80%; "><b>Nombre: </b> {!! nl2br(e($h_antecedentes->nombre_recien_necido)) !!}</td>
         </tr>
         <tr>
-            <?php
-                if ($h_antecedentes->sexo == 'M') { ?>
-                    Masculino
-                <?php } else { ?>
-                    Femenino
-                <?php } ?>
+            @if($h_antecedentes->sexo == 'M')
+            <td style="text-align: left; "><b>Sexo : </b>Masculino</td>
+            @else
+            <td style="text-align: left; "><b>Sexo : </b>Femeninos</td>
+            @endif
             
         </tr>
         <tr>
