@@ -52,7 +52,7 @@ class PacienteController extends Controller
                 return $agrupadosPorFecha[Carbon::parse($paciente->fecha_nacimiento)->toDateString()]->count() === 1;
             });
 
-            Log::info("🧼 Pacientes sin conflicto: " . $pacientesSinConflicto->count());
+            Log::info("Pacientes sin conflicto: " . $pacientesSinConflicto->count());
 
             $afiliados = $this->obtenerTodosLosAfiliados();
 
