@@ -61,7 +61,7 @@ class AuthController extends Controller
             'password' => 'required'
         ]);
         
-       /* $response = Http::post('http://localhost/tokkens/login.php', [
+        /*$response = Http::post('http://localhost/tokkens/login.php', [
             'email' => $request->email,
             'password' => $request->password,
         ]);*/
@@ -96,13 +96,13 @@ class AuthController extends Controller
         Session::put('login_time', now());
 
         // Asignación de roles
-       /* $usuariosResponse = Http::withHeaders([
+       /*$usuariosResponse = Http::withHeaders([
             'Authorization' => 'Bearer ' . $accessToken
         ])->get('http://localhost/tokkens/usuarios_residentes.php');*/
         
         $usuariosResponse = Http::withHeaders([
             'Authorization' => 'Bearer ' . $accessToken
-        ])->get('http://192.168.4.55:8001/api/s1/administracion/user_residente');
+     ])->get('http://192.168.4.55:8001/api/s1/administracion/user_residente');
 
         if ($usuariosResponse->ok()) {
             $usuariosData = $usuariosResponse->json();

@@ -91,7 +91,7 @@
             @else
             <td style="text-align: left; "><b>Sexo : </b>Femeninos</td>
             @endif
-            <td style="text-align: left; "><b>Hora: </b> {{$filiacion->hora_registro}}</td>
+            
         </tr>
         <tr>
             <td style="text-align: left; width: 80%; "><b>Fecha de nacimiento: </b> {!! nl2br(e($h_antecedentes->fecha_recien_necido)) !!}</td>
