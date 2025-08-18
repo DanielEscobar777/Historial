@@ -66,11 +66,12 @@ class HistorialController extends Controller
 
     public function show($id_servicio)
     {
+
         $historiales = Historial::paciente($id_servicio);
-
-
+        
+        $historiaRN =Historial::where('nombre_recien_necido','<>', 'null')->get();
         $servicio = Servicios::where('id_servicio', $id_servicio)->first();
-        return view('historial.index_servicio', compact('historiales', 'id_servicio', 'servicio'));
+        return view('historial.index_servicio', compact('historiales', 'historiaRN','id_servicio', 'servicio'));
     }
 
     public function formulario($id_servicio)
@@ -258,7 +259,7 @@ class HistorialController extends Controller
             $esObstetrico = $request->nombre_servicio;
             // Validación básica de los campos fijos (historial)
             if ($esObstetrico == 'NEONATOLOGIA') {
-                 $request->merge([
+                $request->merge([
                     'nombres' => $request->nombre_recien_necido,
                     'p_apellido' => $request->nombre_recien_necido,
                     'fecha_nacimiento' => $request->fecha_recien_necido
@@ -347,16 +348,25 @@ class HistorialController extends Controller
             if ($paciente) {
                 // Actualizar datos si ya existe
                 DB::table('pacientes')->where('ci', $request->ci)->update($datosPaciente);
-                $idPaciente = $paciente->id;
+                if ($esObstetrico != 'NEONATOLOGIA') {
+                    $idPaciente = $paciente->id;
+                } else {
+                    $idPaciente = '0';
+                }
             } else {
                 // Insertar nuevo paciente
                 $datosPaciente['created_at'] = now();
-                $idPaciente = DB::table('pacientes')->insertGetId($datosPaciente);
+                  if ($esObstetrico != 'NEONATOLOGIA') {
+                    $idPaciente = DB::table('pacientes')->insertGetId($datosPaciente);
+                } else {
+                    $idPaciente = '0';
+                }
+                
             }
             // Insertar en historial
             $historialId = DB::table('historials')->insertGetId([
                 'id_servicio' => $request->id_servicio,
-                'id_paciente' => $idPaciente,
+                'id_paciente' => $esObstetrico ? $idPaciente : null,
                 'grado_instruccion' => $request->grado_instruccion,
                 'religion' => $request->religion,
                 'ocupacion' => $request->ocupacion,
@@ -412,12 +422,12 @@ class HistorialController extends Controller
             ];
             $conn = \Doctrine\DBAL\DriverManager::getConnection($connectionParams, $config);
             $schemaManager = $conn->createSchemaManager();
-            //\Log::info('Campos dinámicos recibidos:', $datosFormulario);
+            \Log::info('Campos dinámicos recibidos:', $datosFormulario);
 
             foreach ($modulos as $tabla => $camposPermitidos) {
-                //\Log::info("Procesando tabla dinámica: $tabla");
+                \Log::info("Procesando tabla dinámica: $tabla");
                 if (!\Schema::hasTable($tabla)) {
-                    //\Log::warning("La tabla $tabla no existe en la base de datos.");
+                    \Log::warning("La tabla $tabla no existe en la base de datos.");
                     echo $tabla;
                     die();
 
@@ -432,7 +442,7 @@ class HistorialController extends Controller
                 try {
                     $columns = $schemaManager->listTableColumns($tabla);
 
-                    //\Log::info("Columnas encontradas en tabla $tabla:", array_keys($columns));
+                    \Log::info("Columnas encontradas en tabla $tabla:", array_keys($columns));
 
                     foreach ($columns as $columna => $colInfo) {
                         if ($colInfo->getAutoincrement()) continue;
@@ -535,7 +545,7 @@ class HistorialController extends Controller
                             }
                         }
                     }
-                    //\Log::debug("Preparando para insertar o actualizar en $tabla:", $data);
+                    \Log::debug("Preparando para insertar o actualizar en $tabla:", $data);
 
                     // Aquí verificamos si ya existe un registro con el id_historial
                     $existe = DB::table($tabla)->where('id_historial', $historialId)->exists();
@@ -543,20 +553,20 @@ class HistorialController extends Controller
                     if ($existe) {
                         // Si existe, actualizamos
                         DB::table($tabla)->where('id_historial', $historialId)->update($data);
-                        //\Log::info("Registro en $tabla actualizado con id_historial = $historialId");
+                        \Log::info("Registro en $tabla actualizado con id_historial = $historialId");
                     } else {
                         // Si no existe, insertamos
                         DB::table($tabla)->insert($data);
-                        //\Log::info("Registro en $tabla insertado con id_historial = $historialId");
+                        \Log::info("Registro en $tabla insertado con id_historial = $historialId");
                     }
                 } catch (\Throwable $e) {
-                    /*\Log::error("Error al insertar o actualizar en tabla {$tabla}: " . $e->getMessage(), [
+                    \Log::error("Error al insertar o actualizar en tabla {$tabla}: " . $e->getMessage(), [
                         'tabla' => $tabla,
                         'datos_procesados' => $data,
                         'exception' => $e,
-                    ]);*/
+                    ]);
                     if (!\Schema::hasTable($tabla)) {
-                        //\Log::warning("La tabla $tabla no existe en la base de datos.");
+                        \Log::warning("La tabla $tabla no existe en la base de datos.");
                         continue;
                     }
                 }

@@ -3,11 +3,11 @@ import laravel from 'laravel-vite-plugin';
 
 export default defineConfig({
     server: {
-        host: '0.0.0.0',  // Escucha en todas las interfaces de red
-        port: 5176,       // Puerto del servidor Vite
-        strictPort: true, // Asegura que use ese puerto o falle
-        origin: 'http://192.168.2.132:5176', // <- Esto es CLAVE para evitar errores CORS
-        cors: true,       // <- Habilita CORS en Vite
+        host: '0.0.0.0',  
+        port: 5176,       
+        strictPort: true, 
+        origin: 'http://192.168.2.132:5176', 
+        cors: true,       
         hmr: {
             host: '192.168.2.132', // IP de tu máquina / servidor
         },

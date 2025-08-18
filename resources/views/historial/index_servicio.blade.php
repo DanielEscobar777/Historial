@@ -39,28 +39,21 @@
                         <th>CAMA</th>
                         <th>HC</th>
                         <th>SOAP</th>
-
+                        @if($servicio->nombre_servicio == 'NEONATOLOGIA')
+                        <th>ESTADO</th>
+                        @endif
                     </tr>
                 </thead>
+                @if($servicio->nombre_servicio != 'NEONATOLOGIA')
                 <tbody>
                     @foreach( $historiales as $historial)
                     <tr class="align-middle">
                         <td>{{ $historial->id_historia}}</td>
-                        @if($servicio->nombre_servicio == 'NEONATOLOGIA')
-                        <td>{{ $historial->nombre_recien_necido}}</td>
-                        @else
                         <td>{{ $historial->nombres}} {{ $historial->p_apellido}} {{ $historial->s_apellido}}</td>
-                        @endif
+                   
                         <td>{{ $historial->matricula_seguro}}</td>
                         <td>{{ $historial->fecha_registro}}</td>
-                         @if($servicio->nombre_servicio == 'NEONATOLOGIA')
-                         <td>{{ $historial->fecha_recien_necido}} {{ $historial->hora_recien_necido}}</td>
-                         @if($historial->sexo == 'M')
-                         <td>Masculino</td>
-                              @else
-                               <td>Femenino</td>
-                         @endif
-                         @endif
+
                         <td>{{ $historial->cama}}</td>
                         <td><a target="_blank" href="/generate-pdf/{{ $historial->id_historia }}"><button class=" btn btn-danger"><i class="fa fa-file-pdf"></i></button></a>
                             <a href="{{ route('historial.edit', $historial->id_historia)}}"><button class=" btn btn-warning"><i class="fa fa-edit"></i></button></a>
@@ -70,10 +63,46 @@
                             <a href="{{ route('evolucion.edit', $historial->id_historia)}}"><button class=" btn btn-info"><i class="fa fa-cog"></i></button></a>
                         </td>
                     </tr>
-
                     @endforeach
                 </tbody>
+                @else
+                <tbody>
+                    @foreach( $historiaRN as $historialrn)
+                    <tr class="align-middle">
+                        <td>{{ $historialrn->id_historia}}</td>
+                        <td>{{ $historialrn->nombre_recien_necido}}</td>
+                          <td>{{ $historialrn->matricula}}</td>
+                        <td>{{ $historialrn->fecha_registro}}</td>
+                        <td>{{ $historialrn->fecha_recien_necido}} {{ $historialrn->hora_recien_necido}}</td>
+                        @if($historialrn->sexo == 'M')
+                        <td>Masculino</td>
+                        @else
+                        <td>Femenino</td>
+                        @endif
 
+                        <td>{{ $historialrn->cama}}</td>
+                        <td><a target="_blank" href="/generate-pdf/{{ $historialrn->id_historia }}"><button class=" btn btn-danger"><i class="fa fa-file-pdf"></i></button></a>
+                            <a href="{{ route('historial.edit', $historialrn->id_historia)}}"><button class=" btn btn-warning"><i class="fa fa-edit"></i></button></a>
+                        </td>
+                        <td>
+                            <a href="{{ route('evolucion.formulario', $historialrn->id_historia)}}"><button class=" btn btn-success"><i class="fa fa-plus"></i></button></a>
+                            <a href="{{ route('evolucion.edit', $historialrn->id_historia)}}"><button class=" btn btn-info"><i class="fa fa-cog"></i></button></a>
+                        </td>
+                        @if($servicio->nombre_servicio == 'NEONATOLOGIA')
+                        @if( $historialrn->id_paciente == '0')
+                        <td>
+                            <span class="btn btn-danger btn-sm">NO ACTUALIZADO</span>
+                        </td>
+                        @else
+                        <td>
+                            <span class="btn btn-success btn-s">ACTUALIZADO</span>
+                        </td>
+                        @endif
+                        @endif
+                    </tr>
+                    @endforeach
+                </tbody>
+                @endif
             </table>
         </div>
     </div>

@@ -165,8 +165,11 @@ class EvolucionController extends Controller
             DB::commit();
             $servicio = Servicios::where('id_servicio', $id_servicio)->first();
            // $historiales = Historial::where('id_servicio', $id_servicio)->get();
+
+           
             $historiales = Historial::paciente($id_servicio);
-            return view('historial.index_servicio', compact('historiales', 'id_servicio', 'servicio'))
+            $historiaRN =Historial::where('nombre_recien_necido','<>', 'null')->get();
+            return view('historial.index_servicio', compact('historiales','historiaRN' ,'id_servicio', 'servicio'))
                 ->with('success', 'Historia registrada correctamente.');
         } catch (\Exception $e) {
             DB::rollBack();
