@@ -1,8 +1,8 @@
 async function actualizarRecienNacidos() {
     try {
-        const res = await fetch('/pacientes/actualizar-recien-nacidos');
+        //const res = await fetch('/pacientes/actualizar-recien-nacidos');
         
-      //  const res = await fetch('http://192.168.2.132:8000/pacientes/actualizar-recien-nacidos');
+        const res = await fetch('http://192.168.2.132:8000/pacientes/actualizar-recien-nacidos');
         const text = await res.text(); 
 
         console.log("Respuesta cruda:", text);
