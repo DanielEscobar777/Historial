@@ -177,7 +177,7 @@
     </div>
 </div>
 @vite(['resources/js/formulario.js'])
-@vite(['resources/js/buscarPaciente.js'])-
+@vite(['resources/js/buscarPaciente.js'])
 @vite(['resources/js/boton.js'])
 <script>
     document.addEventListener("DOMContentLoaded", function () {
