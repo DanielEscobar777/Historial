@@ -9,8 +9,9 @@ document.addEventListener('DOMContentLoaded', function () {
             listaSugerencias.style.display = 'none';
             return;
         }
-
-        fetch(`/buscar-paciente?term=${encodeURIComponent(term)}`)
+        
+        fetch(`http://192.168.2.132:8000/buscar-paciente?term=${encodeURIComponent(term)}`)
+        //fetch(`/buscar-paciente?term=${encodeURIComponent(term)}`)
             .then(res => res.json())
             .then(data => {
                 listaSugerencias.innerHTML = '';

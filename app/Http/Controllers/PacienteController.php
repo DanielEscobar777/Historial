@@ -18,7 +18,6 @@ class PacienteController extends Controller
     // ✅ Método principal para actualizar RN desde API
     public function actualizarRecienNacidosDesdeApi()
     {
-        dd('Entró al método api');
         Log::info('Método actualizarRecienNacidosDesdeApi llamado');
         try {
             $recienNacidos = DB::table('pacientes')
@@ -126,7 +125,6 @@ class PacienteController extends Controller
     // ✅ Método para buscar coincidencias RN vs API
     public function buscarRecienNacidos()
     {
-     dd('Entró al método recien nacido');
         Log::info('Recien naccidos');
         try {
             $recienNacidos = DB::table('pacientes')
@@ -168,11 +166,54 @@ class PacienteController extends Controller
     }
 
     // ✅ Método para buscar afiliados por CI
-   public function buscarPorCI(Request $request)
-{
-    \Log::info('Entró al método buscarPorCI en IP: ' . $request->ip());
-    return response()->json([]);
-}
+    public function buscarPorCI(Request $request)
+    {
+    
+        Log::info('Cicd');
+        if (!$request->filled('term')) {
+            return response()->json([]);
+        }
+
+        $term = trim($request->input('term'));
+
+        if ($term === '') {
+            return response()->json([]);
+        }
+
+        try {
+            $user = Auth::user();
+            $cacheKey = $this->cacheKeyPrefix . $user->id;
+
+            $usuarios = Cache::get($cacheKey);
+
+            if (!$usuarios) {
+                Log::info("⏳ Cache vacío para user ID: {$user->id}, leyendo desde archivo...");
+                $usuarios = $this->obtenerTodosLosAfiliados();
+
+                if (is_array($usuarios) && isset($usuarios['error'])) {
+                    return response()->json($usuarios, 500);
+                }
+
+                Cache::put($cacheKey, $usuarios, $this->cacheTTL);
+            }
+
+            Log::info("🔍 Buscando CI: {$term}");
+
+            $resultados = collect($usuarios)
+                ->filter(function ($usuario) use ($term) {
+                    return stripos((string)$usuario['ci'], $term) !== false;
+                })
+                ->take(50)
+                ->values();
+
+            Log::info("🎯 Resultados encontrados: " . count($resultados));
+
+            return response()->json($resultados);
+        } catch (\Throwable $e) {
+            Log::error('❌ Error en buscarPorCI: ' . $e->getMessage());
+            return response()->json(['error' => 'Error interno. Revisa el log.'], 500);
+        }
+    }
 
     // ✅ Método para obtener afiliados desde el archivo cache
     protected function obtenerTodosLosAfiliados()

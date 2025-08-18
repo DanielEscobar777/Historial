@@ -60,8 +60,12 @@ class AuthController extends Controller
             'email' => 'required',
             'password' => 'required'
         ]);
-
-        $response = Http::post('http://192.168.4.55:8000/api/auth/login_service', [
+        
+       /* $response = Http::post('http://localhost/tokkens/login.php', [
+            'email' => $request->email,
+            'password' => $request->password,
+        ]);*/
+         $response = Http::post('http://192.168.4.55:8000/api/auth/login_service', [
             'email' => $request->email,
             'password' => $request->password,
         ]);
@@ -92,6 +96,10 @@ class AuthController extends Controller
         Session::put('login_time', now());
 
         // Asignación de roles
+       /* $usuariosResponse = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $accessToken
+        ])->get('http://localhost/tokkens/usuarios_residentes.php');*/
+        
         $usuariosResponse = Http::withHeaders([
             'Authorization' => 'Bearer ' . $accessToken
         ])->get('http://192.168.4.55:8001/api/s1/administracion/user_residente');

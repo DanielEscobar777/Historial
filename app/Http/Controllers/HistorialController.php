@@ -150,10 +150,10 @@ class HistorialController extends Controller
             if ($permiso->nivel == 1) {
                 $clave = strtolower($permiso->nombre_permiso);
 
-                 logger()->info('Modulo recibido:', [
+                 /*logger()->info('Modulo recibido:', [
                     'original' => $permiso->nombre_permiso,
                     'clave' => $clave
-                ]);
+                ]);*/
 
                 $campos_temporales[$clave] = [
                     'slug' => $clave,
@@ -170,29 +170,29 @@ class HistorialController extends Controller
                 } else {
                     $grupo_clave = $grupo_clave_corto; // por si acaso no está en el mapa
                 }
-                logger()->info('Procesando subcampo', [
+                /*logger()->info('Procesando subcampo', [
                     'nombre_permiso' => $permiso->nombre_permiso,
                     'modulo' => $permiso->modulo,
                     'grupo_clave' => $grupo_clave,
                     'existe_grupo' => isset($campos_temporales[$grupo_clave])
-                ]);
+                ]);*/
                 if (isset($campos_temporales[$grupo_clave])) {
                     $subcampo_nombre = strtolower(str_replace(' ', '_', $permiso->nombre_permiso));
 
-                    logger()->info('Agregando subcampo', [
+                    /*logger()->info('Agregando subcampo', [
                         'a_grupo' => $grupo_clave,
                         'etiqueta' => $permiso->nombre_permiso,
                         'nombre' => $subcampo_nombre
-                    ]);
+                    ]);*/
                     $campos_temporales[$grupo_clave]['subcampos'][] = [
                         'etiqueta' => $permiso->nombre_permiso,
                         'nombre' => $subcampo_nombre
                     ];
                 } else {
-                    logger()->warning('No se encontró grupo para subcampo', [
+                    /*logger()->warning('No se encontró grupo para subcampo', [
                         'grupo_clave' => $grupo_clave,
                         'nombre_permiso' => $permiso->nombre_permiso
-                    ]);
+                    ]);*/
                 }
             }
         }
