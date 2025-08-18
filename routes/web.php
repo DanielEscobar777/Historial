@@ -19,8 +19,6 @@ require __DIR__.'/evolucion_final.php';
 Route::get('/pacientes/buscar-recien-nacidos', [PacienteController::class, 'buscarRecienNacidos']);
 Route::get('/pacientes/actualizar-recien-nacidos', [PacienteController::class, 'actualizarRecienNacidosDesdeApi']);
 
-Route::get('/buscar-paciente', [PacienteController::class, 'buscarPorCI'])->name('buscar.paciente');
-
 Route::middleware('guest')->group(function () {
     Route::get('/', [AuthController::class, 'index'])->name("login");
     Route::get('/registro', [AuthController::class, 'registro'])->name("registro");
@@ -44,6 +42,7 @@ Route::middleware(['auth', 'externalauth'])->group(function () {
     });
 Route::get('/welcome', [AuthController::class, 'welcome'])->name("welcome");
 Route::get('/logout', [AuthController::class, 'logout'])->name("logout");
+Route::get('/buscar-paciente', [PacienteController::class, 'buscarPorCI'])->name('buscar.paciente');
 Route::get('/servicios/index', [App\Http\Controllers\ServiciosController::class, 'index'])->name('servicios.index');
 Route::post('/servicios/store', [App\Http\Controllers\ServiciosController::class, 'store'])->name('servicios.store');
 Route::get('/servicios/administrar/{id_servicio}', [App\Http\Controllers\ServiciosController::class, 'administrar'])->name('servicios.administrar');

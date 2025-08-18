@@ -24,7 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })
-    ->withCommands([ // 👈 Registrar el comando aquí
+    ->withCommands([ 
         DescargarAfiliados::class,
     ])
     ->create();
