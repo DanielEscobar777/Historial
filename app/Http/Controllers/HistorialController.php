@@ -581,121 +581,115 @@ class HistorialController extends Controller
         }
     }
     public function edit($id_historial)
-    {
-        $historial = Historial::where('id_historia', $id_historial)->first();
-        $id_paciente = $historial->id_paciente;
-        $paciente = DB::table('pacientes as p')
-            ->where('p.id', $id_paciente)
-            ->first();
+{
+    $historial = Historial::where('id_historia', $id_historial)->first();
+    $id_paciente = $historial->id_paciente;
+    $paciente = DB::table('pacientes as p')
+        ->where('p.id', $id_paciente)
+        ->first();
 
-        $antecedentes_perinatologicos = Antecedentes_perinatologicos::where('id_historial', $id_historial)->first();
-        $antecedentes_inmunizacion = Antecedentes_inmunizacion::where('id_historial', $id_historial)->first();
-        $antecedentes_alimenticios = Antecedentes_alimentarios::where('id_historial', $id_historial)->first();
-        $antecedentes_familiares = Antecedentes_familiares::where('id_historial', $id_historial)->first();
-        $desarrollo_psicomotor = Desarrollo_psicomotor::where('id_historial', $id_historial)->first();
-        $antecedentes_heredofamiliares = Antecedentes_heredofamiliares::where('id_historial', $id_historial)->first();
-        $antecedentes_patologicos = Antecedentes_patologicos::where('id_historial', $id_historial)->first();
-        $antecedentes_no_patologicos = Antecedentes_no_patologicos::where('id_historial', $id_historial)->first();
-        $Antecedentes_gineco_obsteticos = Antecedentes_gineco_obstetricos::where('id_historial', $id_historial)->first();
-        $Anamnesis_sistema = Anamnesis_sistemas::where('id_historial', $id_historial)->first();
-        $Motivo_de_internacion = Motivo_de_internacion::where('id_historial', $id_historial)->first();
-        $historia_enfermedad_actual = historia_enfermedad_actual::where('id_historial', $id_historial)->first();
-        $Examen_fisico_general = Examen_fisico_general::where('id_historial', $id_historial)->first();
-        $examen_obstetrico = Examen_obstetrico::where('id_historial', $id_historial)->first();
-        $examen_ginecologico = Examen_ginecologico::where('id_historial', $id_historial)->first();
-        $examen_cardiovascular = Examen_cardiovascular::where('id_historial', $id_historial)->first();
-        $examen_genito_urinario = Examen_genito_urinario::where('id_historial', $id_historial)->first();
-        $Examen_extremidades_superiores = Examen_extremidades_superiores::where('id_historial', $id_historial)->first();
-        $Examen_extremidades_inferiores = Examen_extremidades_inferiores::where('id_historial', $id_historial)->first();
-        $Ganglios_linfaticos = Ganglios_linfaticos::where('id_historial', $id_historial)->first();
-        $dermatologia = Dermatologia::where('id_historial', $id_historial)->first();
-        $Sistema_nervioso = Sistema_nervioso::where('id_historial', $id_historial)->first();
-        $Sistema_sensitivo = Sistema_sensitivo::where('id_historial', $id_historial)->first();
-        $Sistema_motor = Sistema_motor::where('id_historial', $id_historial)->first();
-        $examenes_complementarios = Examenes_complementarios::where('id_historial', $id_historial)->first();
-        $comentarios = Comentarios::where('id_historial', $id_historial)->first();
-        $impresion_diagnostica = Impresion_diagnostica::where('id_historial', $id_historial)->first();
-        $diagnostico_sindromatico = Diagnostico_sindromatico::where('id_historial', $id_historial)->first();
-        $Examen_fisico_segmentado = Examen_fisico_segmentado::where('id_historial', $id_historial)->first();
-        $interpretacion_laboratorios = Interpretacion_laboratorios::where('id_historial', $id_historial)->first();
+    // Cargar todas las entidades relacionadas (igual que ya lo tienes)
+    $antecedentes_perinatologicos = Antecedentes_perinatologicos::where('id_historial', $id_historial)->first();
+    $antecedentes_inmunizacion = Antecedentes_inmunizacion::where('id_historial', $id_historial)->first();
+    $antecedentes_alimenticios = Antecedentes_alimentarios::where('id_historial', $id_historial)->first();
+    $antecedentes_familiares = Antecedentes_familiares::where('id_historial', $id_historial)->first();
+    $desarrollo_psicomotor = Desarrollo_psicomotor::where('id_historial', $id_historial)->first();
+    $antecedentes_heredofamiliares = Antecedentes_heredofamiliares::where('id_historial', $id_historial)->first();
+    $antecedentes_patologicos = Antecedentes_patologicos::where('id_historial', $id_historial)->first();
+    $antecedentes_no_patologicos = Antecedentes_no_patologicos::where('id_historial', $id_historial)->first();
+    $Antecedentes_gineco_obsteticos = Antecedentes_gineco_obstetricos::where('id_historial', $id_historial)->first();
+    $Anamnesis_sistema = Anamnesis_sistemas::where('id_historial', $id_historial)->first();
+    $Motivo_de_internacion = Motivo_de_internacion::where('id_historial', $id_historial)->first();
+    $historia_enfermedad_actual = historia_enfermedad_actual::where('id_historial', $id_historial)->first();
+    $Examen_fisico_general = Examen_fisico_general::where('id_historial', $id_historial)->first();
+    $examen_obstetrico = Examen_obstetrico::where('id_historial', $id_historial)->first();
+    $examen_ginecologico = Examen_ginecologico::where('id_historial', $id_historial)->first();
+    $examen_cardiovascular = Examen_cardiovascular::where('id_historial', $id_historial)->first();
+    $examen_genito_urinario = Examen_genito_urinario::where('id_historial', $id_historial)->first();
+    $Examen_extremidades_superiores = Examen_extremidades_superiores::where('id_historial', $id_historial)->first();
+    $Examen_extremidades_inferiores = Examen_extremidades_inferiores::where('id_historial', $id_historial)->first();
+    $Ganglios_linfaticos = Ganglios_linfaticos::where('id_historial', $id_historial)->first();
+    $dermatologia = Dermatologia::where('id_historial', $id_historial)->first();
+    $Sistema_nervioso = Sistema_nervioso::where('id_historial', $id_historial)->first();
+    $Sistema_sensitivo = Sistema_sensitivo::where('id_historial', $id_historial)->first();
+    $Sistema_motor = Sistema_motor::where('id_historial', $id_historial)->first();
+    $examenes_complementarios = Examenes_complementarios::where('id_historial', $id_historial)->first();
+    $comentarios = Comentarios::where('id_historial', $id_historial)->first();
+    $impresion_diagnostica = Impresion_diagnostica::where('id_historial', $id_historial)->first();
+    $diagnostico_sindromatico = Diagnostico_sindromatico::where('id_historial', $id_historial)->first();
+    $Examen_fisico_segmentado = Examen_fisico_segmentado::where('id_historial', $id_historial)->first();
+    $interpretacion_laboratorios = Interpretacion_laboratorios::where('id_historial', $id_historial)->first();
 
-        $id_servicio = $historial->id_servicio;
-        $n_ser = Servicios::where('id_servicio', $id_servicio)->first();
+    $id_servicio = $historial->id_servicio;
+    $n_ser = Servicios::where('id_servicio', $id_servicio)->first();
+    $permisos = Permisos_historia::traer_permisos_2($id_servicio);
 
-        $permisos = Permisos_historia::traer_permisos_2($id_servicio);
+    $usuarios_encontrados = [];
 
-        $usuarios_encontrados = [];
+    // Buscar en el archivo cache si es NEONATOLOGÍA y el nombre del RN tiene el formato esperado
+    if (
+        $n_ser->nombre_servicio === 'NEONATOLOGIA' &&
+        preg_match('/^RN_(\d{4})(\d{2})(\d{2})_\d{4}_\d+$/', $historial->nombre_recien_necido, $matches)
+    ) {
+        $fecha_nacimiento = "{$matches[1]}-{$matches[2]}-{$matches[3]}";
 
-        if ($n_ser->nombre_servicio === 'NEONATOLOGIA' && preg_match('/^RN_(\d{4})(\d{2})(\d{2})_\d{4}_\d+$/', $historial->nombre_recien_necido, $matches)) {
-            $fecha_nacimiento = "{$matches[1]}-{$matches[2]}-{$matches[3]}";
+        $afiliados = $this->obtenerTodosLosAfiliados();
 
-            try {
-                $response = Http::get("http://localhost/tokkens/lista_afiliados.php");
+        if (is_array($afiliados) && empty($afiliados['error'])) {
+            $usuarios_encontrados = array_filter($afiliados, function ($usuario) use ($fecha_nacimiento) {
+                return isset($usuario['fecha_nacimiento']) && $usuario['fecha_nacimiento'] === $fecha_nacimiento;
+            });
 
-                if ($response->ok()) {
-                    $data = $response->json()['data'] ?? [];
-
-                    
-                   $usuarios_encontrados = array_filter($data, function ($usuario) use ($fecha_nacimiento) {
-                        
-                        return isset($usuario['fecha_nacimiento']) && $usuario['fecha_nacimiento'] === $fecha_nacimiento;
-                    });
-
-
-                    $usuarios_encontrados = array_values($usuarios_encontrados); // Reindexar
-                }
-            } catch (\Exception $e) {
-                //\Log::error('Error consultando lista_afiliados.php: ' . $e->getMessage());
-                $usuarios_encontrados = [];
-            }
+            $usuarios_encontrados = array_values($usuarios_encontrados); // Reindexar
         }
-
-      
-
-
-        return view('historial.formulario_editar', [
-            'historial' => $historial,
-            'permisos' => $permisos,
-            'n_ser' => $n_ser,
-            'id_historial' => $id_historial,
-            'antecedentes_perinatologicos' => $antecedentes_perinatologicos,
-            'antecedentes_inmunizacion' => $antecedentes_inmunizacion,
-            'antecedentes_alimentarios' => $antecedentes_alimenticios,
-            'antecedentes_familiares' => $antecedentes_familiares,
-            'desarrollo_psicomotor' => $desarrollo_psicomotor,
-            'antecedentes_heredofamiliares' => $antecedentes_heredofamiliares,
-            'antecedentes_patologicos' => $antecedentes_patologicos,
-            'antecedentes_no_patologicos' => $antecedentes_no_patologicos,
-            'Antecedentes_gineco_obsteticos' => $Antecedentes_gineco_obsteticos,
-            'anamnesis_sistema' => $Anamnesis_sistema,
-            'motivo_de_internacion' => $Motivo_de_internacion,
-            'historia_enfermedad_actual' => $historia_enfermedad_actual,
-            'examen_fisico_general' => $Examen_fisico_general,
-            'examen_obstetrico' => $examen_obstetrico,
-            'examen_ginecologico' => $examen_ginecologico,
-            'examen_cardiovascular' => $examen_cardiovascular,
-            'examen_genito_urinario' => $examen_genito_urinario,
-            'comentarios' => $comentarios,
-            'impresion_diagnostica' => $impresion_diagnostica,
-            'diagnostico_sindromatico' => $diagnostico_sindromatico,
-            'examenes_complementarios' => $examenes_complementarios,
-            'ganglios_linfaticos' => $Ganglios_linfaticos,
-            'examen_extremidades_superiores' => $Examen_extremidades_superiores,
-            'examen_extremidades_inferiores' => $Examen_extremidades_inferiores,
-            'dermatologia' => $dermatologia,
-            'sistema_motor' => $Sistema_motor,
-            'sistema_sensitivo' => $Sistema_sensitivo,
-            'sistema_nervioso' => $Sistema_nervioso,
-            'examen_fisico_segmentado' => $Examen_fisico_segmentado,
-            'interpretacion_laboratorios' => $interpretacion_laboratorios,
-            'paciente' => $paciente,
-            'usuarios_encontrados' => $usuarios_encontrados
-        ]);
     }
+
+    return view('historial.formulario_editar', [
+        'historial' => $historial,
+        'permisos' => $permisos,
+        'n_ser' => $n_ser,
+        'id_historial' => $id_historial,
+        'antecedentes_perinatologicos' => $antecedentes_perinatologicos,
+        'antecedentes_inmunizacion' => $antecedentes_inmunizacion,
+        'antecedentes_alimentarios' => $antecedentes_alimenticios,
+        'antecedentes_familiares' => $antecedentes_familiares,
+        'desarrollo_psicomotor' => $desarrollo_psicomotor,
+        'antecedentes_heredofamiliares' => $antecedentes_heredofamiliares,
+        'antecedentes_patologicos' => $antecedentes_patologicos,
+        'antecedentes_no_patologicos' => $antecedentes_no_patologicos,
+        'Antecedentes_gineco_obsteticos' => $Antecedentes_gineco_obsteticos,
+        'anamnesis_sistema' => $Anamnesis_sistema,
+        'motivo_de_internacion' => $Motivo_de_internacion,
+        'historia_enfermedad_actual' => $historia_enfermedad_actual,
+        'examen_fisico_general' => $Examen_fisico_general,
+        'examen_obstetrico' => $examen_obstetrico,
+        'examen_ginecologico' => $examen_ginecologico,
+        'examen_cardiovascular' => $examen_cardiovascular,
+        'examen_genito_urinario' => $examen_genito_urinario,
+        'comentarios' => $comentarios,
+        'impresion_diagnostica' => $impresion_diagnostica,
+        'diagnostico_sindromatico' => $diagnostico_sindromatico,
+        'examenes_complementarios' => $examenes_complementarios,
+        'ganglios_linfaticos' => $Ganglios_linfaticos,
+        'examen_extremidades_superiores' => $Examen_extremidades_superiores,
+        'examen_extremidades_inferiores' => $Examen_extremidades_inferiores,
+        'dermatologia' => $dermatologia,
+        'sistema_motor' => $Sistema_motor,
+        'sistema_sensitivo' => $Sistema_sensitivo,
+        'sistema_nervioso' => $Sistema_nervioso,
+        'examen_fisico_segmentado' => $Examen_fisico_segmentado,
+        'interpretacion_laboratorios' => $interpretacion_laboratorios,
+        'paciente' => $paciente,
+        'usuarios_encontrados' => $usuarios_encontrados,
+    ]);
+}
+
 
 public function update(Request $request, $id_historial)
 {
     $nombreServicio = $request->nombre_servicio;
+
+    $historial = Historial::findOrFail($id_historial);
 
     if ($nombreServicio === 'NEONATOLOGIA') {
         // Validación para recién nacidos
@@ -713,81 +707,62 @@ public function update(Request $request, $id_historial)
             'sexo.required' => 'El campo sexo es obligatorio',
         ]);
 
-        $historial = Historial::findOrFail($id_historial);
+        // Actualizar campos pero manteniendo los valores anteriores si no vienen en el request
+        $nombreCompleto = trim(
+            ($request->filled('nombres') ? $request->input('nombres') : $historial->nombre_recien_necido) . ' ' .
+            ($request->filled('p_apellido') ? $request->input('p_apellido') : '') . ' ' .
+            ($request->filled('s_apellido') ? $request->input('s_apellido') : '')
+        );
 
-        // Actualización básica
-        $historial->update($request->only([
-            'cama',
-            'nombrenum_referencia',
-            'nombre_recien_necido',
-            'fecha_recien_necido',
-            'hora_recien_necido',
-            'sexo',
-        ]));
-
-        //\Log::info('🧪 Datos recibidos desde formulario para NEONATOLOGIA:', $request->all());
-
-        // Si se seleccionó un paciente desde el select (caso manual con datos de API precargados)
-        if ($request->filled('id_usuario_seleccionado')) {
-            //\Log::info('✅ id_usuario_seleccionado presente, actualizando historial y paciente por id_paciente.');
-
-            // Obtener el historial
-            $historial = Historial::findOrFail($id_historial);
-
-            // Obtener el paciente por id_paciente
-            $paciente = Paciente::find($historial->id_paciente);
-
-            if ($paciente) {
-                //\Log::info('🔍 Paciente encontrado por ID', ['id' => $paciente->id]);
-
-                // Datos a actualizar en paciente
-                $datosPaciente = [];
-
-                if ($request->filled('nombres')) $datosPaciente['nombres'] = $request->input('nombres');
-                if ($request->filled('p_apellido')) $datosPaciente['p_apellido'] = $request->input('p_apellido');
-                if ($request->filled('s_apellido')) $datosPaciente['s_apellido'] = $request->input('s_apellido');
-                if ($request->filled('sexo_api')) $datosPaciente['sexo'] = $request->input('sexo_api');
-                if ($request->filled('fecha_nacimiento')) $datosPaciente['fecha_nacimiento'] = $request->input('fecha_nacimiento');
-                if ($request->filled('matricula_seguro')) $datosPaciente['matricula_seguro'] = $request->input('matricula_seguro');
-                if ($request->filled('complemento')) $datosPaciente['complemento'] = $request->input('complemento');
-                if ($request->filled('nacionalidad')) $datosPaciente['nacionalidad'] = $request->input('nacionalidad');
-                if ($request->filled('telefono') && $request->input('telefono') != '0') $datosPaciente['telefono'] = $request->input('telefono');
-                if ($request->filled('residencia')) $datosPaciente['residencia'] = $request->input('residencia');
-
-                $datosPaciente['updated_at'] = now();
-
-                $paciente->update($datosPaciente);
-                //\Log::info('✅ Paciente actualizado', $datosPaciente);
-            } else {
-                //\Log::warning('⚠️ No se encontró paciente con id: ' . $historial->id_paciente);
-            }
-
-            // Datos a actualizar en historial
-            $datosHistorial = [];
-
-            if ($request->filled('nombres') || $request->filled('p_apellido') || $request->filled('s_apellido')) {
-                $nombre_completo = trim(
-                    $request->input('nombres') . ' ' .
-                    $request->input('p_apellido') . ' ' .
-                    $request->input('s_apellido')
-                );
-                $datosHistorial['nombre_recien_necido'] = $nombre_completo;
-            }
-
-            if ($request->filled('sexo_api')) $datosHistorial['sexo'] = $request->input('sexo_api');
-            if ($request->filled('fecha_nacimiento')) $datosHistorial['fecha_recien_necido'] = $request->input('fecha_nacimiento');
-            if ($request->filled('hora_recien_necido')) $datosHistorial['hora_recien_necido'] = $request->input('hora_recien_necido');
-            if ($request->filled('cama')) $datosHistorial['cama'] = $request->input('cama');
-
-            // Guardar solo el teléfono como referencia si no es 0
-            if ($request->filled('telefono') && $request->input('telefono') != '0') {
-                $datosHistorial['nombrenum_referencia'] = $request->input('telefono');
-            }
-
-            $historial->update($datosHistorial);
-            //\Log::info('📝 Historial actualizado', $datosHistorial);
+        // Decidir el valor de nombrenum_referencia
+        if ($request->filled('nombrenum_referencia')) {
+            $nombrenum_referencia = $request->input('nombrenum_referencia');
+        } elseif ($request->filled('telefono') && $request->input('telefono') != '0') {
+            $nombrenum_referencia = $request->input('telefono');
+        } else {
+            $nombrenum_referencia = $historial->nombrenum_referencia;
         }
 
+        $historial->update([
+            'nombre_recien_necido' => $nombreCompleto ?: $historial->nombre_recien_necido,
+            'sexo' => $request->filled('sexo_api') ? $request->input('sexo_api') : $historial->sexo,
+            'fecha_recien_necido' => $request->filled('fecha_nacimiento') ? $request->input('fecha_nacimiento') : $historial->fecha_recien_necido,
+            'hora_recien_necido' => $request->filled('hora_recien_necido') ? $request->input('hora_recien_necido') : $historial->hora_recien_necido,
+            'cama' => $request->filled('cama') ? $request->input('cama') : $historial->cama,
+            'nombrenum_referencia' => $nombrenum_referencia,
+        ]);
+
+        // Si se seleccionó un paciente desde la lista
+        if ($request->filled('id_usuario_seleccionado')) {
+            // Verificar si ya existe un paciente en la base
+            $paciente = Paciente::find($historial->id_paciente);
+
+            $datosPaciente = [
+                'nombres' => $request->input('nombres'),
+                'p_apellido' => $request->input('p_apellido'),
+                's_apellido' => $request->input('s_apellido'),
+                'sexo' => $request->input('sexo_api'),
+                'fecha_nacimiento' => $request->input('fecha_nacimiento'),
+                'matricula_seguro' => $request->input('matricula_seguro'),
+                'complemento' => $request->input('complemento'),
+                'nacionalidad' => $request->input('nacionalidad'),
+                'telefono' => $request->input('telefono') != '0' ? $request->input('telefono') : null,
+                'residencia' => $request->input('residencia'),
+                'updated_at' => now(),
+            ];
+
+            if ($paciente) {
+                // Ya existe, solo actualizamos
+                $paciente->update($datosPaciente);
+            } else {
+                // No existe -> lo creamos
+                $datosPaciente['created_at'] = now();
+                $paciente = Paciente::create($datosPaciente);
+
+                // Asociamos el nuevo paciente al historial
+                $historial->update(['id_paciente' => $paciente->id]);
+            }
+        }
 
     } else {
         // Validación para otros servicios
@@ -813,23 +788,51 @@ public function update(Request $request, $id_historial)
             'grupo_sanguineo_facto.required' => 'El campo grupo sanguíneo y factor es obligatorio.',
         ]);
 
-        $historial = Historial::findOrFail($id_historial);
-
-        // Actualización para pacientes adultos
-        $historial->update($request->only([
-            'grado_instruccion',
-            'religion',
-            'cama',
-            'ocupacion',
-            'estado_civil',
-            'fuente_informacion',
-            'nombrenum_referencia',
-            'grado_confiabilidad',
-            'grupo_sanguineo_facto',
-        ]));
+        $historial->update([
+            'grado_instruccion' => $request->filled('grado_instruccion') ? $request->input('grado_instruccion') : $historial->grado_instruccion,
+            'religion' => $request->filled('religion') ? $request->input('religion') : $historial->religion,
+            'cama' => $request->filled('cama') ? $request->input('cama') : $historial->cama,
+            'ocupacion' => $request->filled('ocupacion') ? $request->input('ocupacion') : $historial->ocupacion,
+            'estado_civil' => $request->filled('estado_civil') ? $request->input('estado_civil') : $historial->estado_civil,
+            'fuente_informacion' => $request->filled('fuente_informacion') ? $request->input('fuente_informacion') : $historial->fuente_informacion,
+            'nombrenum_referencia' => $request->filled('nombrenum_referencia') ? $request->input('nombrenum_referencia') : $historial->nombrenum_referencia,
+            'grado_confiabilidad' => $request->filled('grado_confiabilidad') ? $request->input('grado_confiabilidad') : $historial->grado_confiabilidad,
+            'grupo_sanguineo_facto' => $request->filled('grupo_sanguineo_facto') ? $request->input('grupo_sanguineo_facto') : $historial->grupo_sanguineo_facto,
+        ]);
     }
 
     return redirect()->back()->with('success', 'Historia actualizada correctamente.');
+}
+
+protected function obtenerTodosLosAfiliados()
+{
+    try {
+        $cachePath = storage_path('app/afiliados_cache.json');
+
+        if (!file_exists($cachePath)) {
+            \Log::warning("⚠️ El archivo no existe: {$cachePath}");
+            return ['error' => 'El archivo de afiliados aún no ha sido generado.'];
+        }
+
+        $contenido = file_get_contents($cachePath);
+        $afiliados = json_decode($contenido, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            \Log::error('❌ Error de JSON: ' . json_last_error_msg());
+            return ['error' => 'Error de formato JSON: ' . json_last_error_msg()];
+        }
+
+        if (!is_array($afiliados)) {
+            \Log::error('❌ El JSON no es un array válido.');
+            return ['error' => 'El formato del archivo de afiliados es inválido.'];
+        }
+
+        \Log::info('✅ Archivo de afiliados leído con éxito. Total: ' . count($afiliados));
+        return $afiliados;
+    } catch (\Throwable $e) {
+        \Log::error('❌ Error al leer afiliados_cache.json: ' . $e->getMessage());
+        return ['error' => 'Error interno al leer el archivo de afiliados.'];
+    }
 }
 
 }

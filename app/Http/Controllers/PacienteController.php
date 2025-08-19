@@ -18,110 +18,141 @@ class PacienteController extends Controller
 
     // ✅ Método principal para actualizar RN desde API
     public function actualizarRecienNacidosDesdeApi()
-    {
-        Log::info('Método actualizarRecienNacidosDesdeApi llamado');
-        try {
-            $recienNacidos = DB::table('pacientes')
-                ->where('nombres', 'LIKE', 'RN_%')
-                ->get();
+{
+    Log::info('Método actualizarRecienNacidosDesdeApi llamado');
+    try {
+        // 1. Obtener recien nacidos desde la tabla historial (donde id_paciente = 0)
+        $recienNacidos = DB::table('historials')
+            ->where('id_paciente', 0)
+            ->whereNotNull('nombre_recien_necido')
+            ->where('nombre_recien_necido', '<>', '')
+            ->select(
+                'id_historia',
+                'id_paciente',
+                'nombre_recien_necido',
+                'fecha_recien_necido',
+                'hora_recien_necido',
+                'sexo',
+            )
+            ->get();
 
-            Log::info("👶 Recién nacidos encontrados: " . $recienNacidos->count());
+        Log::info("👶 Recién nacidos encontrados en historials con id_paciente=0: " . $recienNacidos->count());
 
-            if ($recienNacidos->isEmpty()) {
-                return response()->json(['mensaje' => 'No se encontraron recién nacidos en la base de datos.']);
-            }
-
-            $agrupadosPorFecha = $recienNacidos->groupBy(function ($item) {
-                return Carbon::parse($item->fecha_nacimiento)->toDateString();
-            });
-
-            $resultados = [];
-
-            foreach ($agrupadosPorFecha as $fecha => $grupo) {
-                if ($grupo->count() > 1) {
-                    $nombres = $grupo->pluck('nombres')->implode(', ');
-                    $resultados[] = [
-                        'tipo' => 'conflicto_bd',
-                        'fecha_nacimiento' => $fecha,
-                        'pacientes' => $nombres,
-                        'mensaje' => "Existen múltiples recién nacidos con la fecha {$fecha}: {$nombres}. Requiere revisión."
-                    ];
-                }
-            }
-
-            $pacientesSinConflicto = $recienNacidos->filter(function ($paciente) use ($agrupadosPorFecha) {
-                return $agrupadosPorFecha[Carbon::parse($paciente->fecha_nacimiento)->toDateString()]->count() === 1;
-            });
-
-            Log::info("Pacientes sin conflicto: " . $pacientesSinConflicto->count());
-
-            $afiliados = $this->obtenerTodosLosAfiliados();
-
-            if (is_array($afiliados) && isset($afiliados['error'])) {
-                Log::warning("⚠️ Error al obtener afiliados: " . $afiliados['error']);
-                return response()->json($afiliados, 500);
-            }
-
-            Log::info("📂 Afiliados cargados: " . count($afiliados));
-
-            foreach ($pacientesSinConflicto as $paciente) {
-                $fechaNac = Carbon::parse($paciente->fecha_nacimiento)->toDateString();
-                $matches = collect($afiliados)->where('fecha_nacimiento', $fechaNac);
-
-                Log::info("🔍 Buscando coincidencias para paciente ID {$paciente->id} con fecha {$fechaNac}: " . $matches->count());
-
-                if ($matches->count() === 1) {
-                    $match = $matches->first();
-
-                    DB::table('pacientes')->where('id', $paciente->id)->update([
-                        'nombres' => $match['nombres'],
-                        'p_apellido' => $match['p_apellido'],
-                        's_apellido' => $match['s_apellido'],
-                        'sexo' => $match['sexo'],
-                        'fecha_nacimiento' => $match['fecha_nacimiento'],
-                        'ci' => $match['ci'],
-                        'complemento' => $match['complemento'],
-                        'matricula_seguro' => $match['matricula_seguro'],
-                        'nacionalidad' => $match['nacionalidad'],
-                        'telefono' => $match['telefono'],
-                        'residencia' => $match['residencia'],
-                        'updated_at' => now()
-                    ]);
-
-                    DB::table('historials')->where('id_paciente', $paciente->id)->update([
-                        'nombre_recien_necido' => $match['nombres']
-                    ]);
-
-                    $resultados[] = [
-                        'tipo' => 'exito',
-                        'paciente' => $paciente->nombres,
-                        'mensaje' => "Actualizado con datos del afiliado '{$match['nombres']}'"
-                    ];
-
-                    Log::info("✅ Actualizado paciente ID {$paciente->id} con afiliado '{$match['nombres']}'");
-
-                } elseif ($matches->count() > 1) {
-                    $nombresCoincidentes = $matches->pluck('nombres')->implode(', ');
-                    $resultados[] = [
-                        'tipo' => 'conflicto_api',
-                        'paciente' => $paciente->nombres,
-                        'mensaje' => "Múltiples coincidencias en la API: {$nombresCoincidentes}"
-                    ];
-                } else {
-                    $resultados[] = [
-                        'tipo' => 'no_encontrado',
-                        'paciente' => $paciente->nombres,
-                        'mensaje' => "No se encontró coincidencia para la fecha de nacimiento {$fechaNac}"
-                    ];
-                }
-            }
-
-            return response()->json($resultados);
-        } catch (\Throwable $e) {
-            Log::error('❌ Error en actualizarRecienNacidosDesdeApi: ' . $e->getMessage());
-            return response()->json(['error' => 'Error interno. Revisa el log.'], 500);
+        if ($recienNacidos->isEmpty()) {
+            return response()->json(['mensaje' => 'No se encontraron recién nacidos en la base de datos.']);
         }
+
+        // 2. Agrupar por fecha de nacimiento
+        $agrupadosPorFecha = $recienNacidos->groupBy(function ($item) {
+            return Carbon::parse($item->fecha_recien_necido)->toDateString();
+        });
+
+        $resultados = [];
+
+        // 3. Verificar conflictos por fecha
+        foreach ($agrupadosPorFecha as $fecha => $grupo) {
+            if ($grupo->count() > 1) {
+                $nombres = $grupo->pluck('nombre_recien_necido')->implode(', ');
+                $resultados[] = [
+                    'tipo' => 'conflicto_bd',
+                    'fecha_nacimiento' => $fecha,
+                    'pacientes' => $nombres,
+                    'mensaje' => "Existen múltiples recién nacidos con la fecha {$fecha}: {$nombres}. Requiere revisión."
+                ];
+            }
+        }
+
+        // 4. Filtrar recien nacidos sin conflicto
+        $recienNacidosSinConflicto = $recienNacidos->filter(function ($paciente) use ($agrupadosPorFecha) {
+            return $agrupadosPorFecha[Carbon::parse($paciente->fecha_recien_necido)->toDateString()]->count() === 1;
+        });
+
+        Log::info("Recién nacidos sin conflicto: " . $recienNacidosSinConflicto->count());
+
+        // 5. Obtener todos los afiliados externos
+        $afiliados = $this->obtenerTodosLosAfiliados();
+
+        if (is_array($afiliados) && isset($afiliados['error'])) {
+            Log::warning("⚠️ Error al obtener afiliados: " . $afiliados['error']);
+            return response()->json($afiliados, 500);
+        }
+
+        Log::info("📂 Afiliados cargados: " . count($afiliados));
+
+        // 6. Procesar cada RN sin conflicto
+        foreach ($recienNacidosSinConflicto as $paciente) {
+            $fechaNac = Carbon::parse($paciente->fecha_recien_necido)->toDateString();
+            $nombreRN = $paciente->nombre_recien_necido;
+
+            // Buscar coincidencias en afiliados con nombre y fecha
+            $matches = collect($afiliados)->where('fecha_nacimiento', $fechaNac);
+
+
+            Log::info("🔍 Buscando coincidencias para RN '{$nombreRN}' con fecha {$fechaNac}: " . $matches->count());
+
+            if ($matches->count() === 1) {
+                $match = $matches->first();
+
+                // Crear nuevo paciente con datos del afiliado
+                $nuevoId = DB::table('pacientes')->insertGetId([
+                    'nombres' => $match['nombres'],
+                    'p_apellido' => $match['p_apellido'],
+                    's_apellido' => $match['s_apellido'],
+                    'sexo' => $match['sexo'],
+                    'fecha_nacimiento' => $match['fecha_nacimiento'],
+                    'ci' => $match['ci'],
+                    'complemento' => $match['complemento'],
+                    'matricula_seguro' => $match['matricula_seguro'],
+                    'nacionalidad' => $match['nacionalidad'],
+                    'telefono' => $match['telefono'],
+                    'residencia' => $match['residencia'],
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+
+                // Actualizar el historial con nuevo id_paciente
+                DB::table('historials')
+                    ->where('id_historia', $paciente->id_historia)
+                    ->update([
+                        'id_paciente' => $nuevoId,
+                        'nombre_recien_necido' => $match['nombres'] // aquí actualizas el nombre real
+                    ]);
+
+
+                $resultados[] = [
+                    'tipo' => 'creado',
+                    'paciente' => $match['nombres'],
+                    'mensaje' => "Paciente nuevo creado con ID {$nuevoId} a partir de RN '{$nombreRN}'"
+                ];
+
+                Log::info("🆕 Paciente creado con ID {$nuevoId} desde historial ID {$paciente->id_historia}");
+
+            } elseif ($matches->count() > 1) {
+                $nombresCoincidentes = $matches->pluck('nombres')->implode(', ');
+                $resultados[] = [
+                    'tipo' => 'conflicto_api',
+                    'paciente' => $nombreRN,
+                    'mensaje' => "Múltiples coincidencias en la API: {$nombresCoincidentes}"
+                ];
+            } else {
+                $resultados[] = [
+                    'tipo' => 'no_encontrado',
+                    'paciente' => $nombreRN,
+                    'mensaje' => "No se encontró coincidencia para la fecha de nacimiento {$fechaNac}"
+                ];
+            }
+        }
+
+        return response()->json($resultados);
+
+    } catch (\Throwable $e) {
+        Log::error('❌ Error en actualizarRecienNacidosDesdeApi: ' . $e->getMessage());
+        return response()->json(['error' => 'Error interno. Revisa el log.'], 500);
     }
+}
+
+
+
 
     // ✅ Método para buscar coincidencias RN vs API
     public function buscarRecienNacidos()
