@@ -20,6 +20,7 @@
     </style>
 </head>
 <div style="margin-top: <?= $espaciado ?? 200 ?>px;">
+</div>
 <body class="body">
 
     <table style="border-collapse: collapse;font-size: 13px;text-align:center;width: 100%;font-family: Arial, sans-serif;">
@@ -63,5 +64,4 @@
     </table>
 
 </body>
-</div>
 </html>
