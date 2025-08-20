@@ -17,7 +17,7 @@ class PacienteController extends Controller
     protected $cacheTTL = 3600; // 1 hora
 
     // ✅ Método principal para actualizar RN desde API
-    public function actualizarRecienNacidosDesdeApi()
+public function actualizarRecienNacidosDesdeApi() 
 {
     Log::info('Método actualizarRecienNacidosDesdeApi llamado');
     try {
@@ -32,7 +32,7 @@ class PacienteController extends Controller
                 'nombre_recien_necido',
                 'fecha_recien_necido',
                 'hora_recien_necido',
-                'sexo',
+                'sexo'
             )
             ->get();
 
@@ -52,12 +52,17 @@ class PacienteController extends Controller
         // 3. Verificar conflictos por fecha
         foreach ($agrupadosPorFecha as $fecha => $grupo) {
             if ($grupo->count() > 1) {
-                $nombres = $grupo->pluck('nombre_recien_necido')->implode(', ');
+                // Opcional: incluir IDs
+                $detalles = $grupo->map(function($item) {
+                    return "{$item->nombre_recien_necido} (ID: {$item->id_historia})";
+                })->implode(', ');
+
                 $resultados[] = [
                     'tipo' => 'conflicto_bd',
                     'fecha_nacimiento' => $fecha,
-                    'pacientes' => $nombres,
-                    'mensaje' => "Existen múltiples recién nacidos con la fecha {$fecha}: {$nombres}. Requiere revisión."
+                    'pacientes' => $detalles,
+                    'paciente' => '', // Para evitar "undefined"
+                    'mensaje' => "Existen múltiples recién nacidos con la fecha {$fecha}: {$detalles}. Requiere revisión."
                 ];
             }
         }
@@ -87,7 +92,6 @@ class PacienteController extends Controller
             // Buscar coincidencias en afiliados con nombre y fecha
             $matches = collect($afiliados)->where('fecha_nacimiento', $fechaNac);
 
-
             Log::info("🔍 Buscando coincidencias para RN '{$nombreRN}' con fecha {$fechaNac}: " . $matches->count());
 
             if ($matches->count() === 1) {
@@ -115,9 +119,8 @@ class PacienteController extends Controller
                     ->where('id_historia', $paciente->id_historia)
                     ->update([
                         'id_paciente' => $nuevoId,
-                        'nombre_recien_necido' => $match['nombres'] // aquí actualizas el nombre real
+                        'nombre_recien_necido' => $match['nombres']
                     ]);
-
 
                 $resultados[] = [
                     'tipo' => 'creado',
@@ -150,6 +153,7 @@ class PacienteController extends Controller
         return response()->json(['error' => 'Error interno. Revisa el log.'], 500);
     }
 }
+
 
 
 
