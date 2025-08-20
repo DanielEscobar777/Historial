@@ -655,7 +655,7 @@
                                                 'Abdomen'=>'ABDOMEN','Abdomen_inspeccion'=>'ABDOMEN INSPECCION ','Abdomen_palpacion'=>'ABDOMEN PALPACION','Abdomen_percusion'=>'ABDOMEN PERCUSION',
                                                 'Abdomen_auscultacion'=>'ABDOMEN AUSCULTACION','Cordon_umbilical'=>'CORDON UMBILICAL','Relacion_arteriovenosa'=>'RELACION ARTERIOVENOSA','Genitales_acuerdo_sexo_edad'=>'GENITALES DE ACUERDO A EDAD',
                                                 'Pies'=>'PIES','Surcos_plantales'=>'SURCOS PLANTALES','Reflejos_succion'=>'REFLEJOS DE SUCCION','Genitourinarios'=>'GENITOURINARIOS','Extremidades'=>'EXTREMIDADES',
-                                                'Neurologicos'=>'NEUROLOGICO','Craneo'=>'CRANEO','Cavidad_bucal'=>'CAVIDAD BUCAL','Cuello'=>'CUELLO','Cuello_inspeccion'=>'CUELLO INSPECCION','Cuello_palpacion'=>'CUELLO PALPACION',
+                                                'Neurologico'=>'NEUROLOGICO','Craneo'=>'CRANEO','Cavidad_bucal'=>'CAVIDAD BUCAL','Cuello'=>'CUELLO','Cuello_inspeccion'=>'CUELLO INSPECCION','Cuello_palpacion'=>'CUELLO PALPACION',
                                                 'Cuello_auscultacion'=>'CUELLO AUSCULTACION','Torax'=>'TORAX','Torax_inspeccion_estatico'=>'TORAX INSPECCION ESTATICO','Torax_inspeccion_dinamico'=>'TORAX INSPECCION DINAMICO',
                                                 'Torax_palpacion'=>'TORAX PALPACION','Torax_percusion'=>'TORAX PERCUSION', 'Torax_auscultacion'=>'TORAX AUSCULTACION','Mamas'=>'MAMAS'] as $permisoKey => $titulo)
                                                 @if($permisos_1->contains('nombre_permiso', $permisoKey))
@@ -675,7 +675,7 @@
                                                 'pulmones_palpacion','pulmones_percusion','pulmones_auscultacion','corazon','corazon_inspeccion','corazon_palpacion','corazon_percusion',
                                                 'corazon_auscultacion','precordio','abdomen','abdomen_inspeccion','abdomen_palpacion','abdomen_percusion','abdomen_auscultacion',
                                                 'cordon_umbilical','relacion_arteriovenosa','genitales_acuerdo_sexo_edad','pies','surcos_plantales','reflejos_succion','genitourinarios',
-                                                'extremidades','neurologicos','craneo','cavidad_bucal','cuello','cuello_inspeccion','cuello_palpacion','cuello_auscultacion',
+                                                'extremidades','neurologico','craneo','cavidad_bucal','cuello','cuello_inspeccion','cuello_palpacion','cuello_auscultacion',
                                                 'torax','torax_inspeccion_estatico','torax_inspeccion_dinamico','torax_palpacion','torax_percusion','torax_auscultacion','mamas'] as $campo)
                                                 @if($examen_segmentado->$campo != 'N/A')
                                                 <td>{{ $examen_segmentado->$campo }}</td>
