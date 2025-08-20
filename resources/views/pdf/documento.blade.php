@@ -328,7 +328,7 @@
                                                                         <td style="text-align: left"><b>Exposicion a biomasa</b> : {!! nl2br(e($h_antecedentes->exposicion_biomasa)) !!} </td>
                                                                     </tr>
                                                                     @endif
-                                                                    @if($h_antecedentes->contacto_tuberculosis <> 'N/A')
+                                                                    @if($h_antecedentes->contacto_con_tuberculosis <> 'N/A')
                                                                         <tr>
                                                                             <td style="text-align: left"><b>Contacto con tuberculosis</b> : {!! nl2br(e($h_antecedentes->contacto_con_tuberculosis)) !!} </td>
                                                                         </tr>
