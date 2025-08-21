@@ -26,7 +26,7 @@
 
                     
                             @if(isset($usuarios_encontrados) && count($usuarios_encontrados) > 1)
-                                <div class="col-md-12">
+                                <div class="col-md-6">
                                     <label><b>Seleccionar paciente correspondiente:</b></label>
                                     <select name="id_usuario_seleccionado" class="form-control" id="seleccion_usuario" required>
                                         <option value="">Seleccione una opción</option>

@@ -629,11 +629,16 @@ class HistorialController extends Controller
     // Buscar en el archivo cache si es NEONATOLOGÍA y el nombre del RN tiene el formato esperado
     if (
         $n_ser->nombre_servicio === 'NEONATOLOGIA' &&
-        preg_match('/^RN_(\d{4})(\d{2})(\d{2})_\d{4}_\d+$/', $historial->nombre_recien_necido, $matches)
+        preg_match('/^RN_(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})_([A-Za-z0-9]+)_(.+)$/', $historial->nombre_recien_necido, $matches)
     ) {
+        // Extrae la fecha y hora del nombre generado
         $fecha_nacimiento = "{$matches[1]}-{$matches[2]}-{$matches[3]}";
+        $hora_nacimiento = "{$matches[4]}:{$matches[5]}";
+        $cama = $matches[6];
+        $nombre_usuario = $matches[7];
 
-        $afiliados = $this->obtenerTodosLosAfiliados();
+
+            $afiliados = $this->obtenerTodosLosAfiliados();
 
         if (is_array($afiliados) && empty($afiliados['error'])) {
             $usuarios_encontrados = array_filter($afiliados, function ($usuario) use ($fecha_nacimiento) {
@@ -642,6 +647,7 @@ class HistorialController extends Controller
 
             $usuarios_encontrados = array_values($usuarios_encontrados); // Reindexar
         }
+
     }
 
     return view('historial.formulario_editar', [
