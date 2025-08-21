@@ -37,13 +37,14 @@
                                                 <th>GRUPO SANGUINEO</th>
                                             </tr>
                                         </thead>
+                                        @if($servicio && $servicio->nombre_servicio != 'NEONATOLOGIA')
                                         <tbody>
                                             @foreach( $filiaciones as $filiacion)
                                             <tr class="align-middle">
                                                 <td>{{ $filiacion->operacion}}</td>
                                                 <td>{{ $filiacion->name}}</td>
                                                 <td>{{ $filiacion->fecha_modificacion}}</td>
-                                                <td>{{ $filiacion->nombres}} {{$filiacion->p_apellido}}  {{$filiacion->s_apellido}}</td>
+                                                <td>{{ $filiacion->nombres}} {{$filiacion->p_apellido}} {{$filiacion->s_apellido}}</td>
                                                 <td>{{ $filiacion->religion}}</td>
                                                 <td>{{ $filiacion->cama}}</td>
                                                 <td>{{ $filiacion->fuente_informacion}}</td>
@@ -54,8 +55,26 @@
                                             </tr>
                                             @endforeach
                                         </tbody>
-
-                                    </table>
+                                        @else
+                                        <tbody>
+                                            @foreach( $historiaRN as $historialnr)
+                                            <tr class="align-middle">
+                                                <td>{{ $historialnr->operacion}}</td>
+                                                <td>{{ $historialnr->name}}</td>
+                                                <td>{{ $historialnr->fecha_modificacion}}</td>
+                                                <td>{{ $historialnr->nombre_recien_necido}} </td>
+                                                <td>{{ $historialnr->religion}}</td>
+                                                <td>{{ $historialnr->cama}}</td>
+                                                <td>{{ $historialnr->fuente_informacion}}</td>
+                                                <td>{{ $historialnr->nombrenum_referencia}}</td>
+                                                <td>{{ $historialnr->grado_instruccion}}</td>
+                                                <td>{{ $historialnr->grado_confiabilidad}}</td>
+                                                <td>{{ $historialnr->grupo_sanguineo_facto}}</td>
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+                                        @endif
+                                    </table>  
                                 </div>
                             </div>
                         </div>

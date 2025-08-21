@@ -24,7 +24,8 @@ class AuditoriaController extends Controller
     {
         $historiales = Historial::paciente( $id_servicio);
         $servicio = Servicios::where('id_servicio', $id_servicio)->first();
-        return view('auditoria.index_servicio', compact('historiales', 'id_servicio', 'servicio'));
+        $historiaRN =Historial::where('nombre_recien_necido','<>', 'null')->get();
+        return view('auditoria.index_servicio', compact('historiales', 'id_servicio', 'servicio','historiaRN'));
     }
     public function auditoria($id_historia)
     {
@@ -33,6 +34,14 @@ class AuditoriaController extends Controller
         $permisos = Permisos_historia::traer_permisos_2($id_servicio);
         $permisos_1 = Permisos_historia::traerPermisos1($id_servicio);
 
+        $servicio = DB::table('au_historial as h')
+        ->join('servicios as s', 'h.id_usuario', '=', 's.id_servicio')
+        ->where('h.id_historia', $id_historia)
+        ->first(); 
+        $historiaRN =DB::table('au_historial as h')
+        ->join('users as u', 'h.id_usuario', '=', 'u.id')
+        ->where('h.id_historia', $id_historia)
+        ->get();
          $filiacion = DB::table('au_historial as h')
         ->join('users as u', 'h.id_usuario', '=', 'u.id')
         ->join('pacientes as p', DB::raw('h.id_paciente::integer'), '=', 'p.id')
@@ -217,6 +226,8 @@ class AuditoriaController extends Controller
             'examenes_complementarios' => $examenes_complementarios,
             'comentarios' => $comentarios,
             'impresion_diagnostica' => $impresion_diagnostica,
+            'servicio' => $servicio,
+            'historiaRN' => $historiaRN,
             'interpretacion_laboratorio' => $interpretacion_laboratorio
 
         ]);

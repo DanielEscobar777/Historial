@@ -20,7 +20,6 @@
                     <tr>
                         <th>ITEM</th>
                         <th>NOMBRE PACIENTE</th>
-                        <th>MATRICULA</th>
                         <th>FECHA</th>
                         @if($servicio->nombre_servicio == 'NEONATOLOGIA')
                         <th>FECHA NACIMIENTO</th>
@@ -31,31 +30,44 @@
 
                     </tr>
                 </thead>
+
+                @if($servicio->nombre_servicio != 'NEONATOLOGIA')
                 <tbody>
                     @foreach( $historiales as $historial)
                     <tr class="align-middle">
                         <td>{{ $historial->id_historia}}</td>
-                        @if($servicio->nombre_servicio == 'NEONATOLOGIA')
-                        <td>{{ $historial->nombre_recien_necido}}</td>
-                        @else
-                        <td>{{ $historial->nombres}}  {{$historial->p_apellido}} {{$historial->s_apellido}}</td>
-                        @endif
-                        <td>{{ $historial->matricula_seguro}} </td>
-                        <td>{{ $historial->fecha_registro}} {{$historial->hora_registro}}</td>
-                        @if($servicio->nombre_servicio == 'NEONATOLOGIA')
-                        <td>{{ $historial->fecha_recien_necido}} {{ $historial->hora_recien_necido}}</td>
-                        @if($historial->sexo == 'M')
-                         <td>Masculino</td>
-                              @else
-                               <td>Femenino</td>
-                         @endif
-                        @endif
+                        <td>{{ $historial->nombres}} {{ $historial->p_apellido}} {{ $historial->s_apellido}}</td>
+
+                        <td>{{ $historial->matricula_seguro}}</td>
+                        <td>{{ $historial->fecha_registro}}</td>
+
                         <td>{{ $historial->cama}}</td>
                         <td><a href="{{ route('auditoria.auditoria', $historial->id_historia)}}"><button class=" btn btn-primary"><i class="fa fa-search-plus"></i>Explorar</button></a></td>
-                    </tr>
 
+                    </tr>
                     @endforeach
                 </tbody>
+                @else
+                <tbody>
+                    @foreach( $historiaRN as $historialrn)
+                    <tr class="align-middle">
+                        <td>{{ $historialrn->id_historia}}</td>
+                        <td>{{ $historialrn->nombre_recien_necido}}</td>
+                        <td>{{ $historialrn->fecha_registro}}</td>
+                        <td>{{ $historialrn->fecha_recien_necido}} {{ $historialrn->hora_recien_necido}}</td>
+                        @if($historialrn->sexo == 'M')
+                        <td>Masculino</td>
+                        @else
+                        <td>Femenino</td>
+                        @endif
+
+                        <td>{{ $historialrn->cama}}</td>
+                        <td><a href="{{ route('auditoria.auditoria', $historialrn->id_historia)}}"><button class=" btn btn-primary"><i class="fa fa-search-plus"></i>Explorar</button></a></td>
+
+                    </tr>
+                    @endforeach
+                </tbody>
+                @endif
 
             </table>
         </div>

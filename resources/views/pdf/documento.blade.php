@@ -1770,6 +1770,30 @@
                                                                         <td style="text-align: left; width: 40%;">{!! nl2br(e($h_sistema_nervioso->sensibilidad_profunda_inconsciente )) !!} </td>
                                                                     </tr>
                                                                     @endif
+                                                                    @if($h_sistema_nervioso->sistema_vestibulo_cerebeloso <> 'N/A')
+                                                                    <tr>
+                                                                        <td style="text-align: left">Sistema vestibulo-cerebeloso : </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td style="text-align: left; width: 40%;">{{$h_sistema_nervioso->sistema_vestibulo_cerebeloso }} </td>
+                                                                    </tr>
+                                                                    @endif
+                                                                    @if($h_sistema_nervioso->signos_irritacion_meningea <> 'N/A')
+                                                                    <tr>
+                                                                        <td style="text-align: left">Signo de irritacion miningera : </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td style="text-align: left; width: 40%;">{{$h_sistema_nervioso->signos_irritacion_meningea }} </td>
+                                                                    </tr>
+                                                                    @endif
+                                                                    @if($h_sistema_nervioso->marcha <> 'N/A')
+                                                                    <tr>
+                                                                        <td style="text-align: left">Marcha : </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td style="text-align: left; width: 40%;">{{$h_sistema_nervioso->marcha }} </td>
+                                                                    </tr>
+                                                                    @endif
                                                     </table>
                                                 </td>
                                             </tr>
