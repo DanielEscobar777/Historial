@@ -20,6 +20,9 @@
                     <tr>
                         <th>ITEM</th>
                         <th>NOMBRE PACIENTE</th>
+                        @if($servicio->nombre_servicio != 'NEONATOLOGIA')
+                        <th>MATRICULA</th>
+                        @endif
                         <th>FECHA</th>
                         @if($servicio->nombre_servicio == 'NEONATOLOGIA')
                         <th>FECHA NACIMIENTO</th>
