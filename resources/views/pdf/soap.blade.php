@@ -83,11 +83,11 @@
     <!-- Columna derecha (nota de evolución) -->
     <div class="columna columna-derecha">
       <h4>NOTA DE EVOLUCIÓN</h4>
-      <p><?= $evolucion->descripcion ?>:</p>
+      <p><?= nl2br(e($evolucion->descripcion)) ?>:</p>
 
       <div class="diagnosticos">
         <?php foreach ($diagnosticos as $diagnostico): ?>
-          • <?= $diagnostico->diagnostico ?><br>
+          {!! nl2br(e($diagnostico->diagnostico)) !!}
         <?php endforeach; ?>
       </div>
 
