@@ -11,28 +11,33 @@
       padding: 0;
     }
 
-
+    .contenedor {
+      width: 100%;
+      display: block;
+      position: relative;
+    }
 
     .columna {
-      float: right; 
-      direction: ltr;
+      display: inline-block;
+      vertical-align: top;
       box-sizing: border-box;
       padding: 10px;
-      overflow-wrap: break-word;
       word-wrap: break-word;
       word-break: break-word;
-      display: block;
-      min-height: 100px;
       margin-top: <?= $espaciado ?? 7 ?>cm;
     }
 
-    .izquierda {
-      width: 70%;
-    }
-    .derecha {
+    .columna-izquierda {
       width: 25%;
-      margin-left: 4%;
-      margin-right: 1%;          
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+
+    .columna-derecha {
+      width: 70%;
+      margin-left: 30%;
+      page-break-inside: auto;
     }
 
     h4 {
@@ -43,55 +48,23 @@
     .diagnosticos {
       margin-left: 15px;
     }
-    @media print {
-      .pagina-extra {
-        page-break-before: always;
-        display: block;
-      }
 
-      .print-only {
-        display: block;
-      }
+    p {
+      margin: 4px 0;
+      text-align: justify;
     }
 
-    @media screen {
-      .pagina-extra,
-      .print-only {
-        display: none;
-      }
+    .salto {
+      page-break-before: always;
     }
-    @media print {
-  .columna {
-    page-break-inside: avoid;
-  }
-}
-
   </style>
 </head>
 <body>
   <div class="espaciado1"></div>
-
-    <!-- Columna izquierda (aparecerá a la derecha visualmente) -->
-    <div class="columna izquierda">
-      <h4>NOTA DE EVOLUCIÓN</h4>
-      <p><?= $evolucion->descripcion ?>:</p>
-
-      <div class="diagnosticos">
-        <?php foreach ($diagnosticos as $diagnostico) { ?>
-          • <?= $diagnostico->diagnostico ?><br>
-        <?php } ?>
-      </div>
-
-
-        <p><strong>S.</strong> <?= $evolucion->s ?></p>
-        <p><strong>O.</strong> <?= $evolucion->o ?></p>
-        <p><strong>A.</strong> <?= $evolucion->a ?></p>
-        <p><strong>P.</strong> <?= $evolucion->p ?></p>
-     
-    </div>
-
-    <!-- Columna derecha (aparecerá a la izquierda visualmente) -->
-    <div class="columna derecha">
+  <div class="contenedor">
+    
+    <!-- Columna izquierda (signos vitales) -->
+    <div class="columna columna-izquierda">
       <p><strong>Fecha:</strong> <?= $evolucion->fecha_registro ?></p>
       <p><strong>Hora:</strong> <?= $evolucion->hora_registro ?></p>
       <p>
@@ -106,6 +79,27 @@
         <strong>DH:</strong> <?= $evolucion->dh ?> ml/kg/hr
       </p>
     </div>
+
+    <!-- Columna derecha (nota de evolución) -->
+    <div class="columna columna-derecha">
+      <h4>NOTA DE EVOLUCIÓN</h4>
+      <p><?= $evolucion->descripcion ?>:</p>
+
+      <div class="diagnosticos">
+        <?php foreach ($diagnosticos as $diagnostico): ?>
+          • <?= $diagnostico->diagnostico ?><br>
+        <?php endforeach; ?>
+      </div>
+
+      <div class="evolucion">
+        <p><strong>S.</strong> <?= nl2br(e($evolucion->s)) ?></p>
+        <p><strong>O.</strong> <?= nl2br(e($evolucion->o)) ?></p>
+        <p><strong>A.</strong> <?= nl2br(e($evolucion->a)) ?></p>
+        <p><strong>P.</strong> <?= nl2br(e($evolucion->p)) ?></p>
+      </div>
+    </div>
+
+  </div>
 
 </body>
 </html>

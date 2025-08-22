@@ -113,7 +113,10 @@
                     <form action="{{ route('diagnostico.update',$diagnostico->id_diagnostico_soaps) }}" method="POST" autocomplete="off" novalidate>
                         @csrf @method('PUT')
                         <tr class="align-middle">
-                            <td><input type="text" class="form-control" name="diagnostico" value="{{ $diagnostico->diagnostico}}" required></td>
+                            <td>
+                                <textarea class="form-control" rows="7" name="diagnostico">{{$diagnostico->diagnostico }}</textarea>
+
+                            </td>
                             <td class="text-center"> <button type="submit" class="btn btn-warning"><i class="fa fa-save"></i> Actualizar</button></td>
                         </tr>
 

@@ -78,6 +78,7 @@ class EvolucionController extends Controller
 
             $validated = $request->validate([
                 'descripcion' => 'required|string',
+                'diagnostico' => 'required|string',
                 's' => 'required|string',
                 'o' => 'required|string',
                 'a' => 'required|string',
@@ -93,6 +94,7 @@ class EvolucionController extends Controller
                 'dh' => 'required|numeric',
             ], [
                 'descripcion.required' => 'El campo descripcion es obligatorio.',
+                'diagnostico.required' => 'El campo diagnostico es obligatorio.',
                 's.required' => 'El campo S es obligatorio.',
                 'o.required' => 'El campo O es obligatorio.',
                 'a.required' => 'El campo A es obligatorio.',
@@ -141,26 +143,18 @@ class EvolucionController extends Controller
                 'updated_at' => now(),
             ], 'id_evolucion');
 
-            // Procesar diagnósticos
-            $diagnosticos = DB::table('diagnostico_temp as d')
-                ->where('d.id_historial', $id_historial)
-                ->where('d.id_usuario', $userId)
-                ->get();
-
-            foreach ($diagnosticos as $diagnostico) {
-
                 DB::table('diagnostico_soaps')->insert([
-                    'diagnostico' => $diagnostico->diagnostico,
+                    'diagnostico' => $validated['diagnostico'],
                     'id_evolucion' => $evolucionId,
                     'id_historial' => $id_historial,
                     'id_usuario' => $userId,
                     'created_at' => now()
                 ]);
-            }
-            DB::table('diagnostico_temp')
-                ->where('id_usuario', $userId)
-                ->where('id_historial', $id_historial)
-                ->delete();
+            
+            // DB::table('diagnostico_temp')
+            //     ->where('id_usuario', $userId)
+            //     ->where('id_historial', $id_historial)
+            //     ->delete();
 
             DB::commit();
             $servicio = Servicios::where('id_servicio', $id_servicio)->first();
@@ -356,6 +350,7 @@ class EvolucionController extends Controller
 
             $validated = $request->validate([
                 'descripcion' => 'required|string',
+                'diagnostico' => 'required|string',
                 's' => 'required|string',
                 'o' => 'required|string',
                 'a' => 'required|string',
@@ -371,6 +366,7 @@ class EvolucionController extends Controller
                 'dh' => 'required|numeric',
             ], [
                 'descripcion.required' => 'El campo descripcion es obligatorio.',
+                'diagnostico.required' => 'El campo diagnostico es obligatorio.',
                 's.required' => 'El campo S es obligatorio.',
                 'o.required' => 'El campo O es obligatorio.',
                 'a.required' => 'El campo A es obligatorio.',
@@ -419,22 +415,17 @@ class EvolucionController extends Controller
                 'updated_at' => now(),
             ], 'id_evolucion');
 
-            // Procesar diagnósticos
-            $diagnosticos = DB::table('diagnostico_temp as d')
-                ->where('d.navegador', $navegador)
-                ->where('d.id_usuario', $userId)
-                ->get();
-
-            foreach ($diagnosticos as $diagnostico) {
+     
+ $navegador = request()->header('User-Agent');
 
                 DB::table('diagnostico_soaps')->insert([
-                    'diagnostico' => $diagnostico->diagnostico,
+                    'diagnostico' => $validated['diagnostico'],
                     'id_evolucion' => $evolucionId,
-                    'navegador' => $diagnostico->navegador,
+                    'navegador' => $navegador,
                     'id_usuario' => $userId,
                     'created_at' => now()
                 ]);
-            }
+            
             DB::table('diagnostico_temp')
                 ->where('id_usuario', $userId)
                 ->where('navegador', $navegador)

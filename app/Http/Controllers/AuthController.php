@@ -96,9 +96,9 @@ class AuthController extends Controller
         Session::put('login_time', now());
 
         // Asignación de roles
-       $usuariosResponse = Http::withHeaders([
+      /* $usuariosResponse = Http::withHeaders([
             'Authorization' => 'Bearer ' . $accessToken
-        ])->get('http://localhost/tokkens/usuarios_residentes.php');
+        ])->get('http://localhost/tokkens/usuarios_residentes.php');*/
         
         $usuariosResponse = Http::withHeaders([
             'Authorization' => 'Bearer ' . $accessToken
