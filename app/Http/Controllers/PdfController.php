@@ -40,21 +40,21 @@ class PdfController extends Controller
     return Pdf::loadView('pdf.documento', $data)->stream();
   }
 
-  public function generateSOAP(Request $request)
+ public function generateSOAP(Request $request)
   {
     $id_evolucion = $request->input('id_evolucion');
     $evolucion = Evolucion::where('id_evolucion', $id_evolucion)->first();
     $diagnostico = Diagnostico_soap::where('id_evolucion', $id_evolucion)->get();
-    $margen_cm1 = $request->input('margen_superior_cm', 5); // Valor por defecto: 5 cm
-    //$margen_cm1 = 11;
-    $margen_cm = $margen_cm1 - 2;
-    $espaciado = $margen_cm * 37.7952755906;
+    $margen_cm1 = $request->input('margen_superior_cm', 5); // cm, default 5
+$margen_cm = $margen_cm1 - 2;
+$espaciado = $margen_cm; // PASA EL VALOR EN CENTÍMETROS DIRECTAMENTE
     $data = [
       'evolucion' => $evolucion,
       'diagnosticos' => $diagnostico,
       'espaciado' => $espaciado
     ];
     return Pdf::loadView('pdf.soap', $data)->stream();
-  }
+  } 
+
 
 }
