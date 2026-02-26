@@ -30,7 +30,7 @@ class DescargarAfiliados extends Command
             while (true) {
                 $response = Http::withHeaders([
                     'Authorization' => 'Bearer ' . $token
-                ])->get('http://192.168.4.55:8001/api/s1/administracion/pacientes', [
+                ])->get('http://192.168.2.102:8001/api/s1/administracion/pacientes', [
                     'pagina' => $pagina
                 ]);
 

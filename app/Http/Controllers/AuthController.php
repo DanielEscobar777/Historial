@@ -65,7 +65,7 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => $request->password,
         ]);*/
-         $response = Http::post('http://192.168.2.102:8000/api/auth/login_service', [
+         $response = Http::post('http://172.16.0.246:8000/api/auth/login_service', [
             'email' => $request->email,
             'password' => $request->password,
         ]);
