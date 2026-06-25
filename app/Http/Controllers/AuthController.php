@@ -99,10 +99,13 @@ class AuthController extends Controller
        /*$usuariosResponse = Http::withHeaders([
             'Authorization' => 'Bearer ' . $accessToken
         ])->get('http://localhost/tokkens/usuarios_residentes.php');*/
-        
+
+        $url = env('HOST_SSU');
+
         $usuariosResponse = Http::withHeaders([
             'Authorization' => 'Bearer ' . $accessToken
-     ])->get('http://192.168.2.102:8001/api/s1/administracion/user_residente');
+        ])->get("{$url}/api/s1/administracion/user_residente");
+        
 
         if ($usuariosResponse->ok()) {
             $usuariosData = $usuariosResponse->json();

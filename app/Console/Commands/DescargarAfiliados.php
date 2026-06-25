@@ -26,11 +26,14 @@ class DescargarAfiliados extends Command
             $afiliados = [];
 
             $this->info('Descargando afiliados desde la API...');
-
+            
+            $url = env('HOST_SSU');
             while (true) {
+                
+
                 $response = Http::withHeaders([
                     'Authorization' => 'Bearer ' . $token
-                ])->get('http://192.168.2.102:8001/api/s1/administracion/pacientes', [
+                ])->get("{$url}/api/s1/administracion/pacientes", [
                     'pagina' => $pagina
                 ]);
 
