@@ -20,11 +20,12 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // Insertar en el grupo 'web'
         $middleware->appendToGroup('web', ValidarTokenExterno::class);
+	$middleware->trustProxies(at: '*');
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })
-    ->withCommands([ 
+    ->withCommands([
         DescargarAfiliados::class,
     ])
     ->create();
