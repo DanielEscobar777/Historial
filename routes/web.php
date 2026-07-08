@@ -7,6 +7,7 @@ use App\Http\Controllers\HistorialController;
 use App\Http\Controllers\PdfController;
 use App\Http\Controllers\LoginExternoController;
 use App\Http\Controllers\PacienteController;
+use App\Http\Controllers\KardexController;
 
 require __DIR__.'/evolucion_temp.php';
 require __DIR__.'/evolucion_final.php';
@@ -116,10 +117,9 @@ Route::get('/auditoria/auditoria/{id_historia}', [App\Http\Controllers\Auditoria
 Route::get('/preview-soap/{id_evolucion}', [PdfController::class, 'previewSOAP'])->name('preview.soap');
 
 
-Route::get('/kardex/index', [App\Http\Controllers\kardexController::class, 'index'])->name('kardex.index');
-Route::post('/kardex/consulta', [App\Http\Controllers\kardexController::class, 'consulta'])->name('kardex.consulta');
-Route::get('/kardex/reporte', [App\Http\Controllers\kardexController::class, 'reporte'])->name('kardex.reporte');
-Route::get('/kardex/soap/{id_historia}', [App\Http\Controllers\kardexController::class, 'soap'])->name('kardex.soap');
-
+Route::get('/Kardex/index', [KardexController::class, 'index'])->name('Kardex.index');
+Route::post('/Kardex/consulta', [KardexController::class, 'consulta'])->name('Kardex.consulta');
+Route::get('/Kardex/reporte', [KardexController::class, 'reporte'])->name('Kardex.reporte');
+Route::get('/Kardex/soap/{id_historia}', [KardexController::class, 'soap'])->name('Kardex.soap');
 
 });
