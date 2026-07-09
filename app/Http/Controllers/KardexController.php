@@ -48,7 +48,7 @@ class KardexController extends Controller
             ->whereBetween('h.fecha_registro', [$desde, $hasta])
             ->get();
 
-        return view('Kardex.reporte', compact('datos','paciente','servicio'));
+        return view('kardex.reporte', compact('datos','paciente','servicio'));
     }
 
     public function soap($id_historial)
