@@ -1,3 +1,5 @@
+const apiBaseUrl = import.meta.env.VITE_APP_API_URL || '';
+
 document.addEventListener('DOMContentLoaded', function () {
     const ciInput = document.getElementById('buscar_ci');
     const listaSugerencias = document.getElementById('lista_sugerencias');
@@ -10,8 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
         
-        fetch(`http://192.168.2.132:8000/buscar-paciente?term=${encodeURIComponent(term)}`)
-        //fetch(`/buscar-paciente?term=${encodeURIComponent(term)}`)
+        fetch(`${apiBaseUrl}/buscar-paciente?term=${encodeURIComponent(term)}`)
             .then(res => res.json())
             .then(data => {
                 listaSugerencias.innerHTML = '';

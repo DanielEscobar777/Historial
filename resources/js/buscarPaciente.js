@@ -1,8 +1,10 @@
+const apiBaseUrl = import.meta.env.VITE_APP_API_URL || '';
+
 async function actualizarRecienNacidos() {
     try {
         //const res = await fetch('/pacientes/actualizar-recien-nacidos');
     
-        const res = await fetch('http://192.168.2.132:8000/pacientes/actualizar-recien-nacidos');
+        const res = await fetch(`${apiBaseUrl}/pacientes/actualizar-recien-nacidos`);
         const text = await res.text(); 
 
         console.log("Respuesta cruda:", text);
