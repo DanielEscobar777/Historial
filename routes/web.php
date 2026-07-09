@@ -8,6 +8,10 @@ use App\Http\Controllers\PdfController;
 use App\Http\Controllers\LoginExternoController;
 use App\Http\Controllers\PacienteController;
 use App\Http\Controllers\KardexController;
+use App\Http\Middleware\RolAdministrador;
+
+Route::get('/Kardex/index', [KardexController::class, 'index'])->name('Kardex.index');
+
 
 require __DIR__.'/evolucion_temp.php';
 require __DIR__.'/evolucion_final.php';
@@ -25,6 +29,12 @@ Route::middleware('guest')->group(function () {
 Route::middleware([RolAdministrador::class])->group(function () {
     Route::resource('usuarios', UsuarioController::class);
 });
+Route::middleware(['auth', 'externalauth'])->group(function () {
+    Route::get('/usuarios', [UsuarioController::class, 'index'])->name('usuarios.index');
+});
+Route::middleware(['auth'])->group(function () {
+    Route::get('/usuarios', [UsuarioController::class, 'index'])->name('usuarios.index');
+});
 
 Route::middleware(['auth', 'externalauth'])->group(function () {
         Route::get('/ping-session', function () {
@@ -41,17 +51,17 @@ Route::post('/servicios/store_permisos', [App\Http\Controllers\ServiciosControll
 Route::get('/historial/index', [App\Http\Controllers\HistorialController::class, 'index'])->name('historial.index');
 Route::get('/historial/formulario/{id_servicio}', [App\Http\Controllers\HistorialController::class, 'formulario'])->name('historial.formulario');
 Route::get('/historial/show/{id_servicio}', [App\Http\Controllers\HistorialController::class, 'show'])->name('historial.show');
-Route::get('/historial/edit/{id_historial}', [App\Http\Controllers\HistorialController::class, 'edit'])->name('historial.edit_historial');
+Route::get('/historial/edit/{id_historial}', [App\Http\Controllers\HistorialController::class, 'edit'])->name('historial.edit');
 Route::post('/historial/store', [App\Http\Controllers\HistorialController::class, 'store'])->name('historial.store');
 
-Route::put('/historial/update/{id_historial}', [App\Http\Controllers\HistorialController::class, 'update'])->name('historial.update_historial');
+Route::put('/historial/update/{id_historial}', [App\Http\Controllers\HistorialController::class, 'update'])->name('historial.update');
 
 
 Route::get('/servicios/acceso-areas', function () {
     return view('servicios.acceso_areas');
 })->name('servicios.acceso_areas');
-Route::post('/historial/guardar', [HistorialController::class, 'store'])->name('historial.guardar');
-Route::post('/historial', [HistorialController::class, 'store'])->name('historial.crear');
+Route::post('/historial/guardar', [HistorialController::class, 'store'])->name('historial.store');
+Route::post('/historial', [HistorialController::class, 'store'])->name('historial.store');
 Route::get('/historial/secciones/{id_servicio}', [HistorialController::class, 'editSecciones'])->name('historial.secciones.edit');
 Route::post('/historial/secciones/{id_servicio}', [HistorialController::class, 'updateSecciones'])->name('historial.secciones.update');
 Route::get('/historial/edit/{id_historia}', [HistorialController::class, 'edit'])->name('historial.edit');
@@ -88,6 +98,8 @@ Route::put('/interpretacion/update/{id_interpretacion}', [App\Http\Controllers\I
 Route::put('/historia_enfermedad_actual/update/{id_historia_enfermedad}', [App\Http\Controllers\historia_enfermedad_actualController::class, 'update'])->name('historia_enfermedad_actual.update');
 
 
+Route::resource('usuarios', UsuarioController::class);
+
 Route::get('/generate-pdf/{id_historial}', [PdfController::class, 'generatePdf'])->name('pdf.generatePdf');
 ////////////////////////
 Route::post('/pdf', [App\Http\Controllers\PdfController::class, 'generateSOAP'])->name('pdf.generateSOAP');
@@ -117,9 +129,10 @@ Route::get('/auditoria/auditoria/{id_historia}', [App\Http\Controllers\Auditoria
 Route::get('/preview-soap/{id_evolucion}', [PdfController::class, 'previewSOAP'])->name('preview.soap');
 
 
-Route::get('/Kardex/index', [KardexController::class, 'index'])->name('Kardex.index');
-Route::post('/Kardex/consulta', [KardexController::class, 'consulta'])->name('Kardex.consulta');
-Route::get('/Kardex/reporte', [KardexController::class, 'reporte'])->name('Kardex.reporte');
-Route::get('/Kardex/soap/{id_historia}', [KardexController::class, 'soap'])->name('Kardex.soap');
+Route::get('/Kardex/index', [App\Http\Controllers\KardexController::class, 'index'])->name('Kardex.index');
+Route::post('/Kardex/consulta', [App\Http\Controllers\KardexController::class, 'consulta'])->name('Kardex.consulta');
+Route::get('/Kardex/reporte', [App\Http\Controllers\KardexController::class, 'reporte'])->name('Kardex.reporte');
+Route::get('/Kardex/soap/{id_historia}', [App\Http\Controllers\KardexController::class, 'soap'])->name('Kardex.soap');
+
 
 });
