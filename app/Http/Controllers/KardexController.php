@@ -25,7 +25,7 @@ class KardexController extends Controller
         $pacientes = DB::table('pacientes')
             ->get();
 
-        return view('Kardex.index', compact('servicios','pacientes'));
+        return view('kardex.index', compact('servicios','pacientes'));
     }
 
     public function consulta(Request $request)
