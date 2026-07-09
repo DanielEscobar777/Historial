@@ -8,6 +8,7 @@ use App\Http\Controllers\PdfController;
 use App\Http\Controllers\LoginExternoController;
 use App\Http\Controllers\PacienteController;
 use App\Http\Controllers\KardexController;
+use App\Http\Middleware\RolAdministrador;
 
 require __DIR__.'/evolucion_temp.php';
 require __DIR__.'/evolucion_final.php';
