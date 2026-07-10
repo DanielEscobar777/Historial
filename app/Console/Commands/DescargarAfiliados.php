@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Log;
 class DescargarAfiliados extends Command
 {
     protected $signature = 'afiliados:descargar {token}';
-    protected $description = 'Descarga todos los afiliados paginados y los guarda en un archivo JSON';
+    protected $description = 'Descarga todos los afiliados paginados y los guarda en JSON y NDJSON';
 
     public function handle()
     {
@@ -23,14 +23,26 @@ class DescargarAfiliados extends Command
             }
 
             $pagina = 1;
-            $afiliados = [];
+            $total = 0;
+
+            $jsonPath = storage_path('app/afiliados_cache.json');
+            $ndjsonPath = storage_path('app/afiliados_lineas.ndjson');
+
+            $jsonHandle = fopen($jsonPath, 'w');
+            $ndjsonHandle = fopen($ndjsonPath, 'w');
+
+            if (!$jsonHandle || !$ndjsonHandle) {
+                $this->error('No se pudieron crear los archivos de salida.');
+                return;
+            }
+
+            fwrite($jsonHandle, '[');
+            $first = true;
 
             $this->info('Descargando afiliados desde la API...');
-            
-            $url = env('HOST_SSU');
-            while (true) {
-                
 
+            $url = rtrim(env('HOST_SSU', 'http://localhost'), '/');
+            while (true) {
                 $response = Http::withHeaders([
                     'Authorization' => 'Bearer ' . $token
                 ])->get("{$url}/api/s1/administracion/pacientes", [
@@ -54,16 +66,32 @@ class DescargarAfiliados extends Command
                     break;
                 }
 
-                $afiliados = array_merge($afiliados, $data);
-                $this->info("Página {$pagina} descargada.");
+                foreach ($data as $afiliado) {
+                    $json = json_encode($afiliado);
+
+                    if (!$first) {
+                        fwrite($jsonHandle, ',');
+                    }
+                    fwrite($jsonHandle, $json);
+                    $first = false;
+
+                    fwrite($ndjsonHandle, $json . "\n");
+
+                    $total++;
+                }
+
+                $this->info("Página {$pagina} descargada. Registros hasta ahora: {$total}");
 
                 $pagina++;
-                usleep(500000); // Esperar 0.5 segundos para no saturar la API
+                usleep(500000);
             }
 
-            Storage::put('afiliados_cache.json', json_encode($afiliados));
-            $this->info('Afiliados descargados y guardados exitosamente.');
-            Log::info('Afiliados descargados exitosamente. Total: ' . count($afiliados));
+            fwrite($jsonHandle, ']');
+            fclose($jsonHandle);
+            fclose($ndjsonHandle);
+
+            $this->info("Afiliados descargados exitosamente. Total: {$total}");
+            Log::info("Afiliados descargados exitosamente. Total: {$total}");
         } catch (\Throwable $e) {
             Log::error('Error en comando afiliados: ' . $e->getMessage());
             $this->error('Ocurrió un error. Revisa el log.');
