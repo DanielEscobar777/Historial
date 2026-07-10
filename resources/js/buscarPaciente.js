@@ -1,11 +1,7 @@
-const apiBaseUrl = import.meta.env.VITE_APP_API_URL || '';
-
 async function actualizarRecienNacidos() {
     try {
-        //const res = await fetch('/pacientes/actualizar-recien-nacidos');
-    
-        const res = await fetch(`${apiBaseUrl}/pacientes/actualizar-recien-nacidos`);
-        const text = await res.text(); 
+        const res = await fetch('/pacientes/actualizar-recien-nacidos');
+        const text = await res.text(); // leer como texto primero
 
         console.log("Respuesta cruda:", text);
         let data;
