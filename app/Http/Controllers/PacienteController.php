@@ -4,17 +4,13 @@ namespace App\Http\Controllers;
 
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
 class PacienteController extends Controller
 {
-    protected $cacheKeyPrefix = 'afiliados_cache_';
-    protected $cacheTTL = 3600; // 1 hora
+    protected $ndjsonPath = 'app/afiliados_lineas.ndjson';
 
     // ✅ Método principal para actualizar RN desde API
 public function actualizarRecienNacidosDesdeApi() 
@@ -74,30 +70,23 @@ public function actualizarRecienNacidosDesdeApi()
 
         Log::info("Recién nacidos sin conflicto: " . $recienNacidosSinConflicto->count());
 
-        // 5. Obtener todos los afiliados externos
-        $afiliados = $this->obtenerTodosLosAfiliados();
-
-        if (is_array($afiliados) && isset($afiliados['error'])) {
-            Log::warning("⚠️ Error al obtener afiliados: " . $afiliados['error']);
-            return response()->json($afiliados, 500);
-        }
-
-        Log::info("📂 Afiliados cargados: " . count($afiliados));
-
-        // 6. Procesar cada RN sin conflicto
+        // 5. Procesar cada RN sin conflicto
         foreach ($recienNacidosSinConflicto as $paciente) {
             $fechaNac = Carbon::parse($paciente->fecha_recien_necido)->toDateString();
             $nombreRN = $paciente->nombre_recien_necido;
 
-            // Buscar coincidencias en afiliados con nombre y fecha
-            $matches = collect($afiliados)->where('fecha_nacimiento', $fechaNac);
+            // Buscar coincidencias en afiliados con fecha (streaming)
+            $matches = $this->buscarAfiliadosPorFecha($fechaNac);
 
-            Log::info("🔍 Buscando coincidencias para RN '{$nombreRN}' con fecha {$fechaNac}: " . $matches->count());
+            Log::info("🔍 Buscando coincidencias para RN '{$nombreRN}' con fecha {$fechaNac}: " . count($matches));
 
-            if ($matches->count() === 1) {
-                $match = $matches->first();
+            if (count($matches) === 1) {
+                $match = $matches[0];
 
                 // Crear nuevo paciente con datos del afiliado
+                Log::info('PASO 4: intentando insertar paciente', [
+    'datos' => $match
+]);
                 $nuevoId = DB::table('pacientes')->insertGetId([
                     'nombres' => $match['nombres'],
                     'p_apellido' => $match['p_apellido'],
@@ -130,8 +119,8 @@ public function actualizarRecienNacidosDesdeApi()
 
                 Log::info("🆕 Paciente creado con ID {$nuevoId} desde historial ID {$paciente->id_historia}");
 
-            } elseif ($matches->count() > 1) {
-                $nombresCoincidentes = $matches->pluck('nombres')->implode(', ');
+            } elseif (count($matches) > 1) {
+                $nombresCoincidentes = implode(', ', array_column($matches, 'nombres'));
                 $resultados[] = [
                     'tipo' => 'conflicto_api',
                     'paciente' => $nombreRN,
@@ -161,7 +150,6 @@ public function actualizarRecienNacidosDesdeApi()
     // ✅ Método para buscar coincidencias RN vs API
     public function buscarRecienNacidos()
     {
-        Log::info('Recien naccidos');
         try {
             $recienNacidos = DB::table('pacientes')
                 ->where('nombres', 'LIKE', 'RN_%')
@@ -173,22 +161,16 @@ public function actualizarRecienNacidosDesdeApi()
                 return response()->json(['mensaje' => 'No se encontraron recién nacidos en la base de datos.']);
             }
 
-            $afiliados = $this->obtenerTodosLosAfiliados();
-
-            if (is_array($afiliados) && isset($afiliados['error'])) {
-                return response()->json($afiliados, 500);
-            }
-
             $resultados = [];
 
             foreach ($recienNacidos as $paciente) {
                 $fechaNac = Carbon::parse($paciente->fecha_nacimiento)->toDateString();
-                $encontrado = collect($afiliados)->firstWhere('fecha_nacimiento', $fechaNac);
+                $encontrado = $this->buscarAfiliadosPorFecha($fechaNac);
 
                 $resultados[] = [
                     'paciente_local' => $paciente,
                     'fecha_nacimiento' => $fechaNac,
-                    'encontrado_api' => $encontrado ? true : false
+                    'encontrado_api' => count($encontrado) > 0
                 ];
             }
 
@@ -204,8 +186,6 @@ public function actualizarRecienNacidosDesdeApi()
     // ✅ Método para buscar afiliados por CI
     public function buscarPorCI(Request $request)
     {
-        Log::info('Usuario autenticado:', ['user' => Auth::user()]);
-   
         if (!$request->filled('term')) {
             return response()->json([]);
         }
@@ -217,30 +197,13 @@ public function actualizarRecienNacidosDesdeApi()
         }
 
         try {
-            $user = Auth::user();
-            $cacheKey = $this->cacheKeyPrefix . $user->id;
-
-            $usuarios = Cache::get($cacheKey);
-
-            if (!$usuarios) {
-                Log::info("⏳ Cache vacío para user ID: {$user->id}, leyendo desde archivo...");
-                $usuarios = $this->obtenerTodosLosAfiliados();
-
-                if (is_array($usuarios) && isset($usuarios['error'])) {
-                    return response()->json($usuarios, 500);
-                }
-
-                Cache::put($cacheKey, $usuarios, $this->cacheTTL);
-            }
-
             Log::info("🔍 Buscando CI: {$term}");
 
-            $resultados = collect($usuarios)
-                ->filter(function ($usuario) use ($term) {
-                    return stripos((string)$usuario['ci'], $term) !== false;
-                })
-                ->take(50)
-                ->values();
+            $resultados = $this->buscarAfiliadosPorCI($term, 50);
+
+            if (is_array($resultados) && isset($resultados['error'])) {
+                return response()->json($resultados, 500);
+            }
 
             Log::info("🎯 Resultados encontrados: " . count($resultados));
 
@@ -251,37 +214,180 @@ public function actualizarRecienNacidosDesdeApi()
         }
     }
 
-    // ✅ Método para obtener afiliados desde el archivo cache
+    public function ensureNdjsonExists()
+    {
+        $ndjsonPath = storage_path($this->ndjsonPath);
+        if (file_exists($ndjsonPath) && filesize($ndjsonPath) > 0) {
+            return true;
+        }
+
+        $jsonPath = storage_path('app/afiliados_cache.json');
+        if (!file_exists($jsonPath)) {
+            return false;
+        }
+
+        return $this->convertirJsonANdjson($jsonPath, $ndjsonPath);
+    }
+
+    private function convertirJsonANdjson($jsonPath, $ndjsonPath)
+    {
+        $memoriaNecesaria = filesize($jsonPath) * 1.5;
+        $memoriaLimit = ini_get('memory_limit');
+        if ($memoriaLimit !== '-1') {
+            $memoriaActual = $this->return_bytes($memoriaLimit);
+            if ($memoriaNecesaria > $memoriaActual) {
+                ini_set('memory_limit', (int)($memoriaNecesaria / 1024 / 1024 + 64) . 'M');
+            }
+        }
+
+        $content = file_get_contents($jsonPath);
+        if ($content === false) {
+            Log::error('No se pudo leer afiliados_cache.json para conversión NDJSON');
+            return false;
+        }
+
+        $content = ltrim($content);
+        if (isset($content[0]) && $content[0] === '[') {
+            $content = substr($content, 1);
+        }
+        $content = rtrim($content);
+        if (substr($content, -1) === ']') {
+            $content = substr($content, 0, -1);
+        }
+
+        $outHandle = fopen($ndjsonPath, 'w');
+        if (!$outHandle) return false;
+
+        $count = 0;
+        $len = strlen($content);
+        $depth = 0;
+        $start = 0;
+        $inString = false;
+        $escape = false;
+
+        for ($i = 0; $i < $len; $i++) {
+            $char = $content[$i];
+            if ($escape) { $escape = false; continue; }
+            if ($char === '\\' && $inString) { $escape = true; continue; }
+            if ($char === '"') { $inString = !$inString; continue; }
+            if ($inString) continue;
+
+            if ($char === '{') {
+                if ($depth === 0) $start = $i;
+                $depth++;
+            } elseif ($char === '}') {
+                $depth--;
+                if ($depth === 0) {
+                    fwrite($outHandle, substr($content, $start, $i - $start + 1) . "\n");
+                    $count++;
+                }
+            }
+        }
+
+        fclose($outHandle);
+        unset($content);
+
+        Log::info("Archivo NDJSON generado. Total registros: {$count}");
+        return $count > 0;
+    }
+
+    // ✅ Streaming: buscar por CI sin cargar todo en memoria
+    protected function buscarAfiliadosPorCI($term, $limit = 50)
+    {
+        $this->ensureNdjsonExists();
+        $path = storage_path($this->ndjsonPath);
+
+        if (!file_exists($path)) {
+            return ['error' => 'El archivo de afiliados aún no ha sido generado.'];
+        }
+
+        $handle = fopen($path, 'r');
+        if (!$handle) {
+            return ['error' => 'No se pudo abrir el archivo de afiliados.'];
+        }
+
+        $resultados = [];
+        while (($line = fgets($handle)) !== false) {
+            $line = trim($line);
+            if ($line === '') continue;
+            $afiliado = json_decode($line, true);
+            if ($afiliado && stripos((string)($afiliado['ci'] ?? ''), $term) !== false) {
+                $resultados[] = $afiliado;
+                if (count($resultados) >= $limit) break;
+            }
+        }
+
+        fclose($handle);
+        return $resultados;
+    }
+
+    // ✅ Streaming: buscar por fecha_nacimiento (para RN)
+    protected function buscarAfiliadosPorFecha($fechaNac)
+    {
+        $this->ensureNdjsonExists();
+        $path = storage_path($this->ndjsonPath);
+
+        if (!file_exists($path)) {
+            return ['error' => 'El archivo de afiliados aún no ha sido generado.'];
+        }
+
+        $handle = fopen($path, 'r');
+        if (!$handle) {
+            return ['error' => 'No se pudo abrir el archivo de afiliados.'];
+        }
+
+        $matches = [];
+        while (($line = fgets($handle)) !== false) {
+            $line = trim($line);
+            if ($line === '') continue;
+            $afiliado = json_decode($line, true);
+            if ($afiliado && ($afiliado['fecha_nacimiento'] ?? '') === $fechaNac) {
+                $matches[] = $afiliado;
+            }
+        }
+
+        fclose($handle);
+        return $matches;
+    }
+
+    // ✅ Streaming: obtener todos los afiliados (solo cuando es estrictamente necesario)
     protected function obtenerTodosLosAfiliados()
     {
-        try {
-            $cachePath = storage_path('app/afiliados_cache.json');
+        $path = storage_path($this->ndjsonPath);
 
-            if (!file_exists($cachePath)) {
-                Log::warning("⚠️ El archivo no existe: {$cachePath}");
-                return ['error' => 'El archivo de afiliados aún no ha sido generado.'];
-            }
-
-           
-            $contenido = file_get_contents($cachePath);
-            $afiliados = json_decode($contenido, true);
-
-            // ✅ Validación de JSON
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                Log::error('❌ Error de JSON: ' . json_last_error_msg());
-                return ['error' => 'Error de formato JSON: ' . json_last_error_msg()];
-            }
-
-            if (!is_array($afiliados)) {
-                Log::error('❌ El JSON no es un array válido.');
-                return ['error' => 'El formato del archivo de afiliados es inválido.'];
-            }
-
-            Log::info('✅ Archivo de afiliados leído con éxito. Total: ' . count($afiliados));
-            return $afiliados;
-        } catch (\Throwable $e) {
-            Log::error('❌ Error al leer afiliados_cache.json: ' . $e->getMessage());
-            return ['error' => 'Error interno al leer el archivo de afiliados.'];
+        if (!file_exists($path)) {
+            return ['error' => 'El archivo de afiliados aún no ha sido generado.'];
         }
+
+        $handle = fopen($path, 'r');
+        if (!$handle) {
+            return ['error' => 'No se pudo abrir el archivo de afiliados.'];
+        }
+
+        $afiliados = [];
+        while (($line = fgets($handle)) !== false) {
+            $line = trim($line);
+            if ($line === '') continue;
+            $afiliado = json_decode($line, true);
+            if ($afiliado) {
+                $afiliados[] = $afiliado;
+            }
+        }
+
+        fclose($handle);
+        return $afiliados;
+    }
+
+    private function return_bytes($val)
+    {
+        $val = trim($val);
+        $last = strtolower($val[strlen($val) - 1]);
+        $val = (int) $val;
+        switch ($last) {
+            case 'g': $val *= 1024;
+            case 'm': $val *= 1024;
+            case 'k': $val *= 1024;
+        }
+        return $val;
     }
 }
