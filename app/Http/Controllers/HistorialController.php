@@ -638,15 +638,7 @@ class HistorialController extends Controller
         $nombre_usuario = $matches[7];
 
 
-            $afiliados = $this->obtenerTodosLosAfiliados();
-
-        if (is_array($afiliados) && empty($afiliados['error'])) {
-            $usuarios_encontrados = array_filter($afiliados, function ($usuario) use ($fecha_nacimiento) {
-                return isset($usuario['fecha_nacimiento']) && $usuario['fecha_nacimiento'] === $fecha_nacimiento;
-            });
-
-            $usuarios_encontrados = array_values($usuarios_encontrados); // Reindexar
-        }
+            $usuarios_encontrados = $this->buscarAfiliadosPorFecha($fecha_nacimiento);
 
     }
 
@@ -810,35 +802,39 @@ public function update(Request $request, $id_historial)
     return redirect()->back()->with('success', 'Historia actualizada correctamente.');
 }
 
-protected function obtenerTodosLosAfiliados()
+protected function buscarAfiliadosPorFecha($fechaNac)
 {
-    try {
-        $cachePath = storage_path('app/afiliados_cache.json');
+    $ndjsonPath = storage_path('app/afiliados_lineas.ndjson');
 
-        if (!file_exists($cachePath)) {
-            \Log::warning("⚠️ El archivo no existe: {$cachePath}");
-            return ['error' => 'El archivo de afiliados aún no ha sido generado.'];
+    if (!file_exists($ndjsonPath) || filesize($ndjsonPath) === 0) {
+        $jsonPath = storage_path('app/afiliados_cache.json');
+        if (file_exists($jsonPath)) {
+            $pc = new \App\Http\Controllers\PacienteController();
+            $pc->ensureNdjsonExists();
         }
-
-        $contenido = file_get_contents($cachePath);
-        $afiliados = json_decode($contenido, true);
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            \Log::error('❌ Error de JSON: ' . json_last_error_msg());
-            return ['error' => 'Error de formato JSON: ' . json_last_error_msg()];
-        }
-
-        if (!is_array($afiliados)) {
-            \Log::error('❌ El JSON no es un array válido.');
-            return ['error' => 'El formato del archivo de afiliados es inválido.'];
-        }
-
-        \Log::info('✅ Archivo de afiliados leído con éxito. Total: ' . count($afiliados));
-        return $afiliados;
-    } catch (\Throwable $e) {
-        \Log::error('❌ Error al leer afiliados_cache.json: ' . $e->getMessage());
-        return ['error' => 'Error interno al leer el archivo de afiliados.'];
     }
+
+    if (!file_exists($ndjsonPath)) {
+        return [];
+    }
+
+    $handle = fopen($ndjsonPath, 'r');
+    if (!$handle) {
+        return [];
+    }
+
+    $matches = [];
+    while (($line = fgets($handle)) !== false) {
+        $line = trim($line);
+        if ($line === '') continue;
+        $afiliado = json_decode($line, true);
+        if ($afiliado && ($afiliado['fecha_nacimiento'] ?? '') === $fechaNac) {
+            $matches[] = $afiliado;
+        }
+    }
+
+    fclose($handle);
+    return $matches;
 }
 
 }
