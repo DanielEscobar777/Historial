@@ -28,6 +28,7 @@ export default defineConfig(({ mode }) => {
                     'resources/js/app.js',
                     'resources/js/buscarPaciente.js',
                     'resources/js/boton.js',
+                    'resources/js/formulario.js',
                 ],
                 refresh: true,
             }),
