@@ -38,7 +38,7 @@ use App\Models\Interpretacion_laboratorios;
 use App\Models\HistorialSection;
 use App\Models\EspecialidadSection;
 use App\Models\Examen_fisico_general;
-use App\Models\historia_enfermedad_actual;
+use App\Models\Historia_enfermedad_actual;
 use App\Models\Permisos_historia;
 use App\Models\Servicios;
 use Illuminate\Support\Facades\DB;
@@ -600,7 +600,7 @@ class HistorialController extends Controller
     $Antecedentes_gineco_obsteticos = Antecedentes_gineco_obstetricos::where('id_historial', $id_historial)->first();
     $Anamnesis_sistema = Anamnesis_sistemas::where('id_historial', $id_historial)->first();
     $Motivo_de_internacion = Motivo_de_internacion::where('id_historial', $id_historial)->first();
-    $historia_enfermedad_actual = historia_enfermedad_actual::where('id_historial', $id_historial)->first();
+    $historia_enfermedad_actual = Historia_enfermedad_actual::where('id_historial', $id_historial)->first();
     $Examen_fisico_general = Examen_fisico_general::where('id_historial', $id_historial)->first();
     $examen_obstetrico = Examen_obstetrico::where('id_historial', $id_historial)->first();
     $examen_ginecologico = Examen_ginecologico::where('id_historial', $id_historial)->first();

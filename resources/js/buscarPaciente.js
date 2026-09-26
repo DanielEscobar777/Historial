@@ -23,11 +23,12 @@ async function actualizarRecienNacidos() {
                 let title = 'Información del paciente';
 
                 switch (tipo) {
-                    case 'exito':
+                    case 'creado':
                         icon = 'success';
-                        title = 'Actualización completada';
+                        title = 'Paciente actualizado';
                         break;
-                    case 'conflicto':
+                    case 'conflicto_api':
+                    case 'conflicto_bd':
                         icon = 'warning';
                         title = 'Coincidencia múltiple';
                         break;
@@ -57,8 +58,11 @@ async function actualizarRecienNacidos() {
         } else if (typeof data === 'object' && data !== null) {
             // Manejo de respuesta con error o mensaje
             const mensaje = data.mensaje || data.error || 'Respuesta inesperada del servidor.';
+            const estaSincronizando = data.estado === 'sincronizando';
             const icon = data.error ? 'error' : 'info';
-            const title = data.error ? 'Error' : 'Aviso';
+            const title = estaSincronizando
+                ? 'Datos de pacientes en actualización'
+                : (data.error ? 'No se pudo completar la actualización' : 'Aviso');
 
             Swal.fire({
                 title: title,
@@ -85,8 +89,8 @@ async function actualizarRecienNacidos() {
     } catch (err) {
         console.error('Error al actualizar los pacientes recién nacidos:', err);
         Swal.fire({
-            title: 'Error inesperado',
-            text: err.message || 'Ocurrió un problema. Revisa la consola o el log del servidor.',
+            title: 'No se pudo consultar a los pacientes',
+            text: 'No fue posible comunicarse con el servidor. Intente nuevamente en unos minutos.',
             icon: 'error',         
             showCloseButton: true,
             confirmButtonText: 'Cerrar',
@@ -103,7 +107,6 @@ document.addEventListener('DOMContentLoaded', () => {
         yaActualizado = true;
     }
 });
-
 
 
 

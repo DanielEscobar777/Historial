@@ -78,6 +78,19 @@ public function actualizarRecienNacidosDesdeApi()
             // Buscar coincidencias en afiliados con fecha (streaming)
             $matches = $this->buscarAfiliadosPorFecha($fechaNac);
 
+            if (isset($matches['error'])) {
+                Log::warning('La actualización de recién nacidos esperó la sincronización de afiliados.', [
+                    'paciente' => $nombreRN,
+                    'fecha_nacimiento' => $fechaNac,
+                    'motivo' => $matches['error'],
+                ]);
+
+                return response()->json([
+                    'estado' => 'sincronizando',
+                    'mensaje' => 'Los datos de afiliados se están descargando. Este proceso comienza al iniciar sesión y puede tardar unos minutos. Intente nuevamente cuando finalice la sincronización.',
+                ], 202);
+            }
+
             Log::info("🔍 Buscando coincidencias para RN '{$nombreRN}' con fecha {$fechaNac}: " . count($matches));
 
             if (count($matches) === 1) {
@@ -139,7 +152,9 @@ public function actualizarRecienNacidosDesdeApi()
 
     } catch (\Throwable $e) {
         Log::error('❌ Error en actualizarRecienNacidosDesdeApi: ' . $e->getMessage());
-        return response()->json(['error' => 'Error interno. Revisa el log.'], 500);
+        return response()->json([
+            'error' => 'No fue posible actualizar los recién nacidos en este momento. Intente nuevamente más tarde.',
+        ], 500);
     }
 }
 
@@ -166,6 +181,13 @@ public function actualizarRecienNacidosDesdeApi()
             foreach ($recienNacidos as $paciente) {
                 $fechaNac = Carbon::parse($paciente->fecha_nacimiento)->toDateString();
                 $encontrado = $this->buscarAfiliadosPorFecha($fechaNac);
+
+                if (isset($encontrado['error'])) {
+                    return response()->json([
+                        'estado' => 'sincronizando',
+                        'mensaje' => 'Los datos de afiliados todavía se están descargando. Intente nuevamente en unos minutos.',
+                    ], 202);
+                }
 
                 $resultados[] = [
                     'paciente_local' => $paciente,

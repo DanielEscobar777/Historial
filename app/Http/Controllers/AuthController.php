@@ -145,11 +145,9 @@ class AuthController extends Controller
         // Ejecutar descarga en segundo plano (Linux)
         if ($this->puedeActualizarAfiliados()) {
             try {
-                $tokenEscapado = escapeshellarg($accessToken);
-                $cmd = "php " . base_path('artisan') . " afiliados:descargar {$tokenEscapado} > /dev/null 2>&1 &";
-                exec($cmd);
+                $this->iniciarDescargaAfiliados($accessToken);
                 $this->registrarActualizacionAfiliados();
-                Log::info('Afiliados actualizados en background para usuario ID: ' . $user->id);
+                Log::info('Se solicitó la descarga de afiliados en segundo plano para el usuario ID: ' . $user->id);
             } catch (\Throwable $e) {
                 Log::error('Error lanzando comando afiliados en background: ' . $e->getMessage());
             }
@@ -158,6 +156,47 @@ class AuthController extends Controller
         }
 
         return to_route('welcome');
+    }
+
+    private function iniciarDescargaAfiliados(string $accessToken): void
+    {
+        if (PHP_OS_FAMILY === 'Windows') {
+            $quotePowerShell = static function (string $value): string {
+                return "'" . str_replace("'", "''", $value) . "'";
+            };
+
+            $script = sprintf(
+                'Start-Process -FilePath %s -WorkingDirectory %s -ArgumentList @(%s,%s,%s) -WindowStyle Hidden',
+                $quotePowerShell(PHP_BINARY),
+                $quotePowerShell(base_path()),
+                $quotePowerShell('artisan'),
+                $quotePowerShell('afiliados:descargar'),
+                $quotePowerShell($accessToken)
+            );
+            $encodedScript = base64_encode(iconv('UTF-8', 'UTF-16LE', $script));
+            $command = 'powershell.exe -NoProfile -NonInteractive -EncodedCommand ' . escapeshellarg($encodedScript);
+            exec($command, $output, $exitCode);
+
+            if ($exitCode !== 0) {
+                throw new \RuntimeException("No se pudo iniciar la descarga de afiliados (código {$exitCode}).");
+            }
+
+            return;
+        }
+
+        $php = escapeshellarg(PHP_BINARY);
+        $artisan = escapeshellarg(base_path('artisan'));
+        $token = escapeshellarg($accessToken);
+        $command = "{$php} {$artisan} afiliados:descargar {$token} > /dev/null 2>&1 & echo $!";
+        $processId = trim((string) shell_exec($command));
+
+        if ($processId === '' || !ctype_digit($processId)) {
+            throw new \RuntimeException('No se pudo obtener el identificador del proceso de descarga de afiliados.');
+        }
+
+        Log::info('Proceso de descarga de afiliados iniciado.', [
+            'pid' => (int) $processId,
+        ]);
     }
 
     public function welcome()
