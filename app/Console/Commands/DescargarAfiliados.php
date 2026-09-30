@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use RuntimeException;
@@ -12,7 +13,7 @@ use Throwable;
 class DescargarAfiliados extends Command
 {
     protected $signature = 'afiliados:descargar {token}';
-    protected $description = 'Descarga todos los afiliados paginados y los guarda en JSON y NDJSON';
+    protected $description = 'Busca diariamente candidatos para los recién nacidos pendientes';
 
     private const LOCK_SECONDS = 3600;
     private const MAX_PAGES = 10000;
@@ -44,8 +45,8 @@ class DescargarAfiliados extends Command
             $storageDirectory = storage_path('app');
             $this->purgeLegacyCacheOnce($storageDirectory);
 
-            $jsonPath = $storageDirectory . DIRECTORY_SEPARATOR . 'afiliados_cache.json';
-            $ndjsonPath = $storageDirectory . DIRECTORY_SEPARATOR . 'afiliados_lineas.ndjson';
+            $jsonPath = $storageDirectory . DIRECTORY_SEPARATOR . 'recien_nacidos_candidatos.json';
+            $ndjsonPath = $storageDirectory . DIRECTORY_SEPARATOR . 'recien_nacidos_candidatos.ndjson';
             $runId = bin2hex(random_bytes(8));
             $jsonTempPath = $jsonPath . ".{$runId}.tmp";
             $ndjsonTempPath = $ndjsonPath . ".{$runId}.tmp";
@@ -59,16 +60,34 @@ class DescargarAfiliados extends Command
 
             fwrite($jsonHandle, '[');
 
+            $fechasPendientes = DB::table('historials')
+                ->where('id_paciente', 0)
+                ->whereNotNull('fecha_recien_necido')
+                ->pluck('fecha_recien_necido')
+                ->map(static fn ($fecha) => substr((string) $fecha, 0, 10))
+                ->filter()
+                ->unique()
+                ->flip()
+                ->all();
+
             $page = 1;
-            $total = 0;
+            $totalRevisados = 0;
+            $totalCandidatos = 0;
             $firstRecord = true;
             $pageHashes = [];
             $url = rtrim(env('HOST_SSU', 'http://localhost'), '/');
 
-            $this->info('Descargando afiliados desde la API...');
-            Log::info('Inició la descarga de afiliados desde la API.');
+            if ($fechasPendientes === []) {
+                $this->info('No existen recién nacidos pendientes de sincronización.');
+                Log::info('No existen recién nacidos pendientes de sincronización.');
+            } else {
+                $this->info('Buscando candidatos para recién nacidos desde la API...');
+                Log::info('Inició la búsqueda diaria de candidatos para recién nacidos.', [
+                    'fechas_pendientes' => count($fechasPendientes),
+                ]);
+            }
 
-            while ($page <= self::MAX_PAGES) {
+            while ($fechasPendientes !== [] && $page <= self::MAX_PAGES) {
                 $response = $this->requestPage($url, $token, $page);
 
                 if (!$response->ok()) {
@@ -99,6 +118,13 @@ class DescargarAfiliados extends Command
                 $pageHashes[$pageHash] = $page;
 
                 foreach ($data as $afiliado) {
+                    $totalRevisados++;
+                    $fechaNacimiento = substr((string) ($afiliado['fecha_nacimiento'] ?? ''), 0, 10);
+
+                    if (!isset($fechasPendientes[$fechaNacimiento])) {
+                        continue;
+                    }
+
                     $json = json_encode($afiliado, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
                     if ($json === false) {
@@ -112,10 +138,10 @@ class DescargarAfiliados extends Command
                     fwrite($jsonHandle, $json);
                     fwrite($ndjsonHandle, $json . PHP_EOL);
                     $firstRecord = false;
-                    $total++;
+                    $totalCandidatos++;
                 }
 
-                $this->info("Página {$page} descargada. Registros hasta ahora: {$total}");
+                $this->info("Página {$page} revisada. Candidatos encontrados: {$totalCandidatos}");
                 $page++;
                 usleep(500000);
             }
@@ -137,9 +163,18 @@ class DescargarAfiliados extends Command
             $this->replaceFile($ndjsonTempPath, $ndjsonPath);
             $ndjsonTempPath = null;
 
-            $this->info("Afiliados descargados exitosamente. Total: {$total}");
-            Log::info('Afiliados descargados exitosamente.', [
-                'total' => $total,
+            if (file_put_contents(
+                storage_path('app/ultima_actualizacion_afiliados.txt'),
+                time(),
+                LOCK_EX
+            ) === false) {
+                throw new RuntimeException('No se pudo registrar la fecha de la sincronización diaria.');
+            }
+
+            $this->info("Sincronización de recién nacidos finalizada. Candidatos: {$totalCandidatos}");
+            Log::info('Sincronización diaria de recién nacidos finalizada.', [
+                'registros_revisados' => $totalRevisados,
+                'candidatos_guardados' => $totalCandidatos,
                 'ultima_pagina_con_datos' => $page - 1,
             ]);
 
@@ -207,7 +242,7 @@ class DescargarAfiliados extends Command
 
     private function purgeLegacyCacheOnce(string $storageDirectory): void
     {
-        $markerPath = $storageDirectory . DIRECTORY_SEPARATOR . 'afiliados_cache_cleanup_v1.done';
+        $markerPath = $storageDirectory . DIRECTORY_SEPARATOR . 'afiliados_cache_cleanup_v2.done';
 
         if (file_exists($markerPath)) {
             return;

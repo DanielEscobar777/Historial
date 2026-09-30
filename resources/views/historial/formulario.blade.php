@@ -23,10 +23,20 @@
                 @csrf
                 <div class="row">
                     @if ($n_ser->nombre_servicio!='NEONATOLOGIA')
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label><b>Buscar por C.I.</b></label>
                         <input type="text" id="buscar_ci" class="form-control" placeholder="Ingrese CI del paciente" autocomplete="off">
-                        <div id="lista_sugerencias" class="list-group" style="position: absolute; z-index: 1000;"></div>
+                        <small class="text-muted">Ingrese el C.I. completo y presione Buscar.</small>
+                        <div id="lista_sugerencias" class="list-group" aria-live="polite" style="position: absolute; z-index: 1000; width: 100%;"></div>
+                    </div>
+                    <div class="col-md-2">
+                        <label><b>Complemento</b></label>
+                        <input type="text" id="buscar_complemento" class="form-control" placeholder="Ej. 1A" autocomplete="off">
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="button" id="buscar_paciente_btn" class="btn btn-primary w-100">
+                            <i class="fa fa-search"></i> Buscar
+                        </button>
                     </div>
 
                     <input type="hidden" class="form-control" value="{{ old('nombres') }}" name="nombres">

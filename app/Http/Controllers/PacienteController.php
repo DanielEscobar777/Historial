@@ -4,13 +4,15 @@ namespace App\Http\Controllers;
 
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
 class PacienteController extends Controller
 {
-    protected $ndjsonPath = 'app/afiliados_lineas.ndjson';
+    protected $ndjsonPath = 'app/recien_nacidos_candidatos.ndjson';
 
     // ✅ Método principal para actualizar RN desde API
 public function actualizarRecienNacidosDesdeApi() 
@@ -205,35 +207,95 @@ public function actualizarRecienNacidosDesdeApi()
         }
     }
 
-    // ✅ Método para buscar afiliados por CI
+    // Buscar pacientes normales directamente en el servicio externo.
     public function buscarPorCI(Request $request)
     {
-        if (!$request->filled('term')) {
-            return response()->json([]);
-        }
+        $term = trim((string) $request->input('term', ''));
+        $complemento = trim((string) $request->input('complemento', ''));
 
-        $term = trim($request->input('term'));
-
-        if ($term === '') {
+        if ($term === '' || !preg_match('/^[A-Za-z0-9-]{3,20}$/', $term)) {
             return response()->json([]);
         }
 
         try {
-            Log::info("🔍 Buscando CI: {$term}");
+            $tokenPath = storage_path('app/token_sesion_' . Auth::id() . '.json');
 
-            $resultados = $this->buscarAfiliadosPorCI($term, 50);
-
-            if (is_array($resultados) && isset($resultados['error'])) {
-                return response()->json($resultados, 500);
+            if (!file_exists($tokenPath)) {
+                return response()->json([
+                    'error' => 'La sesión del servicio de pacientes no está disponible. Inicie sesión nuevamente.',
+                ], 401);
             }
 
-            Log::info("🎯 Resultados encontrados: " . count($resultados));
+            $tokenData = json_decode((string) file_get_contents($tokenPath), true);
+            $token = $tokenData['access_token'] ?? null;
 
+            if (!$token) {
+                return response()->json([
+                    'error' => 'La sesión del servicio de pacientes es inválida. Inicie sesión nuevamente.',
+                ], 401);
+            }
+
+            $url = rtrim(env('HOST_SSU', 'http://localhost'), '/');
+            $response = Http::withToken($token)
+                ->acceptJson()
+                ->connectTimeout(5)
+                ->timeout(15)
+                ->withBody(json_encode([
+                    'ci' => $term,
+                    'complemento' => $complemento,
+                ]), 'application/json')
+                ->get("{$url}/api/s1/administracion/buscar_pacientes");
+
+            if ($response->status() === 404) {
+                return response()->json([]);
+            }
+
+            if (!$response->ok()) {
+                Log::warning('El servicio externo no pudo buscar al paciente.', [
+                    'status' => $response->status(),
+                    'ci' => $term,
+                ]);
+
+                return response()->json([
+                    'error' => 'El servicio de pacientes no está disponible en este momento. Intente nuevamente.',
+                ], 502);
+            }
+
+            $resultados = $this->normalizarRespuestaPacientes($response->json());
+            Log::info("🎯 Resultados encontrados: " . count($resultados));
             return response()->json($resultados);
         } catch (\Throwable $e) {
             Log::error('❌ Error en buscarPorCI: ' . $e->getMessage());
-            return response()->json(['error' => 'Error interno. Revisa el log.'], 500);
+            return response()->json([
+                'error' => 'No fue posible consultar el servicio de pacientes. Intente nuevamente.',
+            ], 502);
         }
+    }
+
+    private function normalizarRespuestaPacientes($payload): array
+    {
+        if (!is_array($payload)) {
+            return [];
+        }
+
+        foreach (['data', 'pacientes', 'resultados', 'paciente'] as $key) {
+            if (array_key_exists($key, $payload)) {
+                $payload = $payload[$key];
+                break;
+            }
+        }
+
+        if (!is_array($payload) || $payload === []) {
+            return [];
+        }
+
+        if (isset($payload['ci'])) {
+            return [$payload];
+        }
+
+        return array_values(array_filter($payload, static function ($paciente) {
+            return is_array($paciente) && isset($paciente['ci']);
+        }));
     }
 
     public function ensureNdjsonExists()
@@ -243,7 +305,7 @@ public function actualizarRecienNacidosDesdeApi()
             return true;
         }
 
-        $jsonPath = storage_path('app/afiliados_cache.json');
+        $jsonPath = storage_path('app/recien_nacidos_candidatos.json');
         if (!file_exists($jsonPath)) {
             return false;
         }
@@ -264,7 +326,7 @@ public function actualizarRecienNacidosDesdeApi()
 
         $content = file_get_contents($jsonPath);
         if ($content === false) {
-            Log::error('No se pudo leer afiliados_cache.json para conversión NDJSON');
+            Log::error('No se pudo leer recien_nacidos_candidatos.json para conversión NDJSON');
             return false;
         }
 

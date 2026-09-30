@@ -804,10 +804,10 @@ public function update(Request $request, $id_historial)
 
 protected function buscarAfiliadosPorFecha($fechaNac)
 {
-    $ndjsonPath = storage_path('app/afiliados_lineas.ndjson');
+    $ndjsonPath = storage_path('app/recien_nacidos_candidatos.ndjson');
 
     if (!file_exists($ndjsonPath) || filesize($ndjsonPath) === 0) {
-        $jsonPath = storage_path('app/afiliados_cache.json');
+        $jsonPath = storage_path('app/recien_nacidos_candidatos.json');
         if (file_exists($jsonPath)) {
             $pc = new \App\Http\Controllers\PacienteController();
             $pc->ensureNdjsonExists();

@@ -36,6 +36,10 @@ class AuthController extends Controller
 
     private function puedeActualizarAfiliados()
     {
+        if (!file_exists(storage_path('app/afiliados_cache_cleanup_v2.done'))) {
+            return true;
+        }
+
         $path = storage_path('app/ultima_actualizacion_afiliados.txt');
 
         if (!file_exists($path)) {
@@ -45,13 +49,7 @@ class AuthController extends Controller
         $ultimaActualizacion = (int) file_get_contents($path);
         $ahora = time();
 
-        return ($ahora - $ultimaActualizacion) >= 300; // 5 minutos
-    }
-
-    private function registrarActualizacionAfiliados()
-    {
-        $path = storage_path('app/ultima_actualizacion_afiliados.txt');
-        file_put_contents($path, time());
+        return ($ahora - $ultimaActualizacion) >= 86400; // 24 horas
     }
 
     public function loguear(Request $request)
@@ -146,13 +144,12 @@ class AuthController extends Controller
         if ($this->puedeActualizarAfiliados()) {
             try {
                 $this->iniciarDescargaAfiliados($accessToken);
-                $this->registrarActualizacionAfiliados();
                 Log::info('Se solicitó la descarga de afiliados en segundo plano para el usuario ID: ' . $user->id);
             } catch (\Throwable $e) {
                 Log::error('Error lanzando comando afiliados en background: ' . $e->getMessage());
             }
         } else {
-            Log::info('No se actualizó afiliados: actualización reciente detectada (menos de 5 minutos).');
+            Log::info('No se sincronizaron recién nacidos: ya se realizó una consulta en las últimas 24 horas.');
         }
 
         return to_route('welcome');
