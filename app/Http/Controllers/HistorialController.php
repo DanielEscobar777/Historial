@@ -435,13 +435,20 @@ class HistorialController extends Controller
 
             // Configuración DBAL
             $config = new \Doctrine\DBAL\Configuration();
+            $connectionName = config('database.default');
+            $databaseConfig = config("database.connections.{$connectionName}");
+
+            if (!is_array($databaseConfig) || ($databaseConfig['driver'] ?? null) !== 'pgsql') {
+                throw new \RuntimeException('La conexión PostgreSQL del sistema no está configurada correctamente.');
+            }
+
             $connectionParams = [
-                'dbname' => env('DB_DATABASE'),
-                'user' => env('DB_USERNAME'),
-                'password' => env('DB_PASSWORD'),
-                'host' => env('DB_HOST'),
+                'dbname' => $databaseConfig['database'],
+                'user' => $databaseConfig['username'],
+                'password' => $databaseConfig['password'],
+                'host' => $databaseConfig['host'],
                 'driver' => 'pdo_pgsql',
-                'port' => env('DB_PORT', 5432),
+                'port' => $databaseConfig['port'] ?? 5432,
                 'charset' => 'UTF8',
             ];
             $conn = \Doctrine\DBAL\DriverManager::getConnection($connectionParams, $config);
@@ -626,6 +633,8 @@ class HistorialController extends Controller
                     '23505' => 'Ya existe un registro con los mismos datos. Verifique la información antes de volver a guardar.',
                     default => $mensaje,
                 };
+            } elseif ($e instanceof \Doctrine\DBAL\Exception\ConnectionException) {
+                $mensaje = 'No fue posible conectar con la base de datos para guardar la historia clínica. Intente nuevamente en unos minutos o comuníquese con el administrador.';
             } elseif ($e instanceof \RuntimeException && str_contains($e->getMessage(), 'tabla requerida')) {
                 $mensaje = 'No se pudo guardar porque falta una sección del historial en el sistema. Comuníquese con el administrador.';
             }
