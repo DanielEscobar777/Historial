@@ -2,6 +2,12 @@
 
 @section('content')
 
+@php
+    $tieneOtroServicio = $servicios->contains(function ($servicio) {
+        return $servicio->nombre_servicio == 'NEONATOLOGIA';
+    });
+@endphp
+
 <div class="col-md-12 col-12">
     <div class="panel" data-sortable-id="ui-general-1">
         <div class="panel-heading" style="background-color: #c5cacf;">
@@ -15,7 +21,15 @@
         <div class="panel-body">
             <div class="col-12 text-center">
 
-                <div id="actualizar-rn-vue"></div>
+                @if ($tieneOtroServicio)
+                <div id="estado-sincronizacion" class="alert alert-secondary d-flex flex-wrap align-items-center justify-content-between text-start mb-4" role="status" aria-live="polite">
+                    <div>
+                        <strong id="estado-sincronizacion-titulo">Consultando sincronización…</strong>
+                        <div id="estado-sincronizacion-mensaje" class="small mt-1">Espere un momento.</div>
+                    </div>
+                    <div id="estado-sincronizacion-fecha" class="small mt-2 mt-md-0"></div>
+                </div>
+                @endif
 
                 <div class="row g-3">
                     @foreach($servicios as $servicio)
@@ -41,12 +55,6 @@
         </div>
     </div>
 </div>
-
-@php
-    $tieneOtroServicio = $servicios->contains(function ($servicio) {
-        return $servicio->nombre_servicio == 'NEONATOLOGIA';
-    });
-@endphp
 
 @if ($tieneOtroServicio)
     @vite(['resources/js/buscarPaciente.js'])

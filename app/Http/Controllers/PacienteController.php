@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Services\AfiliadosSyncStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -13,6 +13,24 @@ use Carbon\Carbon;
 class PacienteController extends Controller
 {
     protected $ndjsonPath = 'app/recien_nacidos_candidatos.ndjson';
+
+    public function estadoSincronizacion(AfiliadosSyncStatus $syncStatus)
+    {
+        $status = $syncStatus->get();
+        $labels = [
+            'pending' => 'Sincronización pendiente',
+            'running' => 'Sincronización en curso',
+            'completed' => 'Sincronización completada',
+            'failed' => 'Sincronización fallida',
+        ];
+
+        $status['label'] = $labels[$status['state']] ?? 'Estado desconocido';
+        $status['last_sync'] = $status['completed_at']
+            ? Carbon::parse($status['completed_at'])->timezone(config('app.timezone'))->format('d/m/Y H:i')
+            : null;
+
+        return response()->json($status);
+    }
 
     // ✅ Método principal para actualizar RN desde API
 public function actualizarRecienNacidosDesdeApi() 
@@ -87,10 +105,12 @@ public function actualizarRecienNacidosDesdeApi()
                     'motivo' => $matches['error'],
                 ]);
 
+                $status = app(AfiliadosSyncStatus::class)->get();
                 return response()->json([
-                    'estado' => 'sincronizando',
-                    'mensaje' => 'Los datos de afiliados se están descargando. Este proceso comienza al iniciar sesión y puede tardar unos minutos. Intente nuevamente cuando finalice la sincronización.',
-                ], 202);
+                    'estado' => $status['state'],
+                    'mensaje' => $status['message'],
+                    'ultima_sincronizacion' => $status['completed_at'],
+                ], $status['state'] === 'failed' ? 503 : 202);
             }
 
             Log::info("🔍 Buscando coincidencias para RN '{$nombreRN}' con fecha {$fechaNac}: " . count($matches));

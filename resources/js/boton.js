@@ -1,15 +1,17 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const form = document.querySelector("form");
+    const form = document.querySelector("form[data-servicio]");
     if (!form) return;
 
     const submitButton = form.querySelector("button[type='submit']");
     if (!submitButton) return;
 
     const originalButtonHtml = submitButton.innerHTML;
+    let submitting = false;
 
     const restoreButton = function () {
         submitButton.disabled = false;
         submitButton.innerHTML = originalButtonHtml;
+        submitting = false;
     };
 
     // Si el navegador o una validación personalizada rechazan el formulario,
@@ -18,6 +20,11 @@ document.addEventListener("DOMContentLoaded", function () {
     window.addEventListener("pageshow", restoreButton);
 
     form.addEventListener("submit", function (e) {
+        if (submitting) {
+            e.preventDefault();
+            return;
+        }
+
         if (e.defaultPrevented || !form.checkValidity()) {
             restoreButton();
             return;
@@ -52,6 +59,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
+            submitting = true;
             submitButton.disabled = true;
             submitButton.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Guardando...';
         }, 0);

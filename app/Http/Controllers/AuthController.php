@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\AfiliadosSyncStatus;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -145,10 +146,20 @@ class AuthController extends Controller
         // Ejecutar descarga en segundo plano (Linux)
         if ($this->puedeActualizarAfiliados()) {
             try {
-                $this->iniciarDescargaAfiliados($accessToken);
+                $this->iniciarDescargaAfiliados($user->id, app(AfiliadosSyncStatus::class));
                 Log::info('Se solicitó la descarga de afiliados en segundo plano para el usuario ID: ' . $user->id);
             } catch (\Throwable $e) {
                 Log::error('Error lanzando comando afiliados en background: ' . $e->getMessage());
+                try {
+                    app(AfiliadosSyncStatus::class)->set(
+                        'failed',
+                        'No se pudo iniciar la sincronización. Se volverá a intentar en el próximo acceso.'
+                    );
+                } catch (\Throwable $statusException) {
+                    Log::error('No se pudo registrar el fallo al iniciar la sincronización.', [
+                        'exception' => $statusException,
+                    ]);
+                }
             }
         } else {
             Log::info('No se sincronizaron recién nacidos: ya se realizó una consulta en las últimas 24 horas.');
@@ -157,7 +168,7 @@ class AuthController extends Controller
         return to_route('welcome');
     }
 
-    private function iniciarDescargaAfiliados(string $accessToken): void
+    private function iniciarDescargaAfiliados(int $userId, AfiliadosSyncStatus $syncStatus): void
     {
         if (PHP_OS_FAMILY === 'Windows') {
             $quotePowerShell = static function (string $value): string {
@@ -170,7 +181,7 @@ class AuthController extends Controller
                 $quotePowerShell(base_path()),
                 $quotePowerShell('artisan'),
                 $quotePowerShell('afiliados:descargar'),
-                $quotePowerShell($accessToken)
+                $quotePowerShell((string) $userId)
             );
             $encodedScript = base64_encode(iconv('UTF-8', 'UTF-16LE', $script));
             $command = 'powershell.exe -NoProfile -NonInteractive -EncodedCommand ' . escapeshellarg($encodedScript);
@@ -180,13 +191,20 @@ class AuthController extends Controller
                 throw new \RuntimeException("No se pudo iniciar la descarga de afiliados (código {$exitCode}).");
             }
 
+            $syncStatus->set('pending', 'La sincronización fue programada y está esperando para comenzar.');
             return;
         }
 
-        $php = escapeshellarg(PHP_BINARY);
+        $phpBinary = config('services.ssu.php_cli_binary', '/usr/bin/php');
+        if (!is_string($phpBinary) || !is_executable($phpBinary)) {
+            throw new \RuntimeException('El ejecutable PHP para tareas en segundo plano no está disponible.');
+        }
+
+        $php = escapeshellarg($phpBinary);
         $artisan = escapeshellarg(base_path('artisan'));
-        $token = escapeshellarg($accessToken);
-        $command = "{$php} {$artisan} afiliados:descargar {$token} > /dev/null 2>&1 & echo $!";
+        $userArgument = escapeshellarg((string) $userId);
+        $log = escapeshellarg(storage_path('logs/afiliados-sync.log'));
+        $command = "{$php} {$artisan} afiliados:descargar {$userArgument} >> {$log} 2>&1 & echo $!";
         $processId = trim((string) shell_exec($command));
 
         if ($processId === '' || !ctype_digit($processId)) {
@@ -194,6 +212,9 @@ class AuthController extends Controller
         }
 
         Log::info('Proceso de descarga de afiliados iniciado.', [
+            'pid' => (int) $processId,
+        ]);
+        $syncStatus->set('pending', 'La sincronización fue programada y está esperando para comenzar.', [
             'pid' => (int) $processId,
         ]);
     }

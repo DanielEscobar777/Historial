@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Services\AfiliadosSyncStatus;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -12,14 +13,14 @@ use Throwable;
 
 class DescargarAfiliados extends Command
 {
-    protected $signature = 'afiliados:descargar {token}';
+    protected $signature = 'afiliados:descargar {userId : Usuario cuyo token externo se utilizará}';
     protected $description = 'Busca diariamente candidatos para los recién nacidos pendientes';
 
     private const LOCK_SECONDS = 3600;
     private const MAX_PAGES = 10000;
     private const MAX_RATE_LIMIT_RETRIES = 5;
 
-    public function handle(): int
+    public function handle(AfiliadosSyncStatus $syncStatus): int
     {
         $lock = Cache::lock('afiliados:descarga', self::LOCK_SECONDS);
 
@@ -35,12 +36,22 @@ class DescargarAfiliados extends Command
         $ndjsonTempPath = null;
 
         try {
-            $token = $this->argument('token');
+            $userId = (int) $this->argument('userId');
+            $tokenPath = storage_path("app/token_sesion_{$userId}.json");
+            $tokenData = file_exists($tokenPath)
+                ? json_decode((string) file_get_contents($tokenPath), true)
+                : [];
+            $token = is_array($tokenData) ? ($tokenData['access_token'] ?? null) : null;
 
             if (!$token) {
-                $this->error('Token inválido o no proporcionado.');
-                return self::FAILURE;
+                throw new RuntimeException('La sesión del servicio de pacientes no está disponible.');
             }
+
+            $syncStatus->set('running', 'La sincronización de recién nacidos está en curso.', [
+                'current_page' => 0,
+                'records_reviewed' => 0,
+                'candidates_found' => 0,
+            ]);
 
             $storageDirectory = storage_path('app');
             $this->purgeLegacyCacheOnce($storageDirectory);
@@ -142,6 +153,11 @@ class DescargarAfiliados extends Command
                 }
 
                 $this->info("Página {$page} revisada. Candidatos encontrados: {$totalCandidatos}");
+                $syncStatus->set('running', "Revisando la página {$page} del servicio de pacientes.", [
+                    'current_page' => $page,
+                    'records_reviewed' => $totalRevisados,
+                    'candidates_found' => $totalCandidatos,
+                ]);
                 $page++;
                 usleep(500000);
             }
@@ -177,10 +193,20 @@ class DescargarAfiliados extends Command
                 'candidatos_guardados' => $totalCandidatos,
                 'ultima_pagina_con_datos' => $page - 1,
             ]);
+            $syncStatus->set('completed', 'La sincronización de recién nacidos finalizó correctamente.', [
+                'last_page' => $page - 1,
+                'records_reviewed' => $totalRevisados,
+                'candidates_found' => $totalCandidatos,
+            ]);
 
             return self::SUCCESS;
         } catch (Throwable $e) {
             Log::error('Error en comando afiliados: ' . $e->getMessage());
+            try {
+                $syncStatus->set('failed', 'No se pudo completar la sincronización. Se volverá a intentar más tarde.');
+            } catch (Throwable $statusException) {
+                Log::error('No se pudo registrar el fallo de sincronización.', ['exception' => $statusException]);
+            }
             $this->error($e->getMessage());
             return self::FAILURE;
         } finally {

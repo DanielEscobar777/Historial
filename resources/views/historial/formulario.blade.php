@@ -98,7 +98,8 @@
 
                     <div class="col-md-6">
                         <label><b>Paciente</b></label>
-                        <input type="text" class="form-control" name="id_paciente" required>
+                        <input type="text" class="form-control" name="id_paciente" value="{{ old('id_paciente') }}" placeholder="Seleccione un paciente mediante la búsqueda por C.I." readonly required>
+                        <div class="invalid-feedback">Busque y seleccione un paciente antes de guardar.</div>
                     </div>
 
                     <div class="col-md-6">
@@ -211,9 +212,10 @@
 
                 </div>
 
-                <br>
-                <a href="{{ route('historial.show', $n_ser->id_servicio)}}" class="btn btn-danger"><i class="fa fa-reply"></i> Cancelar</a>
-                <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Guardar</button>
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <a href="{{ route('historial.show', $n_ser->id_servicio)}}" class="btn btn-danger"><i class="fa fa-reply"></i> Cancelar</a>
+                    <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Guardar</button>
+                </div>
             </form>
         </div>
     </div>
@@ -223,7 +225,7 @@
 @vite(['resources/js/boton.js'])
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-    const form = document.querySelector("form");
+    const form = document.querySelector("form[data-servicio]");
     if (!form) return;
 
     const camposObligatorios = Array.from(form.querySelectorAll('[required]'));
@@ -259,6 +261,14 @@
         campo.addEventListener('input', quitarErrorServidor, { once: true });
         campo.addEventListener('change', quitarErrorServidor, { once: true });
     });
+
+    const primerErrorServidor = form.querySelector('.is-invalid');
+    if (primerErrorServidor) {
+        requestAnimationFrame(function () {
+            primerErrorServidor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(function () { primerErrorServidor.focus(); }, 350);
+        });
+    }
 
     const etiquetaCampo = function (campo) {
         return campo.dataset.etiqueta

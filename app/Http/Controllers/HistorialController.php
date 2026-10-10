@@ -307,6 +307,7 @@ class HistorialController extends Controller
                 ], $atributosCamposDinamicos);
             } else {
                 $validated = $request->validate([
+                    'id_paciente' => 'required|string|max:255',
                     'grado_instruccion' => 'required|string|max:255',
                     'religion' => 'required|string|max:255',
                     'cama' => 'required|string|max:50',
@@ -323,15 +324,17 @@ class HistorialController extends Controller
                     'campos_dinamicos.*' => 'required|string|max:255',
                 ], [
                     'id_paciente.required' => 'El campo paciente es obligatorio.',
+                    'id_paciente.max' => 'El paciente seleccionado contiene un nombre demasiado largo. Vuelva a buscarlo o comuníquese con el administrador.',
+                    'grado_instruccion.required' => 'El campo grado de instrucción es obligatorio.',
                     'grado_instruccion.max' => 'El grado de instrucción no puede superar los 255 caracteres.',
                     'religion.required' => 'El campo religion es obligatorio.',
                     'cama.required' => 'El campo cama es obligatorio.',
-                    'ocupacion.required' => 'El campo cama es obligatorio.',
-                    'estado_civil.required' => 'El campo cama es obligatorio.',
-                    'fuente_informacion.required' => 'El campo fuente_informacion es obligatorio.',
-                    'nombrenum_referencia.required' => 'El campo nombre y numero de referencia es obligatorio.',
-                    'grado_confiabilidad.required' => 'El campo grado_confiabilidad es obligatorio.',
-                    'grupo_sanguineo_facto.required' => 'El campo grupo_sanguineo_facto es obligatorio.',
+                    'ocupacion.required' => 'El campo ocupación es obligatorio.',
+                    'estado_civil.required' => 'El campo estado civil es obligatorio.',
+                    'fuente_informacion.required' => 'El campo fuente de información es obligatorio.',
+                    'nombrenum_referencia.required' => 'El campo referencia es obligatorio.',
+                    'grado_confiabilidad.required' => 'El campo grado de confiabilidad es obligatorio.',
+                    'grupo_sanguineo_facto.required' => 'El campo grupo sanguíneo y factor es obligatorio.',
                     'campos_dinamicos.required' => 'Debe agregar al menos un campo dinámico',
                     'campos_dinamicos.*.required' => 'El campo :attribute es obligatorio.',
                     'campos_dinamicos.*.max' => 'El campo :attribute tiene más de :max caracteres. Reduzca el texto e intente nuevamente.',
@@ -550,6 +553,18 @@ class HistorialController extends Controller
 
                         if (array_key_exists($columna, $datosFormulario)) {
                             $valor = $datosFormulario[$columna];
+                            $longitudMaxima = $colInfo->getLength();
+                            if (is_string($valor) && $longitudMaxima && mb_strlen($valor) > $longitudMaxima) {
+                                $nombreLegible = mb_strtolower(str_replace('_', ' ', $columna));
+                                throw \Illuminate\Validation\ValidationException::withMessages([
+                                    "campos_dinamicos.{$columna}" => sprintf(
+                                        'El campo %s tiene %d caracteres y permite un máximo de %d. Reduzca el texto.',
+                                        $nombreLegible,
+                                        mb_strlen($valor),
+                                        $longitudMaxima
+                                    ),
+                                ]);
+                            }
                             $data[$columna] = $valor !== '' ? $valor : 'N/A';
                         } else {
                             /*$tipo = strtolower((new \ReflectionClass($colInfo->getType()))->getShortName());

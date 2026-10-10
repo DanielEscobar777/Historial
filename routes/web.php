@@ -30,6 +30,7 @@ Route::middleware(['auth', 'externalauth'])->group(function () {
 Route::get('/welcome', [AuthController::class, 'welcome'])->name("welcome");
 Route::post('/logout', [AuthController::class, 'logout'])->name("logout");
 Route::get('/buscar-paciente', [PacienteController::class, 'buscarPorCI'])->name('buscar.paciente');
+Route::get('/pacientes/estado-sincronizacion', [PacienteController::class, 'estadoSincronizacion'])->name('pacientes.estado-sincronizacion');
 Route::get('/pacientes/buscar-recien-nacidos', [PacienteController::class, 'buscarRecienNacidos']);
 Route::post('/pacientes/actualizar-recien-nacidos', [PacienteController::class, 'actualizarRecienNacidosDesdeApi']);
 Route::get('/servicios/index', [App\Http\Controllers\ServiciosController::class, 'index'])->name('servicios.index');
