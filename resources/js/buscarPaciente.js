@@ -1,9 +1,15 @@
 async function actualizarRecienNacidos() {
     try {
-        const res = await fetch('/pacientes/actualizar-recien-nacidos');
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+        const res = await fetch('/pacientes/actualizar-recien-nacidos', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrfToken || '',
+            },
+        });
         const text = await res.text(); // leer como texto primero
 
-        console.log("Respuesta cruda:", text);
         let data;
         try {
             data = JSON.parse(text);
@@ -13,8 +19,6 @@ async function actualizarRecienNacidos() {
         }
 
         
-        console.log('Respuesta del backend:', data);
-
         // Solo ejecutar forEach si es un array
         if (Array.isArray(data)) {
             data.forEach(entry => {

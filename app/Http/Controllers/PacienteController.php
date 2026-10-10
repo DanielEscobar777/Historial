@@ -235,7 +235,7 @@ public function actualizarRecienNacidosDesdeApi()
                 ], 401);
             }
 
-            $url = rtrim(env('HOST_SSU', 'http://localhost'), '/');
+            $url = config('services.ssu.admin_url');
             $response = Http::withToken($token)
                 ->acceptJson()
                 ->connectTimeout(5)

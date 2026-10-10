@@ -257,6 +257,26 @@ class HistorialController extends Controller
                 throw new \Exception('Servicio no asignado al usuario.');
             }
             $esObstetrico = $request->nombre_servicio;
+            $atributosCamposDinamicos = [];
+            $erroresLongitud = [];
+            foreach ((array) $request->input('campos_dinamicos', []) as $nombreCampo => $valor) {
+                $claveCampo = "campos_dinamicos.{$nombreCampo}";
+                $nombreLegible = mb_strtolower(str_replace('_', ' ', (string) $nombreCampo));
+                $atributosCamposDinamicos[$claveCampo] = $nombreLegible;
+
+                if (is_string($valor) && mb_strlen($valor) > 255) {
+                    $erroresLongitud[$claveCampo] = sprintf(
+                        'El campo %s tiene %d caracteres y permite un máximo de 255. Reduzca el texto.',
+                        $nombreLegible,
+                        mb_strlen($valor)
+                    );
+                }
+            }
+
+            if ($erroresLongitud !== []) {
+                throw \Illuminate\Validation\ValidationException::withMessages($erroresLongitud);
+            }
+
             // Validación básica de los campos fijos (historial)
             if ($esObstetrico == 'NEONATOLOGIA') {
                 $request->merge([
@@ -272,7 +292,7 @@ class HistorialController extends Controller
                     'hora_recien_necido' => 'required|date_format:H:i',
                     'sexo' => 'required',
                     'campos_dinamicos' => 'required|array',
-                    'campos_dinamicos.*' => 'required',
+                    'campos_dinamicos.*' => 'required|string|max:255',
                 ], [
                     'cama.required' => 'El campo cama es obligatorio.',
                     'nombrenum_referencia.required' => 'El campo nombre y numero de referencia es obligatorio.',
@@ -281,8 +301,10 @@ class HistorialController extends Controller
                     'hora_recien_necido.required' => 'El campo hora de nacimiento es obligatorio.',
                     'sexo.required' => 'El campo sexo es obligatorio',
                     'campos_dinamicos.required' => 'Debe agregar al menos un campo dinámico',
-                    'campos_dinamicos.*.required' => 'El valor del campo es obligatorio',
-                ]);
+                    'campos_dinamicos.*.required' => 'El campo :attribute es obligatorio.',
+                    'campos_dinamicos.*.max' => 'El campo :attribute tiene más de :max caracteres. Reduzca el texto e intente nuevamente.',
+                    'max' => 'El campo :attribute no puede superar los :max caracteres.',
+                ], $atributosCamposDinamicos);
             } else {
                 $validated = $request->validate([
                     'grado_instruccion' => 'required|string|max:255',
@@ -298,7 +320,7 @@ class HistorialController extends Controller
                     'fecha_recien_necido' => 'nullable|date',
                     'hora_recien_necido' => 'nullable|date_format:H:i',
                     'campos_dinamicos' => 'required|array',
-                    'campos_dinamicos.*' => 'required',
+                    'campos_dinamicos.*' => 'required|string|max:255',
                 ], [
                     'id_paciente.required' => 'El campo paciente es obligatorio.',
                     'grado_instruccion.max' => 'El grado de instrucción no puede superar los 255 caracteres.',
@@ -311,8 +333,10 @@ class HistorialController extends Controller
                     'grado_confiabilidad.required' => 'El campo grado_confiabilidad es obligatorio.',
                     'grupo_sanguineo_facto.required' => 'El campo grupo_sanguineo_facto es obligatorio.',
                     'campos_dinamicos.required' => 'Debe agregar al menos un campo dinámico',
-                    'campos_dinamicos.*.required' => 'El valor del campo es obligatorio',
-                ]);
+                    'campos_dinamicos.*.required' => 'El campo :attribute es obligatorio.',
+                    'campos_dinamicos.*.max' => 'El campo :attribute tiene más de :max caracteres. Reduzca el texto e intente nuevamente.',
+                    'max' => 'El campo :attribute no puede superar los :max caracteres.',
+                ], $atributosCamposDinamicos);
             }
             $id_servicio = $request->id_servicio;
             // Validar campos dinámicos para que no estén vacíos
@@ -428,10 +452,7 @@ class HistorialController extends Controller
                 \Log::info("Procesando tabla dinámica: $tabla");
                 if (!\Schema::hasTable($tabla)) {
                     \Log::warning("La tabla $tabla no existe en la base de datos.");
-                    echo $tabla;
-                    die();
-
-                    continue;
+                    throw new \RuntimeException("No existe la tabla requerida para el módulo {$tabla}.");
                 }
                 $data = [
                     'id_historial' => $historialId,
@@ -565,19 +586,51 @@ class HistorialController extends Controller
                         'datos_procesados' => $data,
                         'exception' => $e,
                     ]);
-                    if (!\Schema::hasTable($tabla)) {
-                        \Log::warning("La tabla $tabla no existe en la base de datos.");
-                        continue;
-                    }
+
+                    // PostgreSQL deja la transacción inutilizable después de un
+                    // error. Se conserva el primer error y se revierte todo en
+                    // el bloque exterior, sin ejecutar nuevas consultas.
+                    throw $e;
                 }
             }
             DB::commit();
             $historiales = Historial::where('id_servicio', $id_servicio)->get();
             return redirect()->route('historial.show', ['id_servicio' => $request->id_servicio])
                 ->with('success', 'Historia registrada correctamente.');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->withErrors(['error' => 'Error al guardar: ' . $e->getMessage()])->withInput();
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            if (DB::transactionLevel() > 0) {
+                DB::rollBack();
+            }
+
+            throw $e;
+        } catch (\Throwable $e) {
+            if (DB::transactionLevel() > 0) {
+                DB::rollBack();
+            }
+
+            Log::error('No se pudo guardar la historia clínica.', [
+                'usuario_id' => Auth::id(),
+                'servicio_id' => $request->id_servicio,
+                'exception' => $e,
+            ]);
+
+            $mensaje = 'No se pudo guardar la historia clínica. Ningún dato fue registrado. Revise la información e intente nuevamente.';
+
+            if ($e instanceof \Illuminate\Database\QueryException) {
+                $sqlState = (string) ($e->errorInfo[0] ?? $e->getCode());
+
+                $mensaje = match ($sqlState) {
+                    '22001' => 'Uno de los campos contiene demasiado texto. Redúzcalo al límite indicado y vuelva a guardar.',
+                    '23502' => 'Falta información en un campo obligatorio. Revise los campos marcados e intente nuevamente.',
+                    '23503' => 'No se pudo guardar porque uno de los datos seleccionados ya no está disponible. Actualice la página e intente nuevamente.',
+                    '23505' => 'Ya existe un registro con los mismos datos. Verifique la información antes de volver a guardar.',
+                    default => $mensaje,
+                };
+            } elseif ($e instanceof \RuntimeException && str_contains($e->getMessage(), 'tabla requerida')) {
+                $mensaje = 'No se pudo guardar porque falta una sección del historial en el sistema. Comuníquese con el administrador.';
+            }
+
+            return back()->withErrors(['error' => $mensaje])->withInput();
         }
     }
     public function edit($id_historial)

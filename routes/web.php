@@ -13,17 +13,13 @@ use App\Http\Middleware\RolAdministrador;
 require __DIR__.'/evolucion_temp.php';
 require __DIR__.'/evolucion_final.php';
 
-Route::get('/pacientes/buscar-recien-nacidos', [PacienteController::class, 'buscarRecienNacidos']);
-Route::get('/pacientes/actualizar-recien-nacidos', [PacienteController::class, 'actualizarRecienNacidosDesdeApi']);
-
 Route::middleware('guest')->group(function () {
     Route::get('/', [AuthController::class, 'index'])->name("login");
     Route::get('/registro', [AuthController::class, 'registro'])->name("registro");
     Route::post('/registrar', [AuthController::class, 'registrar'])->name("registrar");
-    //Route::post('/loguear', [AuthController::class, 'loguear'])->name("loguear");
     Route::post('/loguear', [AuthController::class, 'loguear'])->name("loguear");
 });
-Route::middleware([RolAdministrador::class])->group(function () {
+Route::middleware(['auth', 'externalauth', RolAdministrador::class])->group(function () {
     Route::resource('usuarios', UsuarioController::class);
 });
 
@@ -32,8 +28,10 @@ Route::middleware(['auth', 'externalauth'])->group(function () {
         return response()->json(['status' => 'ok']);
     });
 Route::get('/welcome', [AuthController::class, 'welcome'])->name("welcome");
-Route::get('/logout', [AuthController::class, 'logout'])->name("logout");
+Route::post('/logout', [AuthController::class, 'logout'])->name("logout");
 Route::get('/buscar-paciente', [PacienteController::class, 'buscarPorCI'])->name('buscar.paciente');
+Route::get('/pacientes/buscar-recien-nacidos', [PacienteController::class, 'buscarRecienNacidos']);
+Route::post('/pacientes/actualizar-recien-nacidos', [PacienteController::class, 'actualizarRecienNacidosDesdeApi']);
 Route::get('/servicios/index', [App\Http\Controllers\ServiciosController::class, 'index'])->name('servicios.index');
 Route::post('/servicios/store', [App\Http\Controllers\ServiciosController::class, 'store'])->name('servicios.store');
 Route::get('/servicios/administrar/{id_servicio}', [App\Http\Controllers\ServiciosController::class, 'administrar'])->name('servicios.administrar');

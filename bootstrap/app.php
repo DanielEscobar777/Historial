@@ -18,8 +18,6 @@ return Application::configure(basePath: dirname(__DIR__))
             'externalauth' => ValidarTokenExterno::class,
         ]);
 
-        // Insertar en el grupo 'web'
-        $middleware->appendToGroup('web', ValidarTokenExterno::class);
 	$middleware->trustProxies(at: '*');
     })
     ->withExceptions(function (Exceptions $exceptions) {

@@ -3,12 +3,24 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!form) return;
 
     const submitButton = form.querySelector("button[type='submit']");
+    if (!submitButton) return;
+
+    const originalButtonHtml = submitButton.innerHTML;
+
+    const restoreButton = function () {
+        submitButton.disabled = false;
+        submitButton.innerHTML = originalButtonHtml;
+    };
+
+    // Si el navegador o una validación personalizada rechazan el formulario,
+    // el botón debe permanecer disponible para volver a intentarlo.
+    form.addEventListener("invalid", restoreButton, true);
+    window.addEventListener("pageshow", restoreButton);
 
     form.addEventListener("submit", function (e) {
-        // Desactiva el botón para prevenir múltiples envíos
-        if (submitButton) {
-            submitButton.disabled = true;
-            submitButton.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Guardando...';
+        if (e.defaultPrevented || !form.checkValidity()) {
+            restoreButton();
+            return;
         }
 
         const servicio = form.getAttribute("data-servicio");
@@ -27,7 +39,21 @@ document.addEventListener("DOMContentLoaded", function () {
             // Formato: RN_fecha_hora_cama_nombreOriginal
             let nombreGenerado = `RN_${fecha.replaceAll("-", "")}_${hora.replaceAll(":", "")}_${cama.replaceAll(" ", "")}_${nombreOriginal.replaceAll(" ", "")}`;
 
-            nombreInput.value = nombreGenerado;
+            if (nombreInput) {
+                nombreInput.value = nombreGenerado;
+            }
         }
+
+        // Se ejecuta después de los demás validadores del formulario. De ese
+        // modo no queda bloqueado si alguno cancela el envío.
+        setTimeout(function () {
+            if (e.defaultPrevented) {
+                restoreButton();
+                return;
+            }
+
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Guardando...';
+        }, 0);
     });
 });

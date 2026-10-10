@@ -75,7 +75,7 @@ class DescargarAfiliados extends Command
             $totalCandidatos = 0;
             $firstRecord = true;
             $pageHashes = [];
-            $url = rtrim(env('HOST_SSU', 'http://localhost'), '/');
+            $url = config('services.ssu.admin_url');
 
             if ($fechasPendientes === []) {
                 $this->info('No existen recién nacidos pendientes de sincronización.');

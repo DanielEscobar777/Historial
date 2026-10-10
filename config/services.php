@@ -31,4 +31,9 @@ return [
         ],
     ],
 
+    'ssu' => [
+        'auth_url' => rtrim(env('SSU_AUTH_URL', 'http://172.16.0.246:8000'), '/'),
+        'admin_url' => rtrim(env('SSU_ADMIN_URL', env('HOST_SSU', 'http://172.16.0.246:8001')), '/'),
+    ],
+
 ];

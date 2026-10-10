@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 
@@ -59,14 +58,22 @@ class AuthController extends Controller
             'password' => 'required'
         ]);
         
-        /*$response = Http::post('http://localhost/tokkens/login.php', [
-            'email' => $request->email,
-            'password' => $request->password,
-        ]);*/
-         $response = Http::post('http://172.16.0.246:8000/api/auth/login_service', [
-            'email' => $request->email,
-            'password' => $request->password,
-        ]);
+        try {
+            $response = Http::acceptJson()
+                ->connectTimeout(5)
+                ->timeout(15)
+                ->post(config('services.ssu.auth_url') . '/api/auth/login_service', [
+                    'email' => $request->email,
+                    'password' => $request->password,
+                ]);
+        } catch (\Throwable $e) {
+            Log::error('No se pudo conectar con el servicio de autenticación.', [
+                'exception' => $e,
+            ]);
+
+            return back()->withInput($request->only('email'))
+                ->with('error', 'No fue posible conectarse con el servicio de acceso. Intente nuevamente.');
+        }
 
         $data = $response->json();
 
@@ -91,18 +98,13 @@ class AuthController extends Controller
         ]));
 
         Auth::login($user);
-        Session::put('login_time', now());
+        $request->session()->regenerate();
+        $request->session()->put('login_time', now());
 
         // Asignación de roles
-       /*$usuariosResponse = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $accessToken
-        ])->get('http://localhost/tokkens/usuarios_residentes.php');*/
-
-        $url = env('HOST_SSU');
-
         $usuariosResponse = Http::withHeaders([
             'Authorization' => 'Bearer ' . $accessToken
-        ])->get("{$url}/api/s1/administracion/user_residente");
+        ])->get(config('services.ssu.admin_url') . '/api/s1/administracion/user_residente');
         
 
         if ($usuariosResponse->ok()) {
@@ -201,7 +203,7 @@ class AuthController extends Controller
         return view('welcome');
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
         $user = Auth::user();
 
@@ -212,8 +214,10 @@ class AuthController extends Controller
             }
         }
 
-        Session::flush();
         Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
         return to_route('login');
     }
 }

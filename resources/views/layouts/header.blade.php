@@ -7,6 +7,7 @@
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
     <meta content="" name="description" />
     <meta content="" name="author" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Tangerine">
 
     <link href="{{ asset('librerias') }}/assets/css/default/app.min.css" rel="stylesheet" />
@@ -55,7 +56,10 @@
 
                 <div class="navbar-item navbar-user dropdown">
 
-                    <a href="{{route('logout')}}"> <button class="btn btn-warning">Log Out</button></a>
+                    <form action="{{ route('logout') }}" method="POST" class="m-0">
+                        @csrf
+                        <button type="submit" class="btn btn-warning">Cerrar sesión</button>
+                    </form>
 
                 </div>
             </div>
@@ -290,4 +294,4 @@
             </script> 
 @stack('scripts')
 </body>
-</html>            
+</html>
