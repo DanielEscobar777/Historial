@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\historia_enfermedad_actual;
+use App\Models\Historia_enfermedad_actual;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class historia_enfermedad_actualController extends Controller
+class Historia_enfermedad_actualController extends Controller
 {
     public function update(Request $request, $id_historia_enfermedad )
     {
@@ -25,7 +25,7 @@ class historia_enfermedad_actualController extends Controller
             }
         }
         $validated = $request->validate($rules, $messages);
-        $antecedentes = historia_enfermedad_actual::findOrFail($id_historia_enfermedad);
+        $antecedentes = Historia_enfermedad_actual::findOrFail($id_historia_enfermedad);
 
         // Preparar datos para actualización
         $updateData = ['id_usuario' => $userId];

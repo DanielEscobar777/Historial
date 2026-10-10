@@ -85,7 +85,7 @@ Route::put('/examenes_complementarios/update/{id_examenes_complementarios}', [Ap
 Route::put('/impresion_diadnostica/update/{id_impresion_diagnostica}', [App\Http\Controllers\Impresion_diagnosticaController::class, 'update'])->name('impresion_diadnostica.update');
 Route::put('/comentarios/update/{id_comentarios}', [App\Http\Controllers\ComentariosController::class, 'update'])->name('comentarios.update');
 Route::put('/interpretacion/update/{id_interpretacion}', [App\Http\Controllers\Interpretacion_laboratoriosController::class, 'update'])->name('interpretacion.update');
-Route::put('/historia_enfermedad_actual/update/{id_historia_enfermedad}', [App\Http\Controllers\historia_enfermedad_actualController::class, 'update'])->name('historia_enfermedad_actual.update');
+Route::put('/historia_enfermedad_actual/update/{id_historia_enfermedad}', [App\Http\Controllers\Historia_enfermedad_actualController::class, 'update'])->name('historia_enfermedad_actual.update');
 
 
 Route::get('/generate-pdf/{id_historial}', [PdfController::class, 'generatePdf'])->name('pdf.generatePdf');

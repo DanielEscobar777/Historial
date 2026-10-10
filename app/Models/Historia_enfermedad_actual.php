@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class historia_enfermedad_actual extends Model
+class Historia_enfermedad_actual extends Model
 {
     protected $table = 'historia_enfermedad_actual';
 
