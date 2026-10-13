@@ -29,6 +29,7 @@ export default defineConfig(({ mode }) => {
                     'resources/js/buscarPaciente.js',
                     'resources/js/boton.js',
                     'resources/js/formulario.js',
+                    'resources/js/soapPdfConfigurator.js',
                 ],
                 refresh: true,
             }),

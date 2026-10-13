@@ -4,9 +4,15 @@
   <meta charset="UTF-8">
   <title>Nota de Evolución</title>
   <style>
+    @page {
+      size: A4 portrait;
+      margin: {{ $pdfConfig['margin_top'] }}cm {{ $pdfConfig['margin_right'] }}cm {{ $pdfConfig['margin_bottom'] }}cm {{ $pdfConfig['margin_left'] }}cm;
+    }
+
     body {
-      font-family: 'DejaVu Sans', Arial, sans-serif;
-      font-size: 13px;
+      font-family: {!! $pdfConfig['font_family'] !!};
+      font-size: {{ $pdfConfig['font_size'] }}pt;
+      line-height: {{ $pdfConfig['line_height'] }};
       margin: 0;
       padding: 0;
     }
@@ -21,22 +27,21 @@
       display: inline-block;
       vertical-align: top;
       box-sizing: border-box;
-      padding: 10px;
+      padding: 0;
       word-wrap: break-word;
       word-break: break-word;
-      margin-top: <?= $espaciado ?? 7 ?>cm;
     }
 
     .columna-izquierda {
-      width: 25%;
+      width: {{ $pdfConfig['left_column'] }}%;
       position: absolute;
       left: 0;
       top: 0;
     }
 
     .columna-derecha {
-      width: 70%;
-      margin-left: 30%;
+      width: {{ $pdfConfig['right_column'] }}%;
+      margin-left: {{ $pdfConfig['left_column'] + $pdfConfig['column_gap'] }}%;
       page-break-inside: auto;
     }
 
@@ -50,7 +55,7 @@
     }
 
     p {
-      margin: 4px 0;
+      margin: 0 0 {{ $pdfConfig['paragraph_spacing'] }}pt;
       text-align: justify;
     }
 
@@ -60,7 +65,6 @@
   </style>
 </head>
 <body>
-  <div class="espaciado1"></div>
   <div class="contenedor">
     
     <!-- Columna izquierda (signos vitales) -->

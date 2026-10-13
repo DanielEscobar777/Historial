@@ -25,29 +25,8 @@
                                 <img src="{{ asset('images/soap.png') }}" alt="" style="width:150px; height:150px; border-radius:75px;">
                             </div>
                             <div class="card-footer">
-                                <button type="button" class="btn btn-danger btnDetalleRegistro" idRegistro="{{$evolucion->id_evolucion }}" data-id="{{ $evolucion->id_evolucion }}" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                <button type="button" class="btn btn-danger js-soap-pdf" data-evolution-id="{{ $evolucion->id_evolucion }}" data-bs-toggle="modal" data-bs-target="#soapPdfConfigModal">
                                     <i class="fa fa-file-pdf"></i> Reporte</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">MARGEN SUPERIOR DEL SOAP</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <form action="{{ route('pdf.generateSOAP') }}" method="POST" target="_blank">
-                                         @csrf 
-                                        <label for="margen_superior_cm">Margen superior (cm):</label>
-
-                                        <input type="hidden" name="id_evolucion" id="inputEvolucionId">
-                                        <input type="number" name="margen_superior_cm" value="5" step="0.1" min="0">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                        <button type="submit" class="btn btn-danger">Generar PDF</button>
-                                    </form>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -63,12 +42,8 @@
         </div>
     </div>
 </div>
-<script type="text/javascript">
-    $(document).on("click", ".btnDetalleRegistro", function() {
-        var idRegistro = $(this).attr("idRegistro");
-        $('#inputEvolucionId').val(idRegistro);
-    });
-</script>
+<x-soap-pdf-configurator />
+@vite(['resources/js/soapPdfConfigurator.js'])
 
 
 @endsection

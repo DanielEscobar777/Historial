@@ -11,6 +11,8 @@
         "laravel/framework": "^11.0",
         "laravel/tinker": "^2.9",
         "reliese/laravel": "^1.4",
+        "setasign/fpdf": "1.8.6",
+        "setasign/fpdi": "2.6",
         "spatie/laravel-backup": "^9.3"
     },
     "require-dev": {
