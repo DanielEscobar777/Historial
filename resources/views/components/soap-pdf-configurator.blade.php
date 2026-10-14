@@ -114,7 +114,9 @@
                                             <div class="text-center small"><span id="soapPageScaleValue">100</span>%</div>
                                         </div>
                                     </div>
-                                    <small class="text-muted d-block mt-2">Estos valores sustituyen los márgenes generales en la hoja seleccionada. Las demás hojas conservan la configuración general.</small>
+                                    <div class="alert alert-info py-2 px-3 small mt-3 mb-0">
+                                        Estos valores alinean el contenido sobre una hoja preimpresa y sustituyen los márgenes generales en la hoja seleccionada. Para cambiar la cantidad de hojas, ajuste los márgenes generales, el tamaño de letra o el interlineado.
+                                    </div>
                                 </div>
                             </div>
                         </div>
