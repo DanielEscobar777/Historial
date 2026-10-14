@@ -109,7 +109,7 @@ class PdfController extends Controller
     $overrides = $this->sanitizePageOverrides($validated['page_overrides'] ?? null, $pageCount);
 
     if ($overrides !== []) {
-      $pdfBytes = $this->applyPageOverrides($pdfBytes, $overrides);
+      $pdfBytes = $this->applyPageOverrides($pdfBytes, $overrides, $pdfConfig);
     }
 
     $disposition = ($validated['output'] ?? 'preview') === 'download' ? 'attachment' : 'inline';
@@ -141,10 +141,10 @@ class PdfController extends Controller
       }
 
       $overrides[$pageNumber] = [
-        'top' => min(5, max(0, (float) ($settings['top'] ?? 0))),
-        'right' => min(5, max(0, (float) ($settings['right'] ?? 0))),
-        'bottom' => min(5, max(0, (float) ($settings['bottom'] ?? 0))),
-        'left' => min(5, max(0, (float) ($settings['left'] ?? 0))),
+        'top' => min(8, max(0, (float) ($settings['top'] ?? 0))),
+        'right' => min(8, max(0, (float) ($settings['right'] ?? 0))),
+        'bottom' => min(8, max(0, (float) ($settings['bottom'] ?? 0))),
+        'left' => min(8, max(0, (float) ($settings['left'] ?? 0))),
         'scale' => min(100, max(70, (float) ($settings['scale'] ?? 100))),
       ];
     }
@@ -152,7 +152,7 @@ class PdfController extends Controller
     return $overrides;
   }
 
-  private function applyPageOverrides(string $sourcePdf, array $overrides): string
+  private function applyPageOverrides(string $sourcePdf, array $overrides, array $globalSettings): string
   {
     $result = new Fpdi('P', 'mm', 'A4');
     $pageCount = $result->setSourceFile(StreamReader::createByString($sourcePdf));
@@ -168,15 +168,30 @@ class PdfController extends Controller
       }
 
       $settings = $overrides[$page];
-      $x = $settings['left'] * 10;
-      $y = $settings['top'] * 10;
-      $availableWidth = max(10, $size['width'] - (($settings['left'] + $settings['right']) * 10));
-      $availableHeight = max(10, $size['height'] - (($settings['top'] + $settings['bottom']) * 10));
-      $targetWidth = $size['width'] * ($settings['scale'] / 100);
-      $targetHeight = $size['height'] * ($settings['scale'] / 100);
-      $fitRatio = min(1, $availableWidth / $targetWidth, $availableHeight / $targetHeight);
+      $sourceLeft = $globalSettings['margin_left'] * 10;
+      $sourceRight = $globalSettings['margin_right'] * 10;
+      $sourceTop = $globalSettings['margin_top'] * 10;
+      $sourceBottom = $globalSettings['margin_bottom'] * 10;
+      $targetLeft = $settings['left'] * 10;
+      $targetRight = $settings['right'] * 10;
+      $targetTop = $settings['top'] * 10;
+      $targetBottom = $settings['bottom'] * 10;
 
-      $result->useTemplate($template, $x, $y, $targetWidth * $fitRatio, $targetHeight * $fitRatio);
+      $sourceContentWidth = max(10, $size['width'] - $sourceLeft - $sourceRight);
+      $sourceContentHeight = max(10, $size['height'] - $sourceTop - $sourceBottom);
+      $targetContentWidth = max(10, $size['width'] - $targetLeft - $targetRight);
+      $targetContentHeight = max(10, $size['height'] - $targetTop - $targetBottom);
+      $requestedScale = $settings['scale'] / 100;
+      $scale = min(
+        $requestedScale,
+        $targetContentWidth / $sourceContentWidth,
+        $targetContentHeight / $sourceContentHeight
+      );
+
+      // El margen específico sustituye al margen general: no se suma sobre él.
+      $x = $targetLeft - ($sourceLeft * $scale);
+      $y = $targetTop - ($sourceTop * $scale);
+      $result->useTemplate($template, $x, $y, $size['width'] * $scale, $size['height'] * $scale);
     }
 
     return $result->Output('S');

@@ -11,7 +11,7 @@ if (modalElement) {
     const customPage = document.getElementById('soapCustomPage');
     const pageFields = document.getElementById('soapPageFields');
     const overridesInput = document.getElementById('soapPageOverrides');
-    const storageKey = 'soap-pdf-settings-v1';
+    const storageKey = 'soap-pdf-settings-v2';
     let previewUrl = null;
     let pageOverrides = {};
 
@@ -29,6 +29,7 @@ if (modalElement) {
         loading.classList.toggle('d-none', !busy);
         preview.classList.toggle('d-none', busy);
         document.getElementById('soapRefreshPreview').disabled = busy;
+        document.getElementById('soapDownloadPdf').disabled = busy;
         document.getElementById('soapOpenPdf').disabled = busy;
         status.textContent = busy ? 'Actualizando…' : 'Vista actualizada';
     };
@@ -68,7 +69,14 @@ if (modalElement) {
 
     const renderPageFields = () => {
         const page = pageSelect.value;
-        const values = pageOverrides[page] || {enabled: false, top: 0, right: 0, bottom: 0, left: 0, scale: 100};
+        const values = pageOverrides[page] || {
+            enabled: false,
+            top: Number(field('margin_top').value),
+            right: Number(field('margin_right').value),
+            bottom: Number(field('margin_bottom').value),
+            left: Number(field('margin_left').value),
+            scale: 100,
+        };
         customPage.checked = Boolean(values.enabled);
         pageFields.classList.toggle('opacity-50', !values.enabled);
         pageFields.querySelectorAll('.soap-page-setting').forEach((input) => {
@@ -101,20 +109,25 @@ if (modalElement) {
         }
     };
 
+    const requestPdf = async (output = 'preview') => {
+        syncOverrideInput();
+        const data = new FormData(form);
+        data.set('output', output);
+        const response = await fetch(form.action, {
+            method: 'POST',
+            body: data,
+            headers: {'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest'},
+        });
+        if (!response.ok) throw new Error(await responseMessage(response));
+        return response;
+    };
+
     const refreshPreview = async () => {
         if (!evolutionId.value || !form.reportValidity()) return;
         hideAlert();
-        syncOverrideInput();
         setBusy(true);
-        const data = new FormData(form);
-        data.set('output', 'preview');
         try {
-            const response = await fetch(form.action, {
-                method: 'POST',
-                body: data,
-                headers: {'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest'},
-            });
-            if (!response.ok) throw new Error(await responseMessage(response));
+            const response = await requestPdf('preview');
             if (previewUrl) URL.revokeObjectURL(previewUrl);
             previewUrl = URL.createObjectURL(await response.blob());
             preview.src = previewUrl;
@@ -157,7 +170,13 @@ if (modalElement) {
     pageSelect.addEventListener('change', renderPageFields);
     customPage.addEventListener('change', () => {
         const page = pageSelect.value;
-        pageOverrides[page] = pageOverrides[page] || {top: 0, right: 0, bottom: 0, left: 0, scale: 100};
+        pageOverrides[page] = pageOverrides[page] || {
+            top: Number(field('margin_top').value),
+            right: Number(field('margin_right').value),
+            bottom: Number(field('margin_bottom').value),
+            left: Number(field('margin_left').value),
+            scale: 100,
+        };
         pageOverrides[page].enabled = customPage.checked;
         syncOverrideInput();
         renderPageFields();
@@ -179,19 +198,47 @@ if (modalElement) {
         localStorage.removeItem(storageKey);
         refreshPreview();
     });
-    document.getElementById('soapOpenPdf').addEventListener('click', () => {
+    document.getElementById('soapDownloadPdf').addEventListener('click', async () => {
         if (!form.reportValidity()) return;
-        syncOverrideInput();
-        const output = document.createElement('input');
-        output.type = 'hidden';
-        output.name = 'output';
-        output.value = 'preview';
-        form.appendChild(output);
-        const previousTarget = form.target;
-        form.target = '_blank';
-        form.submit();
-        form.target = previousTarget;
-        output.remove();
+        hideAlert();
+        setBusy(true);
+        try {
+            const response = await requestPdf('download');
+            const url = URL.createObjectURL(await response.blob());
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `evolucion-${evolutionId.value}.pdf`;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+        } catch (error) {
+            showAlert(error.message);
+        } finally {
+            setBusy(false);
+        }
+    });
+
+    document.getElementById('soapOpenPdf').addEventListener('click', async () => {
+        if (!form.reportValidity()) return;
+        const pdfWindow = window.open('', '_blank');
+        if (!pdfWindow) {
+            showAlert('El navegador bloqueó la nueva pestaña. Permita las ventanas emergentes o use “Descargar PDF”.', 'warning');
+            return;
+        }
+        hideAlert();
+        setBusy(true);
+        try {
+            const response = await requestPdf('preview');
+            const url = URL.createObjectURL(await response.blob());
+            pdfWindow.location.href = url;
+            setTimeout(() => URL.revokeObjectURL(url), 60000);
+        } catch (error) {
+            pdfWindow.close();
+            showAlert(error.message);
+        } finally {
+            setBusy(false);
+        }
     });
 
     modalElement.addEventListener('hidden.bs.modal', () => {

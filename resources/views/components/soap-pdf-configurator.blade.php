@@ -89,7 +89,7 @@
 
                             <div class="card">
                                 <div class="card-header d-flex justify-content-between align-items-center">
-                                    <span class="fw-semibold">Ajuste por hoja</span>
+                                    <span class="fw-semibold">Márgenes por hoja</span>
                                     <span class="badge bg-secondary" id="soapPageCount">Sin previsualizar</span>
                                 </div>
                                 <div class="card-body">
@@ -99,13 +99,13 @@
                                     </select>
                                     <div class="form-check form-switch mb-3">
                                         <input class="form-check-input" type="checkbox" id="soapCustomPage" disabled>
-                                        <label class="form-check-label" for="soapCustomPage">Usar corrección especial en esta hoja</label>
+                                        <label class="form-check-label" for="soapCustomPage">Usar márgenes propios en esta hoja</label>
                                     </div>
                                     <div id="soapPageFields" class="row g-2 opacity-50">
                                         @foreach(['top' => 'Superior', 'right' => 'Derecha', 'bottom' => 'Inferior', 'left' => 'Izquierda'] as $side => $label)
                                             <div class="col-6">
-                                                <label class="form-label small" for="soapPage{{ ucfirst($side) }}">Corrección {{ strtolower($label) }} (cm)</label>
-                                                <input class="form-control form-control-sm soap-page-setting" type="number" id="soapPage{{ ucfirst($side) }}" data-key="{{ $side }}" value="0" min="0" max="5" step="0.1" disabled>
+                                                <label class="form-label small" for="soapPage{{ ucfirst($side) }}">Margen {{ strtolower($label) }} (cm)</label>
+                                                <input class="form-control form-control-sm soap-page-setting" type="number" id="soapPage{{ ucfirst($side) }}" data-key="{{ $side }}" value="0" min="0" max="8" step="0.1" disabled>
                                             </div>
                                         @endforeach
                                         <div class="col-12">
@@ -114,7 +114,7 @@
                                             <div class="text-center small"><span id="soapPageScaleValue">100</span>%</div>
                                         </div>
                                     </div>
-                                    <small class="text-muted d-block mt-2">Las hojas sin corrección conservan la configuración general.</small>
+                                    <small class="text-muted d-block mt-2">Estos valores sustituyen los márgenes generales en la hoja seleccionada. Las demás hojas conservan la configuración general.</small>
                                 </div>
                             </div>
                         </div>
@@ -136,6 +136,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" id="soapResetSettings">Restablecer</button>
                 <button type="button" class="btn btn-outline-primary" id="soapRefreshPreview"><i class="fa fa-rotate"></i> Actualizar vista</button>
+                <button type="button" class="btn btn-outline-danger" id="soapDownloadPdf"><i class="fa fa-download"></i> Descargar PDF</button>
                 <button type="button" class="btn btn-danger" id="soapOpenPdf"><i class="fa fa-file-pdf"></i> Abrir PDF para imprimir</button>
             </div>
         </div>
