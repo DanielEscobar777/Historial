@@ -4,7 +4,12 @@
 require __DIR__.'/../vendor/autoload.php';
 $app = require __DIR__.'/../bootstrap/app.php';
 $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
-config(['database.default' => 'sqlite', 'database.connections.sqlite.database' => ':memory:', 'session.driver' => 'array']);
+config([
+    'database.default' => 'sqlite',
+    // Sin PRAGMA de inicialización: pretend no necesita controlador PDO ni conexión real.
+    'database.connections.sqlite' => ['driver' => 'sqlite', 'database' => ':memory:', 'prefix' => ''],
+    'session.driver' => 'array',
+]);
 $user = new App\Models\User(['name' => 'Prueba de interfaz']);
 $user->setRelation('roles', collect());
 Illuminate\Support\Facades\Auth::setUser($user);
