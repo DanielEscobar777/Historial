@@ -106,6 +106,7 @@ class PdfController extends Controller
     ];
 
     $pdf = Pdf::loadView('pdf.soap', $data)->setPaper('a4', 'portrait');
+    $this->guardSoapOverflow($pdf->getDomPDF(), $pdfConfig);
     $pdf->render();
     $pdfBytes = $pdf->output();
     $pageCount = $pdf->getDomPDF()->getCanvas()->get_page_count();
@@ -123,6 +124,24 @@ class PdfController extends Controller
       'X-PDF-Pages' => (string) $pageCount,
       'Cache-Control' => 'no-store, private',
     ]);
+  }
+
+  private function guardSoapOverflow(\Dompdf\Dompdf $dompdf, array $config): void
+  {
+    // La columna absoluta no continúa en la siguiente página: no permitir datos recortados.
+    $dompdf->setCallbacks([[
+      'event' => 'end_frame',
+      'f' => function ($frame, $canvas) use ($config) {
+        $node = $frame->get_node();
+        if ($node instanceof \DOMElement && in_array('columna-izquierda', explode(' ', $node->getAttribute('class')), true)) {
+          $bottom = $frame->get_position('y') + $frame->get_margin_height();
+          $limit = $canvas->get_height() - $config['margin_bottom'] * 72 / 2.54;
+          if ($bottom > $limit + 1) {
+            throw ValidationException::withMessages(['left_column' => 'Los signos vitales no caben completos en la hoja. Aumente el ancho de su columna, reduzca el tamaño de letra o el interlineado, o disminuya los márgenes superior e inferior.']);
+          }
+        }
+      },
+    ]]);
   }
 
   private function sanitizePageOverrides(?string $json, int $pageCount): array

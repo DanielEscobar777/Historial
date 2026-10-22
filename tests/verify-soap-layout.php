@@ -8,6 +8,7 @@ $controller = new App\Http\Controllers\PdfController;
 $margins = new ReflectionMethod($controller, 'validateMargins');
 $overrides = new ReflectionMethod($controller, 'sanitizePageOverrides');
 $apply = new ReflectionMethod($controller, 'applyPageOverrides');
+$guard = new ReflectionMethod($controller, 'guardSoapOverflow');
 $margins->invoke($controller, 12, 1, 2, 1);
 try {
     $margins->invoke($controller, 20, 10, 10, 10);
@@ -18,11 +19,12 @@ $evolution = (object) array_fill_keys(['fecha_registro', 'hora_registro', 'pa', 
 foreach (['descripcion', 's', 'o', 'a', 'p'] as $key) {
     $evolution->$key = str_repeat('Texto sintético para verificar continuidad y medidas. ', 35);
 }
-foreach ([['top' => 12, 'size' => 7, 'left' => 25, 'gap' => 5], ['top' => 1, 'size' => 18, 'left' => 10, 'gap' => 2]] as $index => $case) {
+foreach ([['top' => 12, 'size' => 7, 'left' => 25, 'gap' => 5], ['top' => 1, 'size' => 18, 'left' => 30, 'gap' => 2]] as $index => $case) {
     $config = ['font_family' => 'DejaVu Sans', 'font_size' => $case['size'], 'line_height' => 1.15, 'paragraph_spacing' => 3,
         'margin_top' => $case['top'], 'margin_bottom' => 2, 'margin_left' => 2, 'margin_right' => 2,
         'left_column' => $case['left'], 'column_gap' => $case['gap'], 'right_column' => 100 - $case['left'] - $case['gap']];
     $pdf = Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.soap', ['evolucion' => $evolution, 'diagnosticos' => collect(), 'pdfConfig' => $config])->setPaper('a4');
+    $guard->invoke($controller, $pdf->getDomPDF(), $config);
     $bytes = $pdf->output();
     $count = $pdf->getDomPDF()->getCanvas()->get_page_count();
     $adjusted = $apply->invoke($controller, $bytes, $custom, $config);
@@ -30,4 +32,13 @@ foreach ([['top' => 12, 'size' => 7, 'left' => 25, 'gap' => 5], ['top' => 1, 'si
     if (isset($argv[1])) file_put_contents($argv[1].'/soap-check-'.$index.'.pdf', $adjusted);
     echo 'Caso '.($index + 1).': PDF generado con '.$count." páginas; ajuste individual correcto.\n";
 }
+$config['left_column'] = 10;
+$config['right_column'] = 88;
+$pdf = Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.soap', ['evolucion' => $evolution, 'diagnosticos' => collect(), 'pdfConfig' => $config])->setPaper('a4');
+$guard->invoke($controller, $pdf->getDomPDF(), $config);
+try {
+    $pdf->output();
+    throw new RuntimeException('Se permitió recortar signos vitales.');
+} catch (Illuminate\Validation\ValidationException $expected) {}
+echo "Protección contra signos vitales recortados: correcta.\n";
 echo "Validación de medidas: correcta.\n";
