@@ -10,6 +10,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use setasign\Fpdi\Fpdi;
 use setasign\Fpdi\PdfParser\StreamReader;
 
@@ -48,26 +49,26 @@ class PdfController extends Controller
     $validated = $request->validate([
       'id_evolucion' => ['required', 'integer', 'exists:evolucions,id_evolucion'],
       'font_family' => ['nullable', Rule::in(['verdana', 'dejavu', 'helvetica', 'times', 'courier'])],
-      'font_size' => ['nullable', 'numeric', 'min:6', 'max:14'],
-      'line_height' => ['nullable', 'numeric', 'min:0.8', 'max:2'],
-      'margin_top' => ['nullable', 'numeric', 'min:0', 'max:8'],
-      'margin_right' => ['nullable', 'numeric', 'min:0', 'max:8'],
-      'margin_bottom' => ['nullable', 'numeric', 'min:0', 'max:8'],
-      'margin_left' => ['nullable', 'numeric', 'min:0', 'max:8'],
-      'left_column' => ['nullable', 'numeric', 'min:15', 'max:40'],
-      'column_gap' => ['nullable', 'numeric', 'min:0', 'max:15'],
-      'paragraph_spacing' => ['nullable', 'numeric', 'min:0', 'max:12'],
-      'page_overrides' => ['nullable', 'string', 'max:20000'],
+      'font_size' => ['nullable', 'numeric', 'min:4', 'max:36'],
+      'line_height' => ['nullable', 'numeric', 'min:0.8', 'max:4'],
+      'margin_top' => ['nullable', 'numeric', 'min:0', 'max:26'],
+      'margin_right' => ['nullable', 'numeric', 'min:0', 'max:17'],
+      'margin_bottom' => ['nullable', 'numeric', 'min:0', 'max:26'],
+      'margin_left' => ['nullable', 'numeric', 'min:0', 'max:17'],
+      'left_column' => ['nullable', 'numeric', 'min:5', 'max:90'],
+      'column_gap' => ['nullable', 'numeric', 'min:0', 'max:50'],
+      'paragraph_spacing' => ['nullable', 'numeric', 'min:0', 'max:72'],
+      'page_overrides' => ['nullable', 'json', 'max:20000'],
       'output' => ['nullable', Rule::in(['preview', 'download'])],
     ]);
 
     $leftColumn = (float) ($validated['left_column'] ?? 25);
     $columnGap = (float) ($validated['column_gap'] ?? 5);
 
-    if ($leftColumn + $columnGap > 55) {
+    if ($leftColumn + $columnGap > 95) {
       return response()->json([
         'message' => 'La columna izquierda y la separación ocupan demasiado espacio. Reduzca uno de esos valores.',
-        'errors' => ['left_column' => ['La suma de la columna izquierda y la separación no puede superar 55%.']],
+        'errors' => ['left_column' => ['Reserve al menos 5% para la nota de evolución: columna izquierda y separación deben sumar como máximo 95%.']],
       ], 422);
     }
 
@@ -93,6 +94,8 @@ class PdfController extends Controller
       'paragraph_spacing' => (float) ($validated['paragraph_spacing'] ?? 3),
     ];
 
+    $this->validateMargins($pdfConfig['margin_top'], $pdfConfig['margin_right'], $pdfConfig['margin_bottom'], $pdfConfig['margin_left']);
+    $overrides = $this->sanitizePageOverrides($validated['page_overrides'] ?? null, PHP_INT_MAX);
     $idEvolucion = $validated['id_evolucion'];
     $evolucion = Evolucion::where('id_evolucion', $idEvolucion)->firstOrFail();
     $diagnostico = Diagnostico_soap::where('id_evolucion', $idEvolucion)->get();
@@ -141,15 +144,29 @@ class PdfController extends Controller
       }
 
       $overrides[$pageNumber] = [
-        'top' => min(8, max(0, (float) ($settings['top'] ?? 0))),
-        'right' => min(8, max(0, (float) ($settings['right'] ?? 0))),
-        'bottom' => min(8, max(0, (float) ($settings['bottom'] ?? 0))),
-        'left' => min(8, max(0, (float) ($settings['left'] ?? 0))),
-        'scale' => min(100, max(70, (float) ($settings['scale'] ?? 100))),
+        'top' => $settings['top'] ?? 0,
+        'right' => $settings['right'] ?? 0,
+        'bottom' => $settings['bottom'] ?? 0,
+        'left' => $settings['left'] ?? 0,
+        'scale' => $settings['scale'] ?? 100,
       ];
+      foreach ($overrides[$pageNumber] as $key => $value) {
+        if (!is_numeric($value) || !is_finite((float) $value) || $value < ($key === 'scale' ? 10 : 0) || $value > ($key === 'scale' ? 100 : (in_array($key, ['top', 'bottom']) ? 26 : 17))) {
+          throw ValidationException::withMessages(['page_overrides' => "Revise las medidas de la hoja {$pageNumber}: márgenes verticales 0–26 cm, laterales 0–17 cm y escala 10–100%."]);
+        }
+        $overrides[$pageNumber][$key] = (float) $value;
+      }
+      $this->validateMargins($overrides[$pageNumber]['top'], $overrides[$pageNumber]['right'], $overrides[$pageNumber]['bottom'], $overrides[$pageNumber]['left'], "Hoja {$pageNumber}");
     }
 
     return $overrides;
+  }
+
+  private function validateMargins(float $top, float $right, float $bottom, float $left, string $label = 'Márgenes generales'): void
+  {
+    if ($left + $right > 17 || $top + $bottom > 26.7) {
+      throw ValidationException::withMessages(['page_overrides' => "{$label}: deje al menos 4 cm de ancho y 3 cm de alto libres en la hoja A4 (21 × 29,7 cm). Reduzca los márgenes opuestos."]);
+    }
   }
 
   private function applyPageOverrides(string $sourcePdf, array $overrides, array $globalSettings): string

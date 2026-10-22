@@ -40,26 +40,27 @@
                                     </div>
                                     <div class="col-sm-6">
                                         <label class="form-label" for="soapFontSize">Tamaño (pt)</label>
-                                        <input class="form-control soap-setting" type="number" name="font_size" id="soapFontSize" value="7" min="6" max="14" step="0.5">
+                                        <input class="form-control soap-setting" type="number" name="font_size" id="soapFontSize" value="7" min="4" max="36" step="0.5">
                                     </div>
                                     <div class="col-sm-6">
                                         <label class="form-label" for="soapLineHeight">Interlineado</label>
-                                        <input class="form-control soap-setting" type="number" name="line_height" id="soapLineHeight" value="1.15" min="0.8" max="2" step="0.05">
+                                        <input class="form-control soap-setting" type="number" name="line_height" id="soapLineHeight" value="1.15" min="0.8" max="4" step="0.05">
                                     </div>
                                     <div class="col-sm-6">
                                         <label class="form-label" for="soapParagraphSpacing">Espacio entre párrafos (pt)</label>
-                                        <input class="form-control soap-setting" type="number" name="paragraph_spacing" id="soapParagraphSpacing" value="3" min="0" max="12" step="0.5">
+                                        <input class="form-control soap-setting" type="number" name="paragraph_spacing" id="soapParagraphSpacing" value="3" min="0" max="72" step="0.5">
                                     </div>
                                 </div>
                             </div>
 
                             <div class="card mb-3">
                                 <div class="card-header fw-semibold">Márgenes generales (cm)</div>
+                                <p class="small text-muted px-3 pt-2 mb-0">A4: 21 × 29,7 cm. Deje al menos 4 cm de ancho y 3 cm de alto para el contenido. Al imprimir, seleccione tamaño real (100%).</p>
                                 <div class="card-body row g-3">
                                     @foreach(['top' => 'Superior', 'right' => 'Derecho', 'bottom' => 'Inferior', 'left' => 'Izquierdo'] as $side => $label)
                                         <div class="col-6">
                                             <label class="form-label" for="soapMargin{{ ucfirst($side) }}">{{ $label }}</label>
-                                            <input class="form-control soap-setting" type="number" name="margin_{{ $side }}" id="soapMargin{{ ucfirst($side) }}" value="{{ in_array($side, ['top', 'bottom']) ? '2.5' : '3' }}" min="0" max="8" step="0.1">
+                                            <input class="form-control soap-setting" type="number" name="margin_{{ $side }}" id="soapMargin{{ ucfirst($side) }}" value="{{ in_array($side, ['top', 'bottom']) ? '2.5' : '3' }}" min="0" max="{{ in_array($side, ['top', 'bottom']) ? 26 : 17 }}" step="0.1">
                                         </div>
                                     @endforeach
                                 </div>
@@ -70,11 +71,11 @@
                                 <div class="card-body row g-3">
                                     <div class="col-sm-6">
                                         <label class="form-label" for="soapLeftColumn">Columna de signos vitales (%)</label>
-                                        <input class="form-control soap-setting" type="number" name="left_column" id="soapLeftColumn" value="25" min="15" max="40" step="1">
+                                        <input class="form-control soap-setting" type="number" name="left_column" id="soapLeftColumn" value="25" min="5" max="90" step="1">
                                     </div>
                                     <div class="col-sm-6">
                                         <label class="form-label" for="soapColumnGap">Separación (%)</label>
-                                        <input class="form-control soap-setting" type="number" name="column_gap" id="soapColumnGap" value="5" min="0" max="15" step="1">
+                                        <input class="form-control soap-setting" type="number" name="column_gap" id="soapColumnGap" value="5" min="0" max="50" step="1">
                                     </div>
                                     <div class="col-12">
                                         <div class="progress" style="height: 22px;" aria-label="Distribución de columnas">
@@ -105,12 +106,12 @@
                                         @foreach(['top' => 'Superior', 'right' => 'Derecha', 'bottom' => 'Inferior', 'left' => 'Izquierda'] as $side => $label)
                                             <div class="col-6">
                                                 <label class="form-label small" for="soapPage{{ ucfirst($side) }}">Margen {{ strtolower($label) }} (cm)</label>
-                                                <input class="form-control form-control-sm soap-page-setting" type="number" id="soapPage{{ ucfirst($side) }}" data-key="{{ $side }}" value="0" min="0" max="8" step="0.1" disabled>
+                                                <input class="form-control form-control-sm soap-page-setting" type="number" id="soapPage{{ ucfirst($side) }}" data-key="{{ $side }}" value="0" min="0" max="{{ in_array($side, ['top', 'bottom']) ? 26 : 17 }}" step="0.1" disabled>
                                             </div>
                                         @endforeach
                                         <div class="col-12">
                                             <label class="form-label small" for="soapPageScale">Escala del contenido (%)</label>
-                                            <input class="form-range soap-page-setting" type="range" id="soapPageScale" data-key="scale" value="100" min="70" max="100" step="1" disabled>
+                                            <input class="form-range soap-page-setting" type="range" id="soapPageScale" data-key="scale" value="100" min="10" max="100" step="1" disabled>
                                             <div class="text-center small"><span id="soapPageScaleValue">100</span>%</div>
                                         </div>
                                     </div>
