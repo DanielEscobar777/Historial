@@ -54,7 +54,7 @@ class KardexController extends Controller
     public function soap($id_historial)
     {
         $evoluciones = Evolucion::traerEvolucion($id_historial);
-        return view('Kardex.soap', [
+        return view('kardex.soap', [
             'evoluciones' => $evoluciones,
             'id_historial' => $id_historial,
           
